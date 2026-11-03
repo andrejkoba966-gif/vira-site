@@ -65,6 +65,7 @@ a { color: inherit; text-decoration: none; }
 #final-v.on { opacity: 1; visibility: visible; transition: opacity .45s ease, visibility 0s; }
 #bg-video { z-index: 0; background: url("img/vira-hero-poster.jpg") center / cover no-repeat; }
 #hero-matte { z-index: 3; pointer-events: none; will-change: opacity; }
+#hero-static { display: none; }
 
 /* ============================================================
   VIRA — великі літери у полі (варіант 2a)
@@ -569,6 +570,11 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
 /* нижній блок завжди над панеллю браузера */
 .is-touch #hero-bottom, .is-touch #hero-bar { translate: 0 calc(-1 * var(--tb)); }
 
+/* статичний вертикальний фон першого екрана; зникає, щойно починаються сцени відео */
+.is-touch #hero-static { display: block; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; z-index: 1; pointer-events: none; transition: opacity .5s ease, visibility 0s; }
+.is-touch:not(.scene-0) #hero-static { opacity: 0; visibility: hidden; transition: opacity .5s ease, visibility 0s linear .5s; }
+.is-touch #hero-matte { display: none; }   /* маска поля підганялась під горизонтальний кадр */
+
 /* легше: без розмиття, світіння, будь-яких фільтрів */
 .is-touch #bg-video { will-change: auto; }
 .is-touch .cap { text-shadow: 0 1px 14px rgba(0,0,0,.4); will-change: auto; }
@@ -626,6 +632,9 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
         muted playsinline preload="auto"></video>
       <!-- фінальна сцена для телефона у вертикальному форматі (вмикається лише на touch у портреті) -->
       <video id="final-v" data-src="video/vira-final-vertical.mp4" poster="img/final-vertical-poster.jpg" muted playsinline preload="none" aria-hidden="true"></video>
+
+      <!-- мобільна версія: статичний вертикальний фон першого екрана (лише .is-touch) -->
+      <img id="hero-static" src="img/hero-mobile-bg.webp" alt="" aria-hidden="true">
 
       <!-- VIRA у полі -->
       <div id="hero-letters" aria-hidden="true">
@@ -1091,7 +1100,13 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
     };
 
     let fs, baseline;
-    if (VIRA.fade) {
+    if (TOUCH) {
+      // фон 853×1844: кегль 244, базова лінія y=960 (референс) — літери тануть на лінії горизонту
+      const sT = Math.max(vw / 853, vh / 1844);
+      const offYT = (vh - 1844 * sT) / 2;
+      fs = 244 * sT;
+      baseline = offYT + 960 * sT;
+    } else if (VIRA.fade) {
       // ховаємо однакову частку кожної літери (VIRA.hide) — низ рівний, A не «звисає»
       fs = fsByW;
       for (let k = 0; k < 3; k++) {
@@ -1115,7 +1130,7 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
 
     if (VIRA.fade) {
       // м'яке танення на одній горизонталі для всіх літер
-      const end = Math.min(fieldTop(fs), baseline) + 4 - boxTop;
+      const end = (TOUCH ? baseline : Math.min(fieldTop(fs), baseline) + 4) - boxTop;
       const start = end - cap * fs * 0.14;
       const mask = `linear-gradient(to bottom, #000 0, #000 ${start}px, transparent ${end}px)`;
       lettersH.style.webkitMaskImage = mask; lettersH.style.maskImage = mask;
