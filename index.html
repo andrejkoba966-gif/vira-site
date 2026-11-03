@@ -581,8 +581,7 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
 .is-touch .cap { text-shadow: 0 1px 14px rgba(0,0,0,.4); will-change: auto; }
 @keyframes stageInLite { from { transform: scale(1.1); opacity: .4; } to { transform: none; opacity: 1; } }
 .is-touch.intro #hero-stage { animation-name: stageInLite; }
-/* мобільна версія: перше відкриття статичне — без інтро-анімації */
-.is-touch.intro-wait #hero-stage { transform: none; filter: none; }
+.is-touch.intro-wait #hero-stage { filter: none; }
 
 /* VIRA і поле */
 .is-touch #hero-matte { transition: opacity .35s ease, visibility 0s; will-change: auto; }
@@ -1149,7 +1148,7 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
   ]).then(() => {
     layoutLetters(); lastProgress = -1;
     root.classList.remove('intro-wait');
-    if (!reduceMotion && !TOUCH) {
+    if (!reduceMotion) {
       root.classList.add('intro');
       setTimeout(() => root.classList.remove('intro'), 3200);
     }
