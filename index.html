@@ -299,7 +299,7 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
 /* ---------- 2. ХТО МИ ---------- */
 .statement-row { display: grid; grid-template-columns: 1fr clamp(180px, 15vw, 320px); gap: clamp(28px, 4vw, 90px); align-items: start; }
 #about-title { font-size: clamp(30px, 3.4vw, 50px); }
-.statement { max-width: 30em; font-size: clamp(19px, 1.75vw, 26px); font-weight: 600; line-height: 1.22; letter-spacing: -.03em; color: #fff; }
+.statement { text-wrap: pretty; max-width: 30em; font-size: clamp(19px, 1.75vw, 26px); font-weight: 600; line-height: 1.22; letter-spacing: -.03em; color: #fff; }
 .statement .dim { color: var(--mute2); }
 .statement .acc { color: var(--sun); }
 .about-cta { aspect-ratio: 1 / .93; display: flex; flex-direction: column; justify-content: space-between; padding: clamp(18px, 1.5vw, 28px); border-radius: var(--r); background: var(--sun); color: var(--ink); font-size: clamp(19px, 1.7vw, 28px); font-weight: 500; line-height: 1.15; letter-spacing: -.01em; text-transform: uppercase; transition: transform .25s, box-shadow .25s; box-shadow: 0 18px 40px -24px rgba(0,0,0,.6); }
@@ -806,7 +806,7 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
         <p class="sec-aside"><b>VIRA, з 2022 року</b><br>Офіційне європейське представництво Victor&nbsp;&amp;&nbsp;K Group</p>
       </div>
       <div class="statement-row">
-        <p class="statement rv">Ми не дистриб'ютор <span class="dim">і не логістична компанія.</span> Ми — офіційне представництво українського виробника Victor&nbsp;&amp;&nbsp;K, <span class="dim">яке відкриває бізнесу доступ до</span> <span class="acc">повного циклу створення власного продукту:</span> <span class="dim">від ідеї та розробки рецептури до</span> брендингу, пакування й&nbsp;виробництва. <span class="dim">Працюємо напряму з&nbsp;виробником, забезпечуючи</span> <span class="acc">якість на&nbsp;кожному етапі.</span></p>
+        <p class="statement rv">Ми не&nbsp;дистриб'ютор <span class="dim">і&nbsp;не&nbsp;логістична компанія.</span> Ми&nbsp;– офіційне представництво українського виробника Victor&nbsp;&amp;&nbsp;K, <span class="dim">яке&nbsp;відкриває бізнесу доступ до&nbsp;</span><span class="acc">повного циклу створення власного продукту:</span> <span class="dim">від ідеї та&nbsp;розробки рецептури до&nbsp;</span>брендингу, пакування й&nbsp;виробництва. <span class="dim">Працюємо напряму з&nbsp;виробником, забезпечуючи</span> <span class="acc">якість на&nbsp;кожному етапі.</span></p>
         <a href="#contact" class="about-cta rv">Стати<br> партнером
           <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 11h14M12 5l6 6-6 6"/></svg></a>
       </div>
@@ -2025,12 +2025,12 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
   Object.assign(I18N_EN, {
     "Ми не дистриб'ютор": "We are not a distributor",
     "і не логістична компанія.": "and not a logistics company.",
-    "Ми — офіційне представництво українського виробника Victor & K,": "We are the official representative of the Ukrainian manufacturer Victor & K,",
+    "Ми – офіційне представництво українського виробника Victor & K,": "We are the\u00a0official representative of\u00a0the\u00a0Ukrainian manufacturer Victor\u00a0&\u00a0K,",
     "яке відкриває бізнесу доступ до": "which opens up access for businesses to",
     "повного циклу створення власного продукту:": "the full cycle of creating their own product:",
     "від ідеї та розробки рецептури до": "from the idea and recipe development to",
     "брендингу, пакування й виробництва.": "branding, packaging and production.",
-    "Працюємо напряму з виробником, забезпечуючи": "We work directly with the manufacturer, ensuring",
+    "Працюємо напряму з виробником, забезпечуючи": "We work directly with the\u00a0manufacturer, ensuring",
     "якість на кожному етапі.": "quality at every stage.",
     "Повний цикл": "The full cycle",
     "під вашим брендом": "under your brand"
