@@ -299,8 +299,9 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
 /* ---------- 2. ХТО МИ ---------- */
 .statement-row { display: grid; grid-template-columns: 1fr clamp(180px, 15vw, 320px); gap: clamp(28px, 4vw, 90px); align-items: start; }
 #about-title { font-size: clamp(30px, 3.4vw, 50px); }
-.statement { font-size: clamp(21px, 2.03vw, 30px); font-weight: 600; line-height: 1.14; letter-spacing: -.03em; color: #fff; }
+.statement { font-size: clamp(19px, 1.75vw, 26px); font-weight: 600; line-height: 1.22; letter-spacing: -.03em; color: #fff; }
 .statement .dim { color: var(--mute2); }
+.statement .acc { color: var(--sun); }
 .statement-row .img-tile { aspect-ratio: 4/3; }
 .bento { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: clamp(140px, 11vw, 230px); gap: var(--gap); margin-top: clamp(40px, 4.5vw, 90px); }
 .stat { padding: clamp(18px, 1.6vw, 30px); display: flex; flex-direction: column; justify-content: space-between; }
@@ -800,7 +801,7 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
         <p class="sec-aside"><b>VIRA, з 2022 року</b><br>Офіційне європейське представництво Victor&nbsp;&amp;&nbsp;K Group</p>
       </div>
       <div class="statement-row">
-        <p class="statement rv">Ми не дистриб'ютор <span class="dim">і не логістична компанія.</span> Ми — офіційне представництво <span class="dim">українського виробника</span> Victor&nbsp;&amp;&nbsp;K <span class="dim">у Європі й працюємо від його імені, щоб ваш бізнес отримував</span> якісну продукцію напряму, <span class="dim">за прямими контрактами.</span></p>
+        <p class="statement rv">Ми не дистриб'ютор <span class="dim">і не логістична компанія.</span> Ми — офіційне представництво українського виробника Victor&nbsp;&amp;&nbsp;K, <span class="dim">яке відкриває бізнесу доступ до</span> <span class="acc">повного циклу створення власного продукту:</span> <span class="dim">від ідеї та розробки рецептури до</span> брендингу, пакування й&nbsp;виробництва. <span class="dim">Працюємо напряму з&nbsp;виробником, забезпечуючи</span> <span class="acc">якість на&nbsp;кожному етапі.</span></p>
         <figure class="img-tile rv"><img src="img/f-field.webp" alt="Соняшникове поле на заході сонця" loading="lazy"></figure>
       </div>
       <div class="bento">
@@ -2015,6 +2016,17 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
  "Україна": "Ukraine",
  "Чорногорія · офіс VIRA": "Montenegro · VIRA office"
 };
+  Object.assign(I18N_EN, {
+    "Ми не дистриб'ютор": "We are not a distributor",
+    "і не логістична компанія.": "and not a logistics company.",
+    "Ми — офіційне представництво українського виробника Victor & K,": "We are the official representative of the Ukrainian manufacturer Victor & K,",
+    "яке відкриває бізнесу доступ до": "which opens up access for businesses to",
+    "повного циклу створення власного продукту:": "the full cycle of creating their own product:",
+    "від ідеї та розробки рецептури до": "from the idea and recipe development to",
+    "брендингу, пакування й виробництва.": "branding, packaging and production.",
+    "Працюємо напряму з виробником, забезпечуючи": "We work directly with the manufacturer, ensuring",
+    "якість на кожному етапі.": "quality at every stage."
+  });
   const EN_TITLE = 'VIRA — production of food products and industrial raw materials';
   const EN_DESC  = 'From recipe development to a finished product under your brand. Own brands, Private Label contract manufacturing and industrial raw materials for European business';
   const CYR = /[А-Яа-яІіЇїЄєҐґ]/;
