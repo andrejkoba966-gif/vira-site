@@ -8,7 +8,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="img/vira-hero-poster.jpg">
 <link rel="preload" as="image" href="img/vira-matte.webp">
 
@@ -574,7 +574,8 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
 .is-touch .cap { text-shadow: 0 1px 14px rgba(0,0,0,.4); will-change: auto; }
 @keyframes stageInLite { from { transform: scale(1.1); opacity: .4; } to { transform: none; opacity: 1; } }
 .is-touch.intro #hero-stage { animation-name: stageInLite; }
-.is-touch.intro-wait #hero-stage { filter: none; }
+/* мобільна версія: перше відкриття статичне — без інтро-анімації */
+.is-touch.intro-wait #hero-stage { transform: none; filter: none; }
 
 /* VIRA і поле */
 .is-touch #hero-matte { transition: opacity .35s ease, visibility 0s; will-change: auto; }
@@ -1025,9 +1026,9 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
   //   fill — 'soft' (м'яко тане донизу) або 'solid' (суцільний білий)
   const _q = new URLSearchParams(location.search);
   const VIRA = {
-    weight: parseInt(_q.get('w'), 10)    || 300,
+    weight: parseInt(_q.get('w'), 10)    || (TOUCH ? 200 : 300),
     ls:     _q.has('ls') ? parseFloat(_q.get('ls')) : -0.02,
-    width:  parseFloat(_q.get('width'))  || 0.80,
+    width:  parseFloat(_q.get('width'))  || (TOUCH ? 0.60 : 0.80),
     fill:   _q.get('fill') || 'soft',
     align:  _q.get('align') || 'center',
     fade:   _q.get('fade') !== '0',
@@ -1131,7 +1132,7 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
   ]).then(() => {
     layoutLetters(); lastProgress = -1;
     root.classList.remove('intro-wait');
-    if (!reduceMotion) {
+    if (!reduceMotion && !TOUCH) {
       root.classList.add('intro');
       setTimeout(() => root.classList.remove('intro'), 3200);
     }
