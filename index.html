@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIRA — прямі поставки харчової продукції та промислової сировини</title>
+<meta name="description" content="Готова продукція, промислова сировина та Private Label від українського виробника для торговельних мереж, дистриб'юторів і HoReCa в Європі.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="img/vira-hero-poster.jpg">
+<link rel="preload" as="image" href="img/vira-matte.webp">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ============================================================
+  ТОКЕНИ
+  Контейнер гумовий: поля ≈4.2% ширини екрана з кожного боку.
+  13–14" ноутбук (1440) → 1320 px, 1920 → 1760 px, 2560 → 2345 px.
+  Пропорції однакові на всіх екранах — контент не «стискається» в центр.
+============================================================ */
+:root {
+  --bg:        #F4F3EE;
+  --ink:       #0D0F14;
+  --accent:    #2350D8;
+  --sun:       #F5D90A;
+  --gutter:    clamp(20px, 4.2vw, 160px);
+  --container: calc(100% - var(--gutter) * 2);
+  --card:      clamp(150px, 11.2vw, 250px);
+}
+
+html { scroll-behavior: auto; }
+body { background: var(--ink); font-family: 'Inter', system-ui, sans-serif; overflow-x: hidden; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+a { color: inherit; text-decoration: none; }
+
+.container { width: var(--container); margin-inline: auto; }
+
+/* ============================================================
+  SCROLL ENGINE — трек 10 екранів (відео 30 с, 8 сцен + наїзд)
+============================================================ */
+#scroll-container { position: relative; height: calc(var(--vh, 100vh) * 10); }
+
+/* ============================================================
+  HERO
+============================================================ */
+#hero {
+  position: sticky; top: 0;
+  height: var(--vh, 100vh); width: 100%;
+  overflow: hidden;
+  background: #120c06;
+  z-index: 1;
+}
+
+/* сцена: відео + літери + маска поля — масштабуються разом при інтро */
+#hero-stage { position: absolute; inset: 0; transform-origin: 50% 60%; }
+
+#bg-video, #hero-matte {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: 50% 50%;
+}
+#final-v { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; opacity: 0; visibility: hidden; transition: opacity .45s ease, visibility 0s linear .45s; pointer-events: none; }
+#final-v.on { opacity: 1; visibility: visible; transition: opacity .45s ease, visibility 0s; }
+#bg-video { z-index: 0; background: url("img/vira-hero-poster.jpg") center / cover no-repeat; }
+#hero-matte { z-index: 3; pointer-events: none; will-change: opacity; }
+
+/* ============================================================
+  VIRA — великі літери у полі (варіант 2a)
+  розмір/положення рахує JS, низ ховається за соняшниками
+============================================================ */
+#hero-letters { position: absolute; left: 0; right: 0; top: 14%; z-index: 1; pointer-events: none; }
+/* кожна літера позиціонується JS так, щоб видимі проміжки між літерами
+   (від краю штриха до краю штриха) були однакові */
+#hero-letters h2 {
+  position: relative; height: 1em;
+  font-weight: 400; font-size: 380px; line-height: 1; letter-spacing: 0;
+}
+#hero-letters .L { position: absolute; top: 0; left: 0; display: block; will-change: transform, opacity, filter; }
+#hero-letters .L b { display: block; font-weight: inherit; color: #fff; }
+
+/* ============================================================
+  ЧИТАБЕЛЬНІСТЬ
+  shade — легке затемнення завжди (нав + низ),
+  scrim — сильніше затемнення зліва знизу, вмикається на сценах відео
+============================================================ */
+#hero-shade, #hero-scrim { position: absolute; inset: 0; pointer-events: none; }
+#hero-shade {
+  z-index: 4;
+  background:
+    linear-gradient(to bottom, rgba(8,10,16,.36) 0%, rgba(8,10,16,0) 18%),
+    linear-gradient(to top, rgba(8,10,16,.66) 0%, rgba(8,10,16,.3) 24%, rgba(8,10,16,0) 46%),
+    radial-gradient(70% 58% at 0% 100%, rgba(8,10,16,.66), rgba(8,10,16,.28) 50%, rgba(8,10,16,0) 78%);
+}
+#hero-scrim {
+  z-index: 4; opacity: 0; will-change: opacity;
+  background:
+    linear-gradient(to bottom, rgba(6,8,12,.42) 0%, rgba(6,8,12,0) 17%),
+    linear-gradient(to top, rgba(6,8,12,.55) 0%, rgba(6,8,12,.2) 30%, rgba(6,8,12,0) 50%),
+    radial-gradient(75% 65% at 0% 100%, rgba(6,8,12,.72), rgba(6,8,12,.35) 45%, rgba(6,8,12,0) 75%);
+}
+#hero-dim { position: absolute; inset: 0; z-index: 9; background: #000; opacity: 0; pointer-events: none; }
+
+/* ============================================================
+  НАВІГАЦІЯ
+============================================================ */
+#hero-nav { position: absolute; top: 0; left: 0; right: 0; z-index: 10; padding-top: clamp(18px, 1.9vw, 40px); }
+#hero-nav .container { display: flex; align-items: center; justify-content: space-between; gap: 24px; color: #fff; }
+.nav-logo { display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: clamp(26px, 2.2vw, 40px); letter-spacing: .02em; }
+.nav-logo svg { width: 1.25em; height: 1.25em; }
+.nav-links { display: flex; gap: clamp(22px, 3vw, 60px); list-style: none; }
+.nav-links a { display: inline-flex; align-items: center; gap: 6px; font-size: clamp(13px, .95vw, 17px); font-weight: 500; letter-spacing: .03em; text-transform: uppercase; color: rgba(255,255,255,.92); transition: color .2s; }
+.nav-links a:hover { color: var(--sun); }
+.nav-links svg { width: 10px; height: 10px; }
+.nav-right { display: flex; align-items: center; gap: 12px; }
+.nav-search { width: clamp(46px, 3.6vw, 64px); aspect-ratio: 1; border-radius: 50%; background: #fff; display: grid; place-items: center; color: var(--ink); transition: transform .2s; }
+.nav-search:hover { transform: scale(1.06); }
+.nav-search svg { width: 36%; height: 36%; }
+.nav-cta { height: clamp(46px, 3.6vw, 64px); display: inline-flex; align-items: center; padding: 0 clamp(22px, 2.2vw, 40px); border-radius: 100px; border: 1.5px solid rgba(255,255,255,.75); font-size: clamp(13px, .95vw, 17px); font-weight: 500; letter-spacing: .03em; text-transform: uppercase; color: #fff; transition: background .2s, color .2s; }
+.nav-cta:hover { background: #fff; color: var(--ink); }
+
+/* ============================================================
+  НИЖНІЙ БЛОК: тексти сцен (зліва) + плитки (справа)
+  низ тексту вирівняний по низу плиток
+============================================================ */
+#hero-bottom { position: absolute; left: 0; right: 0; bottom: clamp(84px, 7vw, 140px); z-index: 6; }
+#hero-bottom .container { display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; }
+
+#captions { position: relative; flex: 0 1 clamp(520px, 44vw, 860px); min-height: var(--card); }
+.cap {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  color: #fff; opacity: 0; visibility: hidden;
+  will-change: opacity, transform;
+  text-shadow: 0 1px 2px rgba(0,0,0,.25), 0 2px 24px rgba(0,0,0,.35);
+}
+.cap.is-hero { opacity: 1; visibility: visible; }
+.cap-label { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 16px; font-size: clamp(12px, .8vw, 14px); font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: #fff; text-shadow: none; }
+.cap-label .n { display: inline-grid; place-items: center; min-width: 2.6em; height: 2.1em; padding: 0 .7em; border-radius: 100px; background: var(--sun); color: var(--ink); font-weight: 700; letter-spacing: .04em; font-variant-numeric: tabular-nums; }
+.cap-title { max-width: 22em; font-size: clamp(22px, .9rem + 1.1vw, 38px); font-weight: 600; line-height: 1.18; letter-spacing: -.02em; text-wrap: balance; }
+.cap-text { max-width: 33em; margin-top: 14px; font-size: clamp(17px, .5vw + 10px, 22px); font-weight: 400; line-height: 1.55; color: rgba(255,255,255,.92); }
+
+.hero-cards { display: flex; gap: clamp(12px, 1vw, 18px); flex: none; }
+.hero-card { width: var(--card); height: calc(var(--card) * .93); border-radius: 14px; padding: clamp(18px, 1.5vw, 28px); display: flex; flex-direction: column; justify-content: space-between; font-size: clamp(14px, 1vw, 18px); font-weight: 500; line-height: 1.25; text-transform: uppercase; color: var(--ink); transition: transform .25s, box-shadow .25s; box-shadow: 0 18px 40px -24px rgba(0,0,0,.6); }
+.hero-card:hover { transform: translateY(-4px); }
+.hero-card.white { background: #fff; }
+.hero-card.sun { background: var(--sun); }
+.hero-card svg { width: 22px; height: 22px; align-self: flex-end; }
+
+/* ============================================================
+  НИЖНЯ ЛІНІЯ: пошта + номер сцени + прогрес
+============================================================ */
+#hero-bar { position: absolute; left: 0; right: 0; bottom: clamp(24px, 2vw, 44px); z-index: 6; }
+#hero-bar .container { position: relative; display: flex; justify-content: space-between; align-items: center; gap: 20px; padding-bottom: 14px; font-size: clamp(13px, .9vw, 16px); font-weight: 500; letter-spacing: .04em; text-transform: uppercase; color: rgba(255,255,255,.95); }
+#hero-bar .container::before { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: rgba(255,255,255,.45); transform-origin: left; }
+#bar-fill { position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; border-radius: 2px; background: var(--sun); transform: scaleX(0); transform-origin: left; }
+#hero-bar a:hover { color: var(--sun); }
+#scene-num { font-variant-numeric: tabular-nums; color: rgba(255,255,255,.8); }
+#scene-num b { color: #fff; font-weight: 600; }
+
+/* ============================================================
+  ІНТРО-АНІМАЦІЯ ПРИ ВІДКРИТТІ
+  сцена плавно «наїжджає», літери виростають з-за соняшників,
+  далі навігація, текст, плитки
+============================================================ */
+@keyframes stageIn   { from { transform: scale(1.12); filter: brightness(.55) saturate(.8); } to { transform: none; filter: none; } }
+@keyframes letterUp  { from { transform: translateY(62%); opacity: 0; } 35% { opacity: 1; } to { transform: none; opacity: 1; } }
+@keyframes fadeDown  { from { transform: translateY(-18px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes fadeUp    { from { transform: translateY(26px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes cardIn    { from { transform: translateY(36px) scale(.96); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes lineIn    { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes glowIn    { from { opacity: 0; } to { opacity: 1; } }
+
+.intro #hero-stage              { animation: stageIn 2.6s cubic-bezier(.16,.84,.3,1) both; }
+.intro #hero-letters .L b       { animation: letterUp 1.5s cubic-bezier(.2,.85,.25,1) backwards; }
+.intro #hero-letters .L:nth-child(1) b { animation-delay: .45s; }
+.intro #hero-letters .L:nth-child(2) b { animation-delay: .55s; }
+.intro #hero-letters .L:nth-child(3) b { animation-delay: .65s; }
+.intro #hero-letters .L:nth-child(4) b { animation-delay: .75s; }
+.intro #hero-nav .container > * { animation: fadeDown .9s cubic-bezier(.2,.8,.2,1) backwards; }
+.intro #hero-nav .container > :nth-child(1) { animation-delay: .9s; }
+.intro #hero-nav .container > :nth-child(2) { animation-delay: 1.0s; }
+.intro #hero-nav .container > :nth-child(3) { animation-delay: 1.1s; }
+.intro .cap.is-hero .cap-title  { animation: fadeUp 1s cubic-bezier(.2,.8,.2,1) 1.15s backwards; }
+.intro .cap.is-hero .cap-text   { animation: fadeUp 1s cubic-bezier(.2,.8,.2,1) 1.3s backwards; }
+.intro .hero-card               { animation: cardIn 1s cubic-bezier(.2,.8,.2,1) backwards; }
+.intro .hero-card.white         { animation-delay: 1.4s; }
+.intro .hero-card.sun           { animation-delay: 1.52s; }
+.intro #hero-bar .container > * { animation: fadeUp .8s ease 1.7s backwards; }
+.intro #hero-bar .container::before { animation: lineIn 1.4s cubic-bezier(.6,0,.2,1) 1.5s backwards; }
+
+/* поки вантажиться постер — тримаємо стартовий стан інтро */
+.intro-wait #hero-stage { transform: scale(1.12); filter: brightness(.55) saturate(.8); }
+.intro-wait #hero-letters .L b, .intro-wait #hero-nav .container > *,
+.intro-wait .cap.is-hero > *, .intro-wait #hero-bar .container > * { opacity: 0; }
+.intro-wait .hero-card { opacity: 0 !important; }
+.intro-wait #hero-bar .container::before { transform: scaleX(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .intro * , .intro *::before { animation: none !important; }
+}
+
+/* ============================================================
+  ЛЕНДИНГ ПІСЛЯ HERO — темна тема (за референсом)
+  Типографіка: великі заголовки капсом із щільним трекінгом,
+  дрібний підпис праворуч, темні плитки, жовтий — тільки акцент
+============================================================ */
+:root {
+  --dark:  #0A0A0B;
+  --tile:  #141416;
+  --tile2: #1B1B1E;
+  --line:  rgba(255,255,255,.09);
+  --mute:  #8E8E95;
+  --mute2: #5C5C63;
+  --sec:   clamp(84px, 8.5vw, 170px);
+  --gap:   clamp(12px, 1vw, 20px);
+  --r:     clamp(14px, 1.2vw, 22px);
+}
+#section-2 {
+  position: sticky; top: 0; z-index: 20;
+  will-change: transform;
+  background: var(--dark);
+  box-shadow: 0 -30px 70px rgba(0,0,0,.45);
+}
+.l-sec { background: var(--dark); color: #fff; position: relative; z-index: 21; }
+.l-sec > .container, #section-2 > .container { padding-block: var(--sec); }
+#section-2 > .container { padding-top: clamp(72px, 7vw, 140px); }
+.l-sec + .l-sec > .container, #formats > .container { padding-top: 0; }
+
+/* заголовок секції: великий зліва, дрібний підпис праворуч */
+.sec-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 40px; margin-bottom: clamp(36px, 3.6vw, 72px); }
+.h-xl {
+  font-size: clamp(34px, 4.25vw, 96px); font-weight: 400; line-height: .94;
+  letter-spacing: -.05em; text-transform: uppercase; color: #fff;
+  text-wrap: balance;
+}
+.sec-aside { max-width: 17em; padding-top: .4em; font-size: clamp(13px, .82vw, 16px); line-height: 1.45; color: var(--mute); text-align: right; }
+.sec-aside b { color: #fff; font-weight: 500; }
+.sec-aside a { color: #fff; border-bottom: 1px solid var(--line); transition: border-color .2s; }
+.sec-aside a:hover { border-color: var(--sun); }
+.sec-head .thumb { width: clamp(120px, 9vw, 190px); aspect-ratio: 16/9; border-radius: 12px; object-fit: cover; flex: none; margin-left: auto; }
+.eyebrow { font-size: clamp(11px, .75vw, 13px); font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--mute); }
+
+.tile { background: var(--tile); border: 1px solid var(--line); border-radius: var(--r); }
+.img-tile { border-radius: var(--r); overflow: hidden; position: relative; background: var(--tile); }
+.img-tile img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 1.2s cubic-bezier(.2,.8,.2,1); }
+.img-tile:hover img { transform: scale(1.04); }
+.circle { width: clamp(42px, 3vw, 58px); aspect-ratio: 1; border-radius: 50%; border: 1.5px solid currentColor; display: grid; place-items: center; flex: none; transition: transform .3s; }
+.circle svg { width: 40%; height: 40%; }
+a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
+
+/* ---------- 2. ХТО МИ ---------- */
+.statement-row { display: grid; grid-template-columns: 1fr clamp(180px, 15vw, 320px); gap: clamp(28px, 4vw, 90px); align-items: start; }
+.statement { font-size: clamp(23px, 2.3vw, 50px); font-weight: 600; line-height: 1.14; letter-spacing: -.03em; color: #fff; }
+.statement .dim { color: var(--mute2); }
+.statement-row .img-tile { aspect-ratio: 4/3; }
+.bento { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: clamp(140px, 11vw, 230px); gap: var(--gap); margin-top: clamp(40px, 4.5vw, 90px); }
+.stat { padding: clamp(18px, 1.6vw, 30px); display: flex; flex-direction: column; justify-content: space-between; }
+.stat .n { font-size: clamp(32px, 2.8vw, 60px); font-weight: 500; letter-spacing: -.04em; line-height: 1; }
+.stat .n sup { font-size: .45em; color: var(--sun); vertical-align: top; margin-left: .1em; }
+.stat .t { font-size: clamp(13px, .85vw, 16px); line-height: 1.4; color: var(--mute); max-width: 14em; }
+.bento .img-tile { grid-column: span 2; }
+.bento .img-tile figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 20px; font-size: clamp(13px, .85vw, 16px); color: #fff; background: linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,0)); }
+.bento .spacer { visibility: hidden; }
+
+/* ---------- 3. ФОРМАТИ ---------- */
+.formats { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--gap); align-items: stretch; }
+.formats .img-tile { grid-column: 1 / 7; aspect-ratio: 16/11; }
+.formats .img-tile img { position: absolute; inset: 0; opacity: 0; transition: opacity .6s ease, transform 1.2s cubic-bezier(.2,.8,.2,1); }
+.formats .img-tile img.on { opacity: 1; }
+.f-side { grid-column: 8 / 13; display: flex; flex-direction: column; justify-content: space-between; gap: 28px; }
+.f-tabs { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+.f-tab { display: flex; align-items: baseline; gap: 18px; padding: clamp(14px, 1.2vw, 22px) 0; border-bottom: 1px solid var(--line); background: none; border-left: 0; border-right: 0; border-top: 0; color: var(--mute2); font: inherit; text-align: left; cursor: pointer; transition: color .25s; }
+.f-tab .k { font-size: clamp(12px, .8vw, 14px); font-weight: 600; letter-spacing: .08em; color: inherit; min-width: 2em; }
+.f-tab .nm { font-size: clamp(20px, 1.75vw, 36px); font-weight: 400; letter-spacing: -.035em; text-transform: uppercase; line-height: 1.05; }
+.f-tab:hover { color: #c9c9ce; }
+.f-tab.on { color: #fff; }
+.f-tab.on .k { color: var(--sun); }
+.f-desc { font-size: clamp(15px, 1vw, 19px); line-height: 1.55; color: var(--mute); max-width: 30em; min-height: 3.1em; }
+.f-desc b { color: #fff; font-weight: 500; }
+.f-bottom { display: grid; grid-template-columns: 1fr clamp(150px, 11vw, 230px); gap: var(--gap); }
+.f-list { padding: clamp(18px, 1.5vw, 28px); list-style: none; display: grid; gap: 8px; align-content: center; }
+.f-list li { display: flex; gap: 10px; font-size: clamp(15px, 1vw, 19px); font-weight: 500; }
+.f-list li::before { content: ''; width: 6px; height: 6px; margin-top: .55em; border-radius: 50%; background: var(--sun); flex: none; }
+.cta-tile { background: var(--sun); color: var(--ink); border-radius: var(--r); padding: clamp(16px, 1.4vw, 26px); aspect-ratio: 1; display: flex; flex-direction: column; justify-content: space-between; font-size: clamp(14px, .95vw, 18px); font-weight: 600; line-height: 1.2; text-transform: uppercase; transition: transform .25s; }
+.cta-tile:hover { transform: translateY(-3px); }
+.cta-tile .circle { align-self: flex-end; }
+
+/* ---------- 4. ПРОДУКЦІЯ: карусель ---------- */
+#products { overflow: hidden; }
+.carousel { position: relative; }
+.c-track { display: flex; align-items: flex-start; gap: var(--gap); transition: transform .7s cubic-bezier(.2,.8,.2,1); will-change: transform; touch-action: pan-y; }
+.c-card { flex: none; width: clamp(130px, 11vw, 230px); cursor: pointer; transition: width .7s cubic-bezier(.2,.8,.2,1); }
+.c-card .img-tile { aspect-ratio: 4/5; transition: aspect-ratio .7s; }
+.c-card.on { width: clamp(260px, 25vw, 520px); cursor: default; }
+.c-card.on .img-tile { aspect-ratio: 4/3.6; }
+.c-meta { display: flex; justify-content: space-between; gap: 12px; margin-top: 12px; font-size: clamp(12px, .8vw, 14px); color: var(--mute); }
+.c-meta b { color: #fff; font-weight: 500; }
+.c-card:not(.on) .c-meta { opacity: .7; }
+.c-card:not(.on) .c-meta span { display: none; }
+.c-card.on .c-meta b { font-size: clamp(16px, 1.15vw, 22px); letter-spacing: -.01em; }
+.c-nav { display: flex; justify-content: space-between; align-items: center; margin-top: clamp(24px, 2.4vw, 44px); }
+.c-btns { display: flex; gap: 12px; }
+.c-btn { color: #fff; background: none; cursor: pointer; }
+.c-btn:hover { background: #fff; color: var(--ink); }
+.c-btn:disabled { opacity: .3; cursor: default; background: none; color: #fff; }
+.c-count { font-size: clamp(13px, .85vw, 16px); color: var(--mute); font-variant-numeric: tabular-nums; }
+.c-count b { color: #fff; font-weight: 500; }
+.link-arrow { display: inline-flex; align-items: center; gap: 14px; font-size: clamp(14px, .95vw, 18px); font-weight: 500; color: #fff; }
+.link-arrow .circle { width: 42px; }
+
+/* торгові марки */
+.brands { display: grid; grid-template-columns: auto repeat(4, 1fr); gap: var(--gap); align-items: stretch; margin-top: clamp(56px, 6vw, 120px); }
+.brands .eyebrow { align-self: center; padding-right: 20px; }
+.brands > * { min-width: 0; }
+.brand { background: #F3F2EE; border-radius: var(--r); display: flex; align-items: center; justify-content: center; height: clamp(96px, 7.6vw, 160px); padding: clamp(14px, 1.2vw, 24px); }
+.brand img { display: block; width: auto; height: auto; max-width: 74%; max-height: 100%; object-fit: contain; }
+
+/* ---------- 5. ЧОМУ VIRA ---------- */
+.why { border-top: 1px solid var(--line); }
+.why-row { display: grid; grid-template-columns: clamp(50px, 6vw, 120px) 1fr minmax(0, 32em); gap: 24px; align-items: baseline; padding: clamp(20px, 1.9vw, 36px) 0; border-bottom: 1px solid var(--line); }
+.why-row .k { font-size: clamp(12px, .8vw, 14px); font-weight: 600; color: var(--sun); letter-spacing: .08em; }
+.why-row h3 { font-size: clamp(22px, 2.1vw, 44px); font-weight: 400; letter-spacing: -.04em; text-transform: uppercase; line-height: 1.02; }
+.why-row p { font-size: clamp(15px, 1vw, 19px); line-height: 1.55; color: var(--mute); }
+.segments { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: clamp(36px, 3.4vw, 64px); }
+.segments .eyebrow { margin-right: 14px; }
+.pill { padding: .7em 1.2em; border-radius: 100px; border: 1px solid var(--line); font-size: clamp(14px, .9vw, 17px); color: #e6e6ea; }
+
+/* ---------- 6. ЯК ПОЧАТИ ---------- */
+.steps { display: grid; grid-template-columns: repeat(4, 1fr) clamp(170px, 13vw, 260px); gap: var(--gap); }
+.step { padding: clamp(18px, 1.6vw, 30px); min-height: clamp(220px, 16vw, 330px); display: flex; flex-direction: column; justify-content: space-between; }
+.step .n { font-size: clamp(32px, 2.8vw, 60px); font-weight: 400; letter-spacing: -.05em; color: var(--mute2); line-height: 1; }
+.step h3 { font-size: clamp(18px, 1.3vw, 26px); font-weight: 500; letter-spacing: -.02em; margin-bottom: 8px; }
+.step p { font-size: clamp(14px, .9vw, 17px); line-height: 1.5; color: var(--mute); }
+.steps .cta-tile { aspect-ratio: auto; }
+
+/* ---------- 7. ГЕОГРАФІЯ: 3D-карта ---------- */
+#geo { overflow: hidden; }
+.geo-grid { display: grid; grid-template-columns: minmax(0, 4.2fr) minmax(0, 7.8fr); gap: clamp(24px, 3vw, 64px); align-items: center; }
+.geo-left .h-xl { margin: 16px 0 18px; }
+.geo-left .lead { font-size: clamp(15px, 1vw, 19px); line-height: 1.55; color: var(--mute); max-width: 28em; }
+.geo-left .lead b { color: #fff; font-weight: 500; }
+.clist { list-style: none; display: grid; grid-template-columns: 1fr 1fr; column-gap: 24px; margin-top: clamp(24px, 2.4vw, 44px); border-top: 1px solid var(--line); }
+.clist button { width: 100%; display: flex; align-items: baseline; gap: 12px; padding: clamp(8px, .62vw, 12px) 0; border: 0; border-bottom: 1px solid var(--line); background: none; color: #a9a9b0; font: inherit; font-size: clamp(14px, .9vw, 17px); text-align: left; cursor: pointer; transition: color .2s; }
+.clist button .k { font-size: 11px; font-weight: 600; letter-spacing: .06em; color: var(--mute2); min-width: 1.8em; font-variant-numeric: tabular-nums; transition: color .2s; }
+.clist button:hover, .clist button.on { color: #fff; }
+.clist button.on .k { color: var(--sun); }
+.clist button.home { color: #fff; }
+.clist button.home::after { content: 'офіс'; margin-left: auto; padding: 2px 8px; border-radius: 100px; background: var(--sun); color: var(--ink); font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; align-self: center; }
+.geo-left .geo-note { margin-top: clamp(20px, 2vw, 36px); }
+.geo-note { display: flex; gap: 8px 28px; flex-wrap: wrap; font-size: clamp(13px, .85vw, 16px); color: var(--mute); }
+.geo-note b { color: #fff; font-weight: 500; }
+
+.map3d { position: relative; perspective: 1900px; perspective-origin: 50% 20%; aspect-ratio: 1200 / 860; margin: -4% -6% -6% -2%; }
+.map-plane {
+  position: absolute; inset: 0; transform-style: preserve-3d;
+  transform: rotateX(var(--rx, 44deg)) rotateZ(var(--rz, -7deg)) translateY(-3%) scale(var(--sc, 1));
+  transition: transform .2s linear;
+}
+.map3d:not(.in) .map-plane { --rx: 72deg; --sc: .86; opacity: 0; }
+.map3d:not(.near) .map-plane { visibility: hidden; }
+.map3d.in .map-plane { opacity: 1; transition: transform 1.6s cubic-bezier(.16,.84,.3,1), opacity 1s ease; }
+.map3d.in.live .map-plane { transition: transform .35s ease-out; }
+.map-shadow { position: absolute; left: 6%; right: 6%; top: 12%; bottom: -4%; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.85), rgba(0,0,0,0)); transform: translateZ(-40px); filter: blur(10px); }
+.map-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+#map-pins { position: absolute; inset: 0; transform-style: preserve-3d; pointer-events: none; }
+.map-svg .ctx { fill: #141417; stroke: #222228; stroke-width: .8; pointer-events: none; }
+.map-svg .c { fill: transparent; stroke: rgba(255,255,255,.22); stroke-width: .9; cursor: pointer; transition: fill .3s; }
+.map-svg .c:hover { fill: rgba(255,255,255,.07); }
+.map-svg .c.on { fill: rgba(245,217,10,.16); stroke: rgba(245,217,10,.9); stroke-width: 1.4; }
+.map-svg .topo { fill: none; stroke: rgba(255,255,255,.16); stroke-width: .7; pointer-events: none; }
+.map-svg .lift .side { fill: #7a6a08; }
+.map-svg .lift .top { fill: var(--sun); }
+.map-svg .lift { pointer-events: none; transition: opacity .25s; }
+
+/* піни стоять вертикально над картою */
+.pin { position: absolute; width: 0; height: 0; transform-style: preserve-3d; pointer-events: none; }
+.pin .up { position: absolute; left: 0; bottom: 0; transform-origin: 50% 100%; transform: rotateZ(calc(-1 * var(--rz, -7deg))) rotateX(calc(-1 * var(--rx, 44deg))); display: flex; flex-direction: column; align-items: center; translate: -50% 0; }
+.pin .dot { width: clamp(9px, .75vw, 13px); aspect-ratio: 1; border-radius: 50%; background: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,.12), 0 0 14px rgba(255,255,255,.55); transition: transform .3s, background .3s; }
+.pin .beam { width: 1.5px; height: clamp(14px, 1.6vw, 30px); background: linear-gradient(to bottom, rgba(255,255,255,.9), rgba(255,255,255,0)); transition: height .4s cubic-bezier(.2,.8,.2,1), background .3s; }
+.pin .lbl { position: absolute; bottom: calc(100% + 10px); white-space: nowrap; padding: 6px 12px; border-radius: 100px; background: #fff; color: var(--ink); font-size: clamp(12px, .8vw, 14px); font-weight: 600; opacity: 0; transform: translateY(6px); transition: opacity .25s, transform .3s; }
+.pin.on .dot { background: var(--sun); transform: scale(1.35); box-shadow: 0 0 0 4px rgba(245,217,10,.2), 0 0 18px rgba(245,217,10,.8); }
+.pin.on .beam { height: clamp(40px, 4vw, 76px); background: linear-gradient(to bottom, var(--sun), rgba(245,217,10,0)); }
+.pin.on .lbl { opacity: 1; transform: none; }
+.pin.home .dot { background: var(--sun); box-shadow: 0 0 0 4px rgba(245,217,10,.22), 0 0 22px rgba(245,217,10,.9); }
+.pin.home .dot::after { content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 1.5px solid var(--sun); animation: ping 2.2s ease-out infinite; }
+.pin.home .dot { position: relative; }
+.pin.home .beam { height: clamp(34px, 3.2vw, 62px); background: linear-gradient(to bottom, var(--sun), rgba(245,217,10,0)); }
+@keyframes ping { from { transform: scale(.6); opacity: 1; } to { transform: scale(2.4); opacity: 0; } }
+
+/* ---------- 8. НОВИНИ ---------- */
+.news { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); }
+.post { padding: clamp(18px, 1.6vw, 30px); min-height: clamp(240px, 17vw, 340px); display: flex; flex-direction: column; justify-content: space-between; gap: 24px; transition: background .3s, border-color .3s; }
+.post:hover { background: var(--tile2); border-color: rgba(255,255,255,.16); }
+.post-top { display: flex; justify-content: space-between; gap: 12px; font-size: clamp(12px, .8vw, 14px); color: var(--mute); }
+.post-top .cat { color: var(--sun); font-weight: 500; letter-spacing: .06em; text-transform: uppercase; }
+.post h3 { font-size: clamp(19px, 1.45vw, 30px); font-weight: 500; line-height: 1.2; letter-spacing: -.025em; }
+.post-bot { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; }
+
+/* ---------- 9. FAQ ---------- */
+.faq-grid { display: grid; grid-template-columns: 5fr 7fr; gap: clamp(28px, 5vw, 110px); align-items: start; }
+.faq-grid .sec-head { flex-direction: column; margin: 0; }
+.faq-grid .sec-aside { text-align: left; }
+.faq { border-top: 1px solid var(--line); }
+.faq details { border-bottom: 1px solid var(--line); }
+.faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: clamp(18px, 1.5vw, 28px) 0; font-size: clamp(17px, 1.3vw, 26px); font-weight: 500; letter-spacing: -.02em; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary .pm { width: 30px; height: 30px; flex: none; border-radius: 50%; border: 1.5px solid var(--line); position: relative; transition: transform .3s, background .3s, border-color .3s; }
+.faq summary .pm::before, .faq summary .pm::after { content: ''; position: absolute; left: 50%; top: 50%; width: 11px; height: 1.5px; margin: -.75px 0 0 -5.5px; background: #fff; }
+.faq summary .pm::after { transform: rotate(90deg); transition: transform .3s; }
+.faq details[open] summary .pm { background: var(--sun); border-color: var(--sun); }
+.faq details[open] summary .pm::before, .faq details[open] summary .pm::after { background: var(--ink); }
+.faq details[open] summary .pm::after { transform: rotate(0deg); }
+.faq .a { padding: 0 60px clamp(18px, 1.5vw, 28px) 0; font-size: clamp(15px, 1vw, 19px); line-height: 1.6; color: var(--mute); max-width: 44em; }
+
+/* ---------- 10. КОНТАКТИ ---------- */
+.contact { padding: clamp(24px, 3vw, 64px); display: grid; grid-template-columns: 1fr minmax(0, 1fr); gap: clamp(28px, 4vw, 90px); }
+.contact .h-xl { font-size: clamp(32px, 3.6vw, 80px); }
+.contact-lead { margin-top: 22px; max-width: 30em; font-size: clamp(15px, 1vw, 19px); line-height: 1.55; color: var(--mute); }
+.team { margin-top: clamp(28px, 3vw, 56px); border-top: 1px solid var(--line); }
+.person { display: grid; grid-template-columns: 1fr auto; gap: 4px 20px; padding: 16px 0; border-bottom: 1px solid var(--line); align-items: center; }
+.person b { font-size: clamp(15px, 1vw, 19px); font-weight: 500; }
+.person span { grid-column: 1; font-size: clamp(13px, .82vw, 15px); color: var(--mute); }
+.person a.tel { grid-column: 1; font-size: clamp(14px, .9vw, 17px); color: #e6e6ea; }
+.person a.wa { grid-column: 2; grid-row: 1 / span 3; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 100px; border: 1px solid var(--line); font-size: 14px; font-weight: 500; transition: background .2s, color .2s, border-color .2s; }
+.person a.wa:hover { background: #25D366; border-color: #25D366; color: #fff; }
+.person a.wa svg { width: 16px; height: 16px; }
+.offices { display: flex; flex-wrap: wrap; gap: 8px 36px; margin-top: 22px; font-size: clamp(13px, .85vw, 16px); color: var(--mute); }
+.offices b { display: block; color: #fff; font-weight: 500; margin-bottom: 2px; }
+.socials { display: flex; gap: 10px; margin-top: 22px; }
+
+.form { background: var(--dark); border: 1px solid var(--line); border-radius: var(--r); padding: clamp(20px, 2vw, 40px); display: flex; flex-direction: column; gap: 12px; }
+.form h3 { font-size: clamp(16px, 1.05vw, 20px); font-weight: 600; margin-bottom: 6px; }
+.form .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.field { position: relative; }
+.field input, .field select, .field textarea {
+  width: 100%; height: clamp(48px, 3.4vw, 60px); padding: 0 16px; border-radius: 10px;
+  background: transparent; border: 1px solid rgba(255,255,255,.18); color: #fff;
+  font: inherit; font-size: clamp(14px, .9vw, 17px); outline: none; transition: border-color .2s, background .2s;
+  -webkit-appearance: none; appearance: none;
+}
+.field textarea { height: auto; min-height: 96px; padding: 14px 16px; resize: vertical; }
+.field select { padding-right: 40px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%23fff' stroke-width='1.6'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; }
+.field select option { background: #141416; color: #fff; }
+.field input::placeholder, .field textarea::placeholder { color: #75757c; }
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--sun); background: rgba(255,255,255,.03); }
+.consent { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; line-height: 1.45; color: var(--mute); }
+.consent input { width: 18px; height: 18px; margin-top: 1px; accent-color: var(--sun); flex: none; }
+.consent a { color: #fff; text-decoration: underline; text-underline-offset: 2px; }
+.submit { height: clamp(50px, 3.5vw, 62px); border-radius: 10px; border: 0; background: #fff; color: var(--ink); font: inherit; font-size: clamp(15px, 1vw, 18px); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px; transition: background .2s; }
+.submit:hover { background: var(--sun); }
+.submit svg { width: 16px; height: 16px; }
+.form .img-tile { aspect-ratio: 16/6; margin-top: 6px; }
+.form-ok { display: none; padding: 14px 16px; border-radius: 10px; background: rgba(245,217,10,.12); color: #fff; font-size: 15px; }
+.form.sent .form-ok { display: block; }
+
+/* ---------- ФУТЕР ---------- */
+footer { background: var(--dark); color: var(--mute); position: relative; z-index: 21; }
+footer .container { padding-bottom: clamp(24px, 2vw, 40px); }
+.wordmark { display: inline-block; font-weight: 300; line-height: .8; letter-spacing: -.02em; color: #fff; white-space: nowrap; margin: 0 0 clamp(18px, 2vw, 40px) -.04em; font-size: 26vw; }
+.foot { display: grid; grid-template-columns: 1.4fr 1fr 1fr auto; gap: 32px; padding: clamp(24px, 2.4vw, 48px) 0; border-top: 1px solid var(--line); align-items: start; }
+.foot .tag { font-size: clamp(22px, 2vw, 44px); font-weight: 400; line-height: 1; letter-spacing: -.045em; text-transform: uppercase; color: #fff; }
+.foot .tag small { display: block; margin-top: 14px; font-size: 13px; letter-spacing: .04em; text-transform: none; color: var(--mute); }
+.foot ul { list-style: none; display: grid; gap: 8px; font-size: clamp(14px, .9vw, 17px); }
+.foot a { color: #d8d8dd; transition: color .2s; }
+.foot a:hover { color: var(--sun); }
+.foot .up { color: #fff; }
+.foot .up .circle { width: clamp(52px, 4vw, 72px); }
+.foot .up:hover .circle { transform: translateY(-4px); }
+.legal { display: flex; justify-content: space-between; gap: 20px; font-size: 13px; color: var(--mute2); }
+.legal a { color: var(--mute2); }
+.legal a:hover { color: #fff; }
+
+/* поява при скролі */
+.rv { opacity: 0; transform: translateY(28px); transition: opacity .8s ease, transform .9s cubic-bezier(.2,.8,.2,1); }
+.rv.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .rv { opacity: 1; transform: none; } }
+
+/* ============================================================
+  АДАПТИВ
+============================================================ */
+@media (max-width: 1180px) {
+  .nav-links { display: none; }
+}
+@media (max-width: 860px) {
+  #hero-bottom .container { flex-direction: column; align-items: stretch; gap: 18px; }
+  #captions { flex: none; width: 100%; min-height: 200px; }
+  .hero-cards { width: 100%; }
+  .hero-card { flex: 1; width: auto; height: 64px; flex-direction: row; align-items: center; padding: 0 16px; font-size: 13px; }
+  .hero-card svg { align-self: center; width: 18px; height: 18px; }
+}
+@media (max-width: 640px) {
+  .nav-search { display: none; }
+  .nav-cta { height: 42px; padding: 0 18px; font-size: 12px; }
+  #hero-bottom { bottom: 64px; }
+  #captions { min-height: 180px; }
+  .cap-label { margin-bottom: 10px; font-size: 11px; }
+  .cap-title { font-size: 22px; }
+  .cap-text { margin-top: 10px; font-size: 15px; }
+  #hero-bar { bottom: 18px; }
+  #hero-bar .container { font-size: 12px; padding-bottom: 12px; }
+}
+@media (max-width: 640px) and (max-height: 760px) {
+  .cap-text { font-size: 14px; }
+}
+
+
+/* ---------- адаптив нових блоків ---------- */
+@media (max-width: 1100px) {
+  .geo-grid { display: flex; flex-direction: column; align-items: stretch; gap: 0; }
+  .geo-left { display: contents; }
+  .geo-left > * { order: 1; }
+  .map3d { order: 2; margin: 2% -8% 0; }
+  .geo-left .clist, .geo-left .geo-note { order: 3; }
+  .formats .img-tile { grid-column: 1 / -1; aspect-ratio: 16/9; }
+  .f-side { grid-column: 1 / -1; }
+  .steps { grid-template-columns: repeat(2, 1fr); }
+  .steps .cta-tile { grid-column: span 2; aspect-ratio: auto; min-height: 140px; }
+  .brands { grid-template-columns: repeat(4, 1fr); }
+  .brands .eyebrow { grid-column: 1 / -1; padding: 0 0 6px; }
+  .faq-grid { grid-template-columns: 1fr; }
+  .contact { grid-template-columns: 1fr; }
+  .foot { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 760px) {
+  .sec-head { flex-direction: column; gap: 14px; }
+  .sec-aside { text-align: left; padding-top: 0; }
+  .sec-head .thumb { display: none; }
+  .statement-row { grid-template-columns: 1fr; }
+  .statement-row .img-tile { display: none; }
+  .bento { grid-template-columns: 1fr 1fr; grid-auto-rows: 132px; }
+  .bento .spacer { display: none; }
+  .bento .img-tile { grid-column: 1 / -1; grid-row: auto; height: 200px; }
+  .f-bottom { grid-template-columns: 1fr 130px; }
+  .why-row { grid-template-columns: 40px 1fr; }
+  .why-row p { grid-column: 2; }
+  .news { grid-template-columns: 1fr; }
+  .post { min-height: 200px; }
+  .brands { grid-template-columns: 1fr 1fr; }
+  .form .row { grid-template-columns: 1fr; }
+  .form .img-tile { display: none; }
+  .person { grid-template-columns: 1fr; }
+  .person a.wa { grid-column: 1; grid-row: auto; justify-self: start; margin-top: 8px; }
+  .foot { grid-template-columns: 1fr; }
+  .legal { flex-direction: column; }
+  .c-card { width: 30vw; }
+  .clist { grid-template-columns: 1fr 1fr; column-gap: 14px; }
+  .clist button { font-size: 14px; }
+  .clist button.home::after { display: none; }
+  .map3d { margin: 6% -16% -2%; }
+  .map-plane { --rx: 36deg; }
+  .pin .lbl { font-size: 11px; padding: 4px 9px; }
+  .c-card.on { width: 68vw; }
+}
+/* ============================================================
+  MOBILE / TOUCH — «свайп — сцена»
+  висота екрана фіксована (lvh), адресний рядок нічого не смикає;
+  кожен свайп зупиняється на сцені (scroll-snap); без важких ефектів
+============================================================ */
+.is-touch { --step: 100vh; --tb: 0px; }
+@supports (height: 100lvh) { .is-touch { --step: 100lvh; --tb: calc(100lvh - 100svh); } }
+html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; overscroll-behavior: none; }
+.is-touch.hero-lock #hero { touch-action: none; }
+.is-touch #scroll-container { height: auto; }
+.is-touch #hero { height: var(--step); }
+.is-touch #section-2 { height: auto; min-height: var(--step); }
+/* секція 2 — звичайний блок, що наїжджає на закріплений hero */
+.is-touch #section-2 { position: relative; transform: none !important; }
+/* нижній блок завжди над панеллю браузера */
+.is-touch #hero-bottom, .is-touch #hero-bar { translate: 0 calc(-1 * var(--tb)); }
+
+/* легше: без розмиття, світіння, будь-яких фільтрів */
+.is-touch #bg-video { will-change: auto; }
+.is-touch .cap { text-shadow: 0 1px 14px rgba(0,0,0,.4); will-change: auto; }
+@keyframes stageInLite { from { transform: scale(1.1); opacity: .4; } to { transform: none; opacity: 1; } }
+.is-touch.intro #hero-stage { animation-name: stageInLite; }
+.is-touch.intro-wait #hero-stage { filter: none; }
+
+/* VIRA і поле */
+.is-touch #hero-matte { transition: opacity .35s ease, visibility 0s; will-change: auto; }
+.is-touch.matte-out #hero-matte { opacity: 0; }
+.is-touch #hero-letters .L { transition: transform .8s cubic-bezier(.2,.8,.2,1), opacity .45s ease; will-change: auto; }
+.is-touch.letters-out #hero-letters .L { opacity: 0; }
+/* після анімації виходу прибираємо літери й маску з відмальовування */
+.is-touch #hero-letters, .is-touch #hero-matte { transition: visibility 0s; }
+.is-touch.letters-out #hero-letters { visibility: hidden; transition: visibility 0s linear .85s; }
+.is-touch.matte-out #hero-matte { visibility: hidden; transition: opacity .35s ease, visibility 0s linear .4s; }
+.is-touch.letters-out #hero-letters .L:nth-child(1) { transform: translate3d(-34vw, -20px, 0); }
+.is-touch.letters-out #hero-letters .L:nth-child(2) { transform: translate3d(-14vw, -20px, 0); }
+.is-touch.letters-out #hero-letters .L:nth-child(3) { transform: translate3d(14vw, -20px, 0); }
+.is-touch.letters-out #hero-letters .L:nth-child(4) { transform: translate3d(34vw, -20px, 0); }
+.is-touch #hero-scrim { transition: opacity .5s ease; }
+.is-touch.scrim-on #hero-scrim { opacity: 1; }
+
+/* тексти сцен: новий виїжджає знизу, старий тане вгору */
+.is-touch .cap:not(.on) { opacity: 0; visibility: hidden; transform: translateY(-14px);
+  transition: opacity .3s ease, transform .4s ease, visibility 0s linear .4s; }
+.is-touch .cap.on { opacity: 1; visibility: visible; transform: none;
+  transition: opacity .55s ease, transform .65s cubic-bezier(.2,.8,.2,1), visibility 0s; }
+.is-touch .cap.pre { transform: translateY(24px); opacity: 0; transition: none; }
+
+/* плитки зʼявляються заново з кожною сценою */
+.is-touch .hero-card { transition: opacity .5s ease var(--d, 0s), transform .6s cubic-bezier(.2,.8,.2,1) var(--d, 0s); }
+.is-touch .hero-card.sun { --d: .09s; }
+.is-touch .hero-cards.out .hero-card { opacity: 0; transform: translateY(18px); transition: opacity .25s ease, transform .3s ease; pointer-events: none; }
+
+#bar-fill { transition: none; }
+.is-touch #bar-fill { transition: transform .6s cubic-bezier(.2,.8,.2,1); }
+</style>
+</head>
+<body id="top">
+
+<div id="scroll-container">
+
+  <!-- ======================= HERO ======================= -->
+  <section id="hero">
+    <div id="hero-stage">
+      <!-- src підставляє JS: 1080p для десктопа, 720p для телефонів.
+           Для продакшну краще залити обидва файли на Cloudinary і вставити URL сюди -->
+      <video id="bg-video"
+        data-src-hd="video/vira-hero-1080.mp4"
+        data-src-sd="video/vira-hero-720.mp4"
+        data-src-mobile="video/vira-hero-mobile.mp4"
+        poster="img/vira-hero-poster.jpg"
+        muted playsinline preload="auto"></video>
+      <!-- фінальна сцена для телефона у вертикальному форматі (вмикається лише на touch у портреті) -->
+      <video id="final-v" data-src="video/vira-final-vertical.mp4" poster="img/final-vertical-poster.jpg" muted playsinline preload="none" aria-hidden="true"></video>
+
+      <!-- VIRA у полі -->
+      <div id="hero-letters" aria-hidden="true">
+        <div class="container"><h2><span class="L"><b>V</b></span><span class="L"><b>I</b></span><span class="L"><b>R</b></span><span class="L"><b>A</b></span></h2></div>
+      </div>
+      <!-- передній план поля (перший кадр відео з прозорим небом) — перекриває низ літер -->
+      <img id="hero-matte" src="img/vira-matte.webp" alt="" aria-hidden="true">
+    </div>
+
+    <div id="hero-shade"></div>
+    <div id="hero-scrim"></div>
+
+    <nav id="hero-nav">
+      <div class="container">
+        <a href="https://virabalkans.com/" class="nav-logo" aria-label="VIRA">
+          <svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke-width="2.2" stroke-linejoin="round">
+            <path d="M20 26C16 18 16 10 20 4c4 6 4 14 0 22Z" stroke="#F5D90A"/>
+            <path d="M20 26C13 22 9 16 9 9c6 1 11 7 11 17Z" stroke="#C9DC2B"/>
+            <path d="M20 26c7-4 11-10 11-17-6 1-11 7-11 17Z" stroke="#C9DC2B"/>
+            <path d="M20 26c-8 1-14-2-17-7 7-2 13 1 17 7Z" stroke="#F5D90A"/>
+            <path d="M20 26c8 1 14-2 17-7-7-2-13 1-17 7Z" stroke="#F5D90A"/>
+          </g></svg>
+          VIRA
+        </a>
+        <ul class="nav-links">
+          <li><a href="#about">Про VIRA</a></li>
+          <li><a href="#formats">Формати</a></li>
+          <li><a href="#products">Продукція</a></li>
+          <li><a href="#geo">Географія</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#contact">Контакти</a></li>
+        </ul>
+        <div class="nav-right">
+          <a href="https://virabalkans.com/?s=" class="nav-search" aria-label="Пошук"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/></svg></a>
+          <a href="#contact" class="nav-cta">Форма зв'язку</a>
+        </div>
+      </div>
+    </nav>
+
+    <div id="hero-bottom">
+      <div class="container">
+        <!-- Тексти сцен. data-from / data-to — секунди відео, коли текст видно -->
+        <div id="captions">
+          <div class="cap is-hero" data-from="-1" data-to="2.8">
+            <h1 class="cap-title">Прямі поставки харчової продукції та&nbsp;промислової сировини</h1>
+            <p class="cap-text">Готова продукція, промислова сировина та&nbsp;Private Label від&nbsp;українського виробника для&nbsp;торговельних мереж, дистриб'юторів і&nbsp;HoReCa в&nbsp;Європі.</p>
+          </div>
+          <div class="cap" data-from="3.1" data-to="6.75">
+            <div class="cap-label"><span class="n">01</span>Виробництво</div>
+            <h2 class="cap-title">Сучасне виробництво. Високі стандарти.</h2>
+            <p class="cap-text">Потужна виробнича база, технологічне обладнання та&nbsp;контроль процесів на&nbsp;кожному етапі виготовлення продукції.</p>
+          </div>
+          <div class="cap" data-from="7.05" data-to="10.7">
+            <div class="cap-label"><span class="n">02</span>Готова продукція</div>
+            <h2 class="cap-title">Готові продукти для&nbsp;вашого асортименту</h2>
+            <p class="cap-text">Рослинні олії, майонези, кетчупи та&nbsp;соуси для&nbsp;торговельних мереж, дистриб'юторів і&nbsp;професійного використання.</p>
+          </div>
+          <div class="cap" data-from="11.0" data-to="15.95">
+            <div class="cap-label"><span class="n">03</span>Private Label</div>
+            <h2 class="cap-title">Ваш бренд. Наше виробництво.</h2>
+            <p class="cap-text">Виготовлення продукції під&nbsp;вашою торговою маркою з&nbsp;індивідуальним оформленням етикеток, брендуванням та&nbsp;пакуванням.</p>
+          </div>
+          <div class="cap" data-from="16.25" data-to="19.9">
+            <div class="cap-label"><span class="n">04</span>Відвантаження</div>
+            <h2 class="cap-title">Продукція готова до&nbsp;відправлення</h2>
+            <p class="cap-text">Пакування, комплектація замовлень та&nbsp;підготовка продукції до&nbsp;транспортування відповідно до&nbsp;потреб партнерів.</p>
+          </div>
+          <div class="cap" data-from="20.15" data-to="23.75">
+            <div class="cap-label"><span class="n">05</span>Логістика</div>
+            <h2 class="cap-title">Поставки на&nbsp;європейський ринок</h2>
+            <p class="cap-text">Організація міжнародної логістики та&nbsp;доставки продукції для&nbsp;торговельних мереж, дистриб'юторів і&nbsp;бізнес-партнерів.</p>
+          </div>
+          <div class="cap" data-from="24.05" data-to="99">
+            <div class="cap-label"><span class="n">06</span>Використання продукції</div>
+            <h2 class="cap-title">Смак, який обирають щодня</h2>
+            <p class="cap-text">Рослинні олії, майонези та&nbsp;соуси для&nbsp;приготування страв у&nbsp;ресторанах, професійних кухнях і&nbsp;закладах харчування.</p>
+          </div>
+        </div>
+
+        <!-- плитки — на всіх сценах -->
+        <div class="hero-cards">
+          <a href="#products" class="hero-card white">Портфоліо<br>продуктів
+            <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11h14M12 5l6 6-6 6"/></svg></a>
+          <a href="#contact" class="hero-card sun">Стати<br>партнером
+            <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11h14M12 5l6 6-6 6"/></svg></a>
+        </div>
+      </div>
+    </div>
+
+    <div id="hero-bar">
+      <div class="container">
+        <a href="mailto:virabalkans@gmail.com">virabalkans@gmail.com</a>
+        <span id="scene-num"><b>00</b> / 07</span>
+        <i id="bar-fill"></i>
+      </div>
+    </div>
+
+    <div id="hero-dim"></div>
+  </section>
+
+  <!-- ======================= 2. ХТО МИ (наїжджає на hero) ======================= -->
+  <section id="section-2" class="l-sec" aria-labelledby="about-title">
+    <div class="container" id="about">
+      <div class="sec-head rv">
+        <h2 class="h-xl" id="about-title">Міст між виробником<br>і&nbsp;Європою</h2>
+        <p class="sec-aside"><b>VIRA, з 2022 року</b><br>Офіційне європейське представництво Victor&nbsp;&amp;&nbsp;K Group</p>
+      </div>
+      <div class="statement-row">
+        <p class="statement rv">Ми не дистриб'ютор <span class="dim">і не логістична компанія.</span> Ми — офіційне представництво <span class="dim">українського виробника</span> Victor&nbsp;&amp;&nbsp;K <span class="dim">у Європі й працюємо від його імені, щоб ваш бізнес отримував</span> якісну продукцію напряму, <span class="dim">за прямими контрактами.</span></p>
+        <figure class="img-tile rv"><img src="img/f-field.webp" alt="Соняшникове поле на заході сонця" loading="lazy"></figure>
+      </div>
+      <div class="bento">
+        <div class="tile stat rv"><span class="n">2022</span><span class="t">Рік заснування VIRA</span></div>
+        <div class="spacer"></div>
+        <div class="tile stat rv"><span class="n">20</span><span class="t">Країн Європи та Балкан, з якими працюємо</span></div>
+        <div class="tile stat rv"><span class="n">3</span><span class="t">Формати співпраці: продукція, Private&nbsp;Label, сировина</span></div>
+        <figure class="img-tile rv"><img src="img/f-factory.webp" alt="Виробничий комплекс Victor &amp; K" loading="lazy"><figcaption>Victor &amp; K — один із провідних виробників харчової продукції України</figcaption></figure>
+        <div class="spacer"></div>
+        <div class="tile stat rv"><span class="n">0</span><span class="t">Посередників між вами та&nbsp;виробником</span></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ======================= 3. ФОРМАТИ СПІВПРАЦІ ======================= -->
+<section class="l-sec" id="formats" aria-labelledby="formats-title">
+  <div class="container">
+    <div class="sec-head rv">
+      <h2 class="h-xl" id="formats-title">Три формати<br>співпраці</h2>
+      <img class="thumb" src="img/f-loading.webp" alt="" loading="lazy">
+    </div>
+    <div class="formats">
+      <figure class="img-tile rv" id="f-imgs">
+        <img class="on" src="img/f-bottling.webp" alt="Лінія розливу соняшникової олії" loading="lazy">
+        <img src="img/f-labels.webp" alt="Пляшки олії з етикетками" loading="lazy">
+        <img src="img/f-factory.webp" alt="Виробничий комплекс із силосами" loading="lazy">
+      </figure>
+      <div class="f-side rv">
+        <div>
+          <div class="f-tabs" role="tablist">
+            <button class="f-tab on" role="tab" aria-selected="true" data-i="0"><span class="k">01</span><span class="nm">Готова продукція</span></button>
+            <button class="f-tab" role="tab" aria-selected="false" data-i="1"><span class="k">02</span><span class="nm">Private Label</span></button>
+            <button class="f-tab" role="tab" aria-selected="false" data-i="2"><span class="k">03</span><span class="nm">B2B сировина</span></button>
+          </div>
+        </div>
+        <p class="f-desc" id="f-desc"></p>
+        <div class="f-bottom">
+          <ul class="tile f-list" id="f-list"></ul>
+          <a class="cta-tile" href="https://virabalkans.com/portfolio-products/">Переглянути<br>каталог<span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 5v7H5"/></svg></span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 4. ПРОДУКЦІЯ ======================= -->
+<section class="l-sec" id="products" aria-labelledby="products-title">
+  <div class="container">
+    <div class="sec-head rv">
+      <h2 class="h-xl" id="products-title">Продукція</h2>
+      <p class="sec-aside">Олії, соуси та промислова сировина виробництва Victor&nbsp;&amp;&nbsp;K.<br><a href="https://virabalkans.com/portfolio-products/">Повний каталог</a></p>
+    </div>
+    <div class="carousel rv">
+      <div class="c-track" id="c-track">
+        <article class="c-card"><div class="img-tile"><img src="img/f-bottling.webp" alt="" loading="lazy"></div><div class="c-meta"><b>Соняшникова олія</b><span>Олії</span></div></article>
+        <article class="c-card"><div class="img-tile"><img src="img/f-labels2.webp" alt="" loading="lazy"></div><div class="c-meta"><b>Ріпакова та соєва олія</b><span>Олії</span></div></article>
+        <article class="c-card on"><div class="img-tile"><img src="img/f-fryer.webp" alt="" loading="lazy"></div><div class="c-meta"><b>Олія для фритюру Pro&nbsp;HoReCa</b><span>Олії</span></div></article>
+        <article class="c-card"><div class="img-tile"><img src="img/f-plate.webp" alt="" loading="lazy"></div><div class="c-meta"><b>Майонез, кетчуп і соуси</b><span>Соуси</span></div></article>
+        <article class="c-card"><div class="img-tile"><img src="img/f-field.webp" alt="" loading="lazy"></div><div class="c-meta"><b>Шрот соняшниковий, ріпаковий, соєвий</b><span>Сировина</span></div></article>
+        <article class="c-card"><div class="img-tile"><img src="img/f-factory.webp" alt="" loading="lazy"></div><div class="c-meta"><b>Лецитин</b><span>Сировина</span></div></article>
+      </div>
+      <div class="c-nav">
+        <div class="c-btns">
+          <button class="circle c-btn" id="c-prev" aria-label="Попередній"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 8H3M7 4L3 8l4 4"/></svg></button>
+          <button class="circle c-btn" id="c-next" aria-label="Наступний"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
+        </div>
+        <span class="c-count" id="c-count"></span>
+        <a class="link-arrow" href="https://virabalkans.com/portfolio-products/">Каталог продукції<span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 5v7H5"/></svg></span></a>
+      </div>
+    </div>
+
+    <div class="brands">
+      <span class="eyebrow rv">Торгові марки</span>
+      <div class="brand rv"><img src="img/brand-korolivskyi-smak.webp" alt="Королівський Смак" loading="lazy"></div>
+      <div class="brand rv"><img src="img/brand-kraljevski-ukus.webp" alt="Kraljevski Ukus" loading="lazy"></div>
+      <div class="brand rv"><img src="img/brand-kukhar-rishelie.webp" alt="Кухар Рішельє" loading="lazy"></div>
+      <div class="brand rv"><img src="img/brand-chuhuiv.webp" alt="Чугуєв Продукт" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 5. ЧОМУ VIRA ======================= -->
+<section class="l-sec" id="why" aria-labelledby="why-title">
+  <div class="container">
+    <div class="sec-head rv">
+      <h2 class="h-xl" id="why-title">Чому VIRA</h2>
+      <p class="sec-aside">Працюємо від імені виробника —<br>і в&nbsp;інтересах вашого бізнесу</p>
+    </div>
+    <div class="why">
+      <div class="why-row rv"><span class="k">01</span><h3>Прямий зв'язок із&nbsp;виробником</h3><p>Ви працюєте з офіційним представництвом Victor&nbsp;&amp;&nbsp;K, а не з ланцюжком перекупників.</p></div>
+      <div class="why-row rv"><span class="k">02</span><h3>Прозоре ціноутворення</h3><p>Ціни виробника без додаткових націнок посередників.</p></div>
+      <div class="why-row rv"><span class="k">03</span><h3>Стабільне виробництво</h3><p>Власні виробничі потужності та контроль якості на кожному етапі.</p></div>
+      <div class="why-row rv"><span class="k">04</span><h3>Private Label</h3><p>Виготовлення продукції під вашою торговою маркою: етикетки, брендування, пакування.</p></div>
+      <div class="why-row rv"><span class="k">05</span><h3>Довгострокова співпраця</h3><p>Гнучкі умови, що адаптуються до специфіки вашого бізнесу та ринку.</p></div>
+    </div>
+    <div class="segments rv">
+      <span class="eyebrow">З ким працюємо</span>
+      <span class="pill">Торговельні мережі</span><span class="pill">Дистриб'ютори</span><span class="pill">Оптова торгівля</span><span class="pill">Виробники харчової продукції</span><span class="pill">Промислові клієнти</span><span class="pill">HoReCa</span><span class="pill">Готельні мережі</span><span class="pill">Лайнерні перевезення</span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 6. ЯК ПОЧАТИ ======================= -->
+<section class="l-sec" id="how" aria-labelledby="how-title">
+  <div class="container">
+    <div class="sec-head rv">
+      <h2 class="h-xl" id="how-title">Як почати<br>співпрацю</h2>
+      <p class="sec-aside">Від першого запиту<br>до відвантаження</p>
+    </div>
+    <div class="steps">
+      <div class="tile step rv"><span class="n">01</span><div><h3>Запит</h3><p>Залиште заявку на сайті або напишіть менеджеру у&nbsp;WhatsApp.</p></div></div>
+      <div class="tile step rv"><span class="n">02</span><div><h3>Підбір</h3><p>Підбираємо продукцію, формат співпраці та умови під ваш ринок.</p></div></div>
+      <div class="tile step rv"><span class="n">03</span><div><h3>Контракт</h3><p>Укладаємо прямий контракт від імені виробника.</p></div></div>
+      <div class="tile step rv"><span class="n">04</span><div><h3>Відвантаження</h3><p>Пакування, комплектація замовлення та доставка до вашого складу.</p></div></div>
+      <a class="cta-tile rv" href="#contact">Залишити<br>заявку<span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 5v7H5"/></svg></span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 7. ГЕОГРАФІЯ ======================= -->
+<section class="l-sec" id="geo" aria-labelledby="geo-title">
+  <div class="container">
+    <div class="geo-grid">
+      <div class="geo-left">
+        <span class="eyebrow rv">VIRA — прямий зв'язок Victor &amp; K з європейським ринком</span>
+        <h2 class="h-xl rv" id="geo-title">Географія<br>поставок</h2>
+        <p class="lead rv">Забезпечуємо зв'язок між виробником і клієнтами <b>у&nbsp;20&nbsp;країнах</b> Європи та на&nbsp;Балканах. Оберіть країну — покажемо її на карті.</p>
+        <ul class="clist rv" id="clist"></ul>
+        <div class="geo-note rv"><span><b>Tivat</b> — Porto Montenegro, Arsenal Business Club</span><span><b>Budva</b> — VIRA DOO, Drobni Pijesak BB</span></div>
+      </div>
+      <div class="map3d" id="map3d" aria-label="Карта країн поставок VIRA">
+        <div class="map-plane" id="map-plane">
+          <div class="map-shadow"></div>
+          <svg class="map-svg" id="map-svg" role="img" aria-hidden="true"></svg>
+          <div id="map-pins"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 8. НОВИНИ ======================= -->
+<section class="l-sec" id="news" aria-labelledby="news-title">
+  <div class="container">
+    <div class="sec-head rv">
+      <h2 class="h-xl" id="news-title">Новини</h2>
+      <p class="sec-aside">Виставки, контракти та новинки.<br><a href="https://virabalkans.com/blog-standard/">Усі новини</a></p>
+    </div>
+    <div class="news">
+      <a class="tile post rv" href="https://virabalkans.com/kompaniya-virabalkans-vzyala-uchast%ca%b9-u-mizhnarodniy-vystavtsi-alimentaria-2026/"><div class="post-top"><span class="cat">Експорт</span><span>24.04.2026</span></div><div class="post-bot"><h3>VIRA взяла участь у&nbsp;міжнародній виставці Alimentaria 2026</h3><span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 5v7H5"/></svg></span></div></a>
+      <a class="tile post rv" href="https://virabalkans.com/kompaniya-virabalkans-vzyala-uchast%ca%b9-u-mizhnarod/"><div class="post-top"><span class="cat">Експорт</span><span>22.04.2026</span></div><div class="post-bot"><h3>Участь VIRA у&nbsp;світовій конференції Fi&nbsp;Europe</h3><span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 5v7H5"/></svg></span></div></a>
+      <a class="tile post rv" href="https://virabalkans.com/maybutni-kontrakty-na-ripakovu-oliyu-vidkryto-obhovorennya-ta-bronyuvannya/"><div class="post-top"><span class="cat">Контракти</span><span>12.08.2025</span></div><div class="post-bot"><h3>Майбутні контракти на&nbsp;ріпакову олію: відкрито обговорення та бронювання</h3><span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 5v7H5"/></svg></span></div></a>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 9. FAQ ======================= -->
+<section class="l-sec" id="faq" aria-labelledby="faq-title">
+  <div class="container">
+    <div class="faq-grid">
+      <div class="sec-head rv">
+        <h2 class="h-xl" id="faq-title">Питання<br>та відповіді</h2>
+        <p class="sec-aside">Не знайшли відповідь?<br><a href="#contact">Напишіть нам</a></p>
+      </div>
+      <div class="faq rv">
+        <details open><summary>Чим VIRA відрізняється від дистриб'ютора?<span class="pm"></span></summary><p class="a">VIRA — офіційне європейське представництво Victor&nbsp;&amp;&nbsp;K. Ми працюємо від імені виробника: ви отримуєте прямий контракт і продукцію без посередників.</p></details>
+        <details><summary>Чи можна отримати ціни виробника?<span class="pm"></span></summary><p class="a">Так. Ми працюємо без посередників, тому ви отримуєте ціни виробника без додаткових націнок.</p></details>
+        <details><summary>Чи працюєте ви з невеликими обсягами?<span class="pm"></span></summary><p class="a">Так, ми відвантажуємо як великі, так і малі партії продукції.</p></details>
+        <details><summary>Чи можна виготовити продукцію під нашою торговою маркою?<span class="pm"></span></summary><p class="a">Так, це формат Private Label: олії, майонези, соуси та кетчупи з вашим оформленням етикеток, брендуванням і пакуванням.</p></details>
+        <details><summary>Які умови співпраці?<span class="pm"></span></summary><p class="a">Умови гнучкі й адаптуються до потреб кожного клієнта з урахуванням специфіки вашого бізнесу та ринку.</p></details>
+        <details><summary>У які країни ви постачаєте?<span class="pm"></span></summary><p class="a">Працюємо з 20 країнами Європи та Балкан: від Бельгії, Німеччини й Франції до Хорватії, Сербії, Чорногорії, Греції та України.</p></details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 10. КОНТАКТИ ======================= -->
+<section class="l-sec" id="contact" aria-labelledby="contact-title">
+  <div class="container">
+    <div class="tile contact rv">
+      <div>
+        <h2 class="h-xl" id="contact-title">Обговоримо<br>співпрацю</h2>
+        <p class="contact-lead">Розкажіть про ваш бізнес і продукцію, яка вас цікавить, — менеджер підбере формат і умови та зв'яжеться з вами.</p>
+        <div class="team">
+          <div class="person"><b>Vitalii Vrublevskiy</b><span>Head of Sales Department</span><a class="tel" href="tel:+385916001094">+385 91 600 1094</a><a class="wa" href="https://wa.me/385916001094" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>WhatsApp</a></div>
+          <div class="person"><b>Nikolas Skrypnyk</b><span>Sales Manager</span><a class="tel" href="tel:+34614866337">+34 614 866 337</a><a class="wa" href="https://wa.me/380675114969" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>WhatsApp</a></div>
+          <div class="person"><b>Oleh Mokan</b><span>Financial Director</span><a class="tel" href="tel:+38269345615">+382 69 345 615</a><a class="wa" href="https://wa.me/38269345615" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>WhatsApp</a></div>
+        </div>
+        <div class="offices"><span><b>Tivat</b>Porto Montenegro, Arsenal Business Club</span><span><b>Email</b><a href="mailto:virabalkans@gmail.com">virabalkans@gmail.com</a></span></div>
+      </div>
+
+      <form class="form" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="lead-form">
+        <input type="hidden" name="form-name" value="contact">
+        <p hidden><label>Не заповнюйте: <input name="bot-field"></label></p>
+        <h3>Заявка на співпрацю</h3>
+        <div class="row">
+          <div class="field"><input name="name" placeholder="Ім'я" autocomplete="name" required></div>
+          <div class="field"><input name="company" placeholder="Компанія" autocomplete="organization"></div>
+        </div>
+        <div class="row">
+          <div class="field"><input name="country" placeholder="Країна" autocomplete="country-name"></div>
+          <div class="field"><input name="phone" type="tel" placeholder="Телефон / WhatsApp" autocomplete="tel" required></div>
+        </div>
+        <div class="field"><input name="email" type="email" placeholder="Email" autocomplete="email"></div>
+        <div class="field"><select name="interest" aria-label="Що вас цікавить">
+          <option value="">Що вас цікавить</option>
+          <option>Готова продукція</option><option>Private Label</option><option>B2B сировина</option><option>Інше</option>
+        </select></div>
+        <div class="field"><textarea name="message" placeholder="Коментар: продукція, обсяги, ринок"></textarea></div>
+        <label class="consent"><input type="checkbox" name="consent" required><span>Я погоджуюсь на збереження та використання моїх персональних даних згідно з <a href="https://virabalkans.com/privacy-policy/" target="_blank" rel="noopener">політикою конфіденційності</a></span></label>
+        <button class="submit" type="submit">Надіслати запит<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 5v7H5"/></svg></button>
+        <p class="form-ok">Дякуємо! Ми отримали заявку й зв'яжемося з вами найближчим часом.</p>
+        <figure class="img-tile"><img src="img/f-truck.webp" alt="" loading="lazy"></figure>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= ФУТЕР ======================= -->
+<footer>
+  <div class="container">
+    <span class="wordmark" id="wordmark" aria-hidden="true">VIRA</span>
+    <div class="foot">
+      <p class="tag">Смак України —<br>на столі в&nbsp;Європі<small>Офіційне представництво Victor &amp; K у Європі</small></p>
+      <ul>
+        <li><a href="#about">Про VIRA</a></li><li><a href="#formats">Формати співпраці</a></li><li><a href="#products">Продукція</a></li><li><a href="#geo">Географія</a></li><li><a href="#faq">FAQ</a></li>
+      </ul>
+      <ul>
+        <li><a href="mailto:virabalkans@gmail.com">virabalkans@gmail.com</a></li><li><a href="tel:+385916001094">+385 91 600 1094</a></li><li><a href="https://virabalkans.com/blog-standard/">Блог</a></li><li><a href="https://virabalkans.com/about-viktork/">Про Victor &amp; K</a></li>
+      </ul>
+      <a class="up" href="#top" aria-label="Нагору"><span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 13V3M4 7l4-4 4 4"/></svg></span></a>
+    </div>
+    <div class="legal"><span>VIRA © 2026. Усі права захищені.</span><a href="https://virabalkans.com/privacy-policy/">Політика конфіденційності</a></div>
+  </div>
+</footer>
+
+<script src="img/map-data.js" defer></script>
+<script>
+  // ---------- інтро: запускаємо, коли постер і маска готові ----------
+  const root = document.documentElement;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // телефони/планшети: окремий режим «свайп — сцена» (відео грає, а не перемотується)
+  const TOUCH = window.matchMedia('(pointer: coarse)').matches;
+  if (TOUCH) root.classList.add('is-touch', 'scene-0');
+  if (!reduceMotion) root.classList.add('intro-wait');
+
+  // ---------- vh фікс ----------
+  function setVh() {
+    const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    root.style.setProperty('--vh', h + 'px');
+  }
+  setVh();
+
+  // ---------- елементи ----------
+  const hero            = document.getElementById('hero');
+  const stage           = document.getElementById('hero-stage');
+  const video           = document.getElementById('bg-video');
+  const matte           = document.getElementById('hero-matte');
+  const lettersWrap     = document.getElementById('hero-letters');
+  const lettersH        = lettersWrap.querySelector('h2');
+  const letters         = [...lettersH.children];
+  const nav             = document.getElementById('hero-nav');
+  const scrim           = document.getElementById('hero-scrim');
+  const caps            = [...document.querySelectorAll('.cap')].map(el => ({ el, from: +el.dataset.from, to: +el.dataset.to, hero: el.classList.contains('is-hero') }));
+  const sceneNum        = document.getElementById('scene-num');
+  const tiles           = [...document.querySelectorAll('.hero-card')];
+  const barFill         = document.getElementById('bar-fill');
+  const heroDim         = document.getElementById('hero-dim');
+  const section2        = document.getElementById('section-2');
+  const scrollContainer = document.getElementById('scroll-container');
+
+  const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+  const seg   = (p, a, b) => clamp((p - a) / (b - a));
+  const ease  = t => t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2;
+
+  // ---------- відео: 1080p / 720p ----------
+  const useSD = window.innerWidth < 900 || (navigator.connection && navigator.connection.saveData);
+  video.src = TOUCH ? video.dataset.srcMobile : (useSD ? video.dataset.srcSd : video.dataset.srcHd);
+  if (TOUCH) video.preload = 'auto';
+
+  // ---------- VIRA: розмір і положення відносно лінії поля в кадрі ----------
+  // кадр 1920×1080: поле починається на y≈520…632; базову лінію літер ставимо на y=700,
+  // але не нижче за верх тексту зліва (щоб літери не наїжджали на заголовок)
+  const FRAME_W = 1920, FRAME_H = 1080, BASELINE_Y = 700;
+  // ✏️ НАЛАШТУВАННЯ НАПИСУ VIRA
+  //   weight — товщина Inter; ls — додаткова розрядка (em); width — частка ширини сітки;
+  //   fill — 'soft' (м'яко тане донизу) або 'solid' (суцільний білий)
+  const _q = new URLSearchParams(location.search);
+  const VIRA = {
+    weight: parseInt(_q.get('w'), 10)    || 300,
+    ls:     _q.has('ls') ? parseFloat(_q.get('ls')) : -0.02,
+    width:  parseFloat(_q.get('width'))  || 0.80,
+    fill:   _q.get('fill') || 'soft',
+    align:  _q.get('align') || 'center',
+    fade:   _q.get('fade') !== '0',
+    hide:   _q.has('hide') ? parseFloat(_q.get('hide')) : 0.12   // яка частка висоти літер ховається в полі
+  };
+  // лінія поля в кадрі 1920×1080 (y верхнього краю соняшників для x)
+  const FIELD = [[0,520],[160,533],[320,552],[480,566],[640,578],[800,590],[960,603],[1120,612],[1280,615],[1440,618],[1600,622],[1760,627],[1920,632]];
+  function fieldY(fx) {
+    for (let i = 1; i < FIELD.length; i++) if (fx <= FIELD[i][0]) {
+      const [x0, y0] = FIELD[i - 1], [x1, y1] = FIELD[i];
+      return y0 + (y1 - y0) * (fx - x0) / (x1 - x0);
+    }
+    return FIELD[FIELD.length - 1][1];
+  }
+  lettersH.style.fontWeight = VIRA.weight;
+  if (VIRA.fill === 'soft') letters.forEach(el => {
+    const b = el.firstElementChild;
+    b.style.background = 'linear-gradient(180deg, rgba(255,255,255,.96) 0%, rgba(255,255,255,.9) 50%, rgba(255,240,215,.66) 100%)';
+    b.style.webkitBackgroundClip = 'text'; b.style.backgroundClip = 'text'; b.style.color = 'transparent';
+  });
+
+  // Літери стоять як звичайне слово — з рідними відступами й кернінгом шрифту.
+  // Позиції беремо з ширини префіксів «V», «VI», «VIR» (canvas враховує кернінг),
+  // тому вигляд ідентичний набраному тексту, а кожна літера може анімуватись окремо.
+  const mctx = document.createElement('canvas').getContext('2d');
+  function wordMetrics() {
+    mctx.font = `${VIRA.weight} 100px Inter`;
+    mctx.fontKerning = 'normal';
+    const word = letters.map(el => el.textContent).join('');
+    const xs = letters.map((_, i) => mctx.measureText(word.slice(0, i)).width / 100 + i * VIRA.ls);
+    const m = mctx.measureText(word);
+    const inkL = -m.actualBoundingBoxLeft / 100;                       // де починається штрих V
+    const inkR = m.actualBoundingBoxRight / 100 + (letters.length - 1) * VIRA.ls; // де закінчується штрих A
+    return { xs, inkL, inkW: inkR - inkL, cap: m.actualBoundingBoxAscent / 100,
+             asc: m.fontBoundingBoxAscent / 100, desc: m.fontBoundingBoxDescent / 100 };
+  }
+
+  function layoutLetters() {
+    const vw = hero.clientWidth, vh = hero.clientHeight;
+    const s = Math.max(vw / FRAME_W, vh / FRAME_H);
+    const offX = (vw - FRAME_W * s) / 2, offY = (vh - FRAME_H * s) / 2;
+
+    const heroRect = hero.getBoundingClientRect();
+    const capsBox  = document.getElementById('captions').getBoundingClientRect();
+    const capTop   = capsBox.bottom - heroRect.top - caps[0].el.offsetHeight;
+    const maxBase  = capTop - Math.max(18, vh * 0.025);            // не нижче за заголовок зліва
+
+    const M = wordMetrics();
+    const cap = M.cap, asc = M.asc, desc = M.desc;
+    const contW  = lettersH.parentElement.clientWidth;
+    const contL  = lettersH.parentElement.getBoundingClientRect().left - heroRect.left;
+    const topMin = Math.max(nav.offsetTop + nav.offsetHeight + vh * 0.035, vh * 0.12);
+    const fsByW  = contW * VIRA.width / M.inkW;
+    const xStart = fs => (VIRA.align === 'left' ? 0 : (contW - M.inkW * fs) / 2);
+    // найвища точка поля під словом (екранна y)
+    const fieldTop = fs => {
+      const L = contL + xStart(fs), R = L + M.inkW * fs; let t = Infinity;
+      for (let px = L; px <= R; px += 8) t = Math.min(t, offY + fieldY((px - offX) / s) * s);
+      return t;
+    };
+
+    let fs, baseline;
+    if (VIRA.fade) {
+      // ховаємо однакову частку кожної літери (VIRA.hide) — низ рівний, A не «звисає»
+      fs = fsByW;
+      for (let k = 0; k < 3; k++) {
+        const ft = fieldTop(fs);
+        const fsH = (ft - topMin) / (cap * (1 - VIRA.hide));
+        fs = Math.min(fsByW, fsH);
+        baseline = ft + VIRA.hide * cap * fs;
+        if (baseline > maxBase) { fs = Math.min(fs, (maxBase - topMin) / cap); baseline = maxBase; }
+      }
+    } else {
+      baseline = Math.min(offY + BASELINE_Y * s, maxBase);
+      fs = Math.min(fsByW, (baseline - topMin) / cap);
+    }
+    fs = Math.max(60, fs);
+
+    lettersH.style.fontSize = fs + 'px';
+    const x0 = xStart(fs) - M.inkL * fs;
+    letters.forEach((el, i) => { el.style.left = (x0 + M.xs[i] * fs) + 'px'; });
+    const boxTop = baseline - fs * ((1 - (asc + desc)) / 2 + asc);
+    lettersWrap.style.top = boxTop + 'px';
+
+    if (VIRA.fade) {
+      // м'яке танення на одній горизонталі для всіх літер
+      const end = Math.min(fieldTop(fs), baseline) + 4 - boxTop;
+      const start = end - cap * fs * 0.14;
+      const mask = `linear-gradient(to bottom, #000 0, #000 ${start}px, transparent ${end}px)`;
+      lettersH.style.webkitMaskImage = mask; lettersH.style.maskImage = mask;
+    } else { lettersH.style.webkitMaskImage = lettersH.style.maskImage = 'none'; }
+  }
+  layoutLetters();
+
+  // ---------- старт інтро ----------
+  function whenImg(img) { return img.complete ? Promise.resolve() : new Promise(r => { img.onload = img.onerror = r; }); }
+  const poster = new Image(); poster.src = 'img/vira-hero-poster.jpg';
+  Promise.race([
+    Promise.all([whenImg(poster), whenImg(matte), document.fonts ? document.fonts.load(`${VIRA.weight} 100px Inter`) : 0]),
+    new Promise(r => setTimeout(r, 2500))
+  ]).then(() => {
+    layoutLetters(); lastProgress = -1;
+    root.classList.remove('intro-wait');
+    if (!reduceMotion) {
+      root.classList.add('intro');
+      setTimeout(() => root.classList.remove('intro'), 3200);
+    }
+  });
+
+  let resizeTimer;
+  let lastW = window.innerWidth;
+  function onResize() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      if (TOUCH) {                       // адресний рядок ховається/зʼявляється — ігноруємо
+        if (window.innerWidth === lastW) return;
+        lastW = window.innerWidth;
+      }
+      setVh(); layoutLetters(); sizeTrack(); fitWordmark(); setCarousel(cIdx, true); measureMax(); lastProgress = -1;
+      if (!TOUCH) updateHeroAnimation(window.scrollY);
+    }, 150);
+  }
+  window.addEventListener('resize', onResize);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', onResize);
+
+  // ---------- стан відео ----------
+  let videoReady = false, targetTime = 0, currentTime = 0, seekLocked = false, lastProgress = -1;
+  const FALLBACK_DURATION = 31.7;
+  video.addEventListener('loadedmetadata', () => { videoReady = true; lastProgress = -1; });
+  video.load();
+
+
+  function doSeek() {
+    if (!videoReady || !video.duration) return;
+    if (Math.abs(targetTime - currentTime) < 0.04) { seekLocked = false; return; }
+    seekLocked = true;
+    currentTime = targetTime;
+    if ('requestVideoFrameCallback' in video) {
+      video.requestVideoFrameCallback(() => { seekLocked = false; doSeek(); });
+    } else {
+      video.addEventListener('seeked', function onSeeked() {
+        video.removeEventListener('seeked', onSeeked);
+        seekLocked = false; doSeek();
+      }, { once: true });
+    }
+    video.currentTime = currentTime;
+  }
+
+  // ============================================================
+  // ТАЙМЛАЙН (progress 0 → 1, трек 10 екранів)
+  //  0.00–0.05  літери VIRA розʼїжджаються з розмиттям
+  //  0.045–0.06 маска поля і сонячне світло зникають
+  //  0.06–0.88  відео 0 → 30 с; тексти сцен міняються за часом відео
+  //  0.90–1.00  наїжджає секція 2
+  //  плитки праворуч — видно весь час
+  // ============================================================
+  let lastScene = -1;
+  function updateHeroAnimation(scrollY) {
+    const trackH = hero.offsetHeight * 9;                 // 9 екранів: відео + наїзд секції 2
+    if (trackH <= 0) return;
+    const progress = clamp(scrollY / trackH);
+    if (Math.abs(progress - lastProgress) < 0.0001) return;
+    lastProgress = progress;
+
+    // відео
+    const videoP = seg(progress, 0.06, 0.88);
+    const dur = (videoReady && video.duration) ? video.duration : FALLBACK_DURATION;
+    const t = videoP * dur;
+    if (videoReady && video.duration) {
+      targetTime = Math.min(t, video.duration - 0.05);
+      if (!seekLocked) doSeek();
+    }
+    barFill.style.transform = `scaleX(${videoP.toFixed(4)})`;
+
+    // VIRA
+    const lp = ease(seg(progress, 0, 0.05));
+    const spread = window.innerWidth * 0.18 * lp;
+    const dirs = [-1, -0.45, 0.45, 1];
+    letters.forEach((el, i) => {
+      el.style.transform = `translate3d(${(dirs[i] * spread).toFixed(1)}px, ${(-lp * 36).toFixed(1)}px, 0)`;
+      el.style.opacity = (1 - lp).toFixed(3);
+      el.style.filter = lp > 0.005 ? `blur(${(lp * 10).toFixed(1)}px)` : 'none';
+    });
+    const mOut = seg(progress, 0.045, 0.06);
+    matte.style.opacity = (1 - mOut).toFixed(3);
+    // поза першим екраном літери й маска не малюються зовсім — менше навантаження на сценах
+    const gone = lp >= 1 && mOut >= 1;
+    lettersWrap.style.visibility = gone ? 'hidden' : '';
+    matte.style.visibility = gone ? 'hidden' : '';
+
+    // підсилене затемнення під текстом на сценах відео
+    scrim.style.opacity = seg(progress, 0.03, 0.08).toFixed(3);
+
+    // тексти сцен — в одному місці, по черзі
+    const F = 0.35;
+    let best = 0, bestO = -1;
+    caps.forEach((c, i) => {
+      const a = c.hero ? 1 : ease(clamp((t - c.from) / F));
+      const b = ease(clamp((t - (c.to - F)) / F));
+      const o = a * (1 - b);
+      c.el.style.opacity = o.toFixed(3);
+      c.el.style.transform = `translateY(${((1 - a) * 28 - b * 28).toFixed(1)}px)`;
+      c.el.style.visibility = o > 0.001 ? 'visible' : 'hidden';
+      if (o > bestO) { bestO = o; best = i; }
+    });
+    // плитки праворуч з'являються заново з кожною сценою (друга — з невеликою затримкою)
+    tiles.forEach((el, k) => {
+      const d = k * 0.14;
+      let o = 0, y = 0;
+      caps.forEach(c => {
+        const a = c.hero ? 1 : ease(clamp((t - c.from - d) / F));
+        const b = ease(clamp((t - (c.to - F) + d) / F));
+        const oo = a * (1 - b);
+        if (oo > o) { o = oo; y = (1 - a) * 34 - b * 22; }
+      });
+      el.style.opacity = o.toFixed(3);
+      el.style.translate = `0 ${y.toFixed(1)}px`;
+      el.style.visibility = o > 0.001 ? 'visible' : 'hidden';
+      el.style.pointerEvents = o > 0.6 ? '' : 'none';
+    });
+
+    if (best !== lastScene) {
+      lastScene = best;
+      sceneNum.innerHTML = `<b>${String(best).padStart(2, '0')}</b> / ${String(caps.length - 1).padStart(2, '0')}`;
+    }
+
+    // секція 2
+    const s2 = ease(seg(progress, 0.90, 1));
+    const vhPx = hero.offsetHeight;
+    section2.style.transform = `translateY(${((1 - s2) * vhPx).toFixed(1)}px)`;
+    heroDim.style.opacity = (s2 * 0.55).toFixed(3);
+  }
+
+  // ============================================================
+  // MOBILE: «свайп — сцена»
+  // Поки hero на екрані, скрол сторінки заблокований, а свайпи ловимо самі:
+  // один свайп = рівно одна сцена (проскочити неможливо). Відео сцени
+  // ПРОГРАЄТЬСЯ (а не перемотується) і стає на паузу на її останньому кадрі.
+  // Після останньої сцени наступний свайп відпускає сторінку далі.
+  // ============================================================
+  const CUTS  = [0, 2.96, 6.88, 10.83, 16.08, 20.0, 23.875];    // склейки у відео (початок сцени)
+  const HOLDS = [0, 6.66, 10.62, 15.86, 19.80, 23.66, 31.62];  // кадр, на якому сцена зупиняється
+  const RATE  = 1.5;                                          // швидкість відтворення сцени
+  const LAST  = caps.length - 1;
+  let scene = 0, playToken = 0, stopAt = 0, capTimer = 0, segDone = true, locked = true;
+  const cardsBox = document.querySelector('.hero-cards');
+
+  function stopAtHold(token) {
+    const check = () => {
+      if (token !== playToken) return;
+      if (video.ended || video.currentTime >= stopAt - 0.03) {
+        video.pause();
+        if (video.currentTime > stopAt + 0.02) video.currentTime = stopAt;   // не показуємо кадр наступної сцени
+        segDone = true;
+        return;
+      }
+      ('requestVideoFrameCallback' in video) ? video.requestVideoFrameCallback(check) : requestAnimationFrame(check);
+    };
+    check();
+  }
+  function playScene(to, from) {
+    const token = ++playToken;
+    stopAt = to; segDone = false;
+    const go = () => {
+      if (token !== playToken) return;
+      if (to <= 0.01) { video.pause(); segDone = true; return; }
+      video.playbackRate = RATE;
+      const p = video.play();
+      // режим енергозбереження iOS може заборонити play() — тоді просто показуємо кадр сцени
+      if (p && p.catch) p.catch(() => { if (token === playToken) { video.currentTime = to; segDone = true; } });
+      stopAtHold(token);
+    };
+    if (from != null && Math.abs(video.currentTime - from) > 0.05) {
+      video.pause();
+      video.addEventListener('seeked', go, { once: true });
+      video.currentTime = from;
+    } else go();
+  }
+
+  function showCaption(i, delayMs) {
+    clearTimeout(capTimer);
+    caps.forEach((c, k) => { if (k !== i) c.el.classList.remove('on'); });
+    cardsBox.classList.add('out');
+    capTimer = setTimeout(() => {
+      const el = caps[i].el;
+      el.classList.add('pre'); void el.offsetWidth;
+      el.classList.remove('pre'); el.classList.add('on');
+      cardsBox.classList.remove('out');
+    }, delayMs);
+  }
+
+  // вертикальна фінальна сцена: тільки телефон/планшет у портретній орієнтації
+  const finalV = document.getElementById('final-v');
+  const portrait = () => window.innerHeight > window.innerWidth;
+  let finalVReady = false;
+  function prepFinalV() {
+    if (finalVReady || !TOUCH || !portrait()) return;
+    finalVReady = true; finalV.src = finalV.dataset.src; finalV.preload = 'auto'; finalV.load();
+  }
+  function playFinalV() {
+    finalV.classList.add('on');
+    finalV.playbackRate = 1.25;
+    try { finalV.currentTime = 0; } catch (e) {}
+    const p = finalV.play(); if (p && p.catch) p.catch(() => {});
+  }
+  function stopFinalV() {
+    if (!finalV.classList.contains('on')) return;
+    finalV.classList.remove('on');
+    setTimeout(() => { if (!finalV.classList.contains('on')) finalV.pause(); }, 500);
+  }
+
+  function goScene(i) {
+    const prev = scene;
+    if (i === prev || i < 0 || i > LAST) return;
+    scene = i;
+    if (i >= LAST - 2) prepFinalV();                       // заздалегідь підвантажуємо вертикальне відео
+    const useV = i === LAST && finalVReady && portrait();
+    if (!useV) stopFinalV();
+
+    let capDelay = 220;
+    if (i === 0) {
+      playScene(0, 0);
+      const back = () => root.classList.remove('matte-out');
+      video.currentTime < 0.05 ? back() : video.addEventListener('seeked', back, { once: true });
+      root.classList.remove('letters-out', 'scrim-on');
+    } else {
+      root.classList.add('letters-out', 'matte-out', 'scrim-on');
+      if (useV) {
+        // фінал: вертикальний ролик поверх, основне відео ставимо на кадр початку сцени
+        playScene(CUTS[i] + 0.05, CUTS[i]);
+        playFinalV();
+      } else if (i === prev + 1 && segDone) {
+        // попередня сцена дограла — продовжуємо плавно (з поля — проліт до заводу)
+        capDelay = Math.max(220, Math.min(900, (CUTS[i] - video.currentTime) / RATE * 1000));
+        playScene(HOLDS[i]);
+      } else {
+        // гортають швидше, ніж грає відео, або назад — одразу на початок потрібної сцени,
+        // щоб картинка і текст завжди збігались
+        playScene(HOLDS[i], CUTS[i]);
+      }
+    }
+    root.classList.toggle('scene-0', i === 0);
+
+    showCaption(i, capDelay);
+    sceneNum.innerHTML = `<b>${String(i).padStart(2, '0')}</b> / ${String(LAST).padStart(2, '0')}`;
+    barFill.style.transform = `scaleX(${(i / LAST).toFixed(4)})`;
+  }
+
+  function setLock(on) {
+    locked = on;
+    root.classList.toggle('hero-lock', on);
+  }
+
+  function initTouchScenes() {
+    caps[0].el.classList.add('on');
+    sceneNum.innerHTML = `<b>00</b> / ${String(LAST).padStart(2, '0')}`;
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+    setLock(true);
+
+    // жест
+    let y0 = null, x0 = 0, t0 = 0;
+    window.addEventListener('touchstart', e => {
+      if (!locked) return;
+      y0 = e.touches[0].clientY; x0 = e.touches[0].clientX; t0 = Date.now();
+    }, { passive: true });
+    window.addEventListener('touchmove', e => {
+      if (locked && e.cancelable) e.preventDefault();             // сторінка не їде під пальцем
+    }, { passive: false });
+    window.addEventListener('touchend', e => {
+      if (!locked || y0 === null) return;
+      const t = e.changedTouches[0];
+      const dy = y0 - t.clientY, dx = x0 - t.clientX;
+      y0 = null;
+      if (Math.abs(dy) < 36 || Math.abs(dy) < Math.abs(dx)) return;   // тап або горизонтальний жест
+      if (dy > 0) {
+        if (scene < LAST) goScene(scene + 1);
+        else { setLock(false); window.scrollTo({ top: hero.offsetHeight, behavior: 'smooth' }); }
+      } else if (scene > 0) {
+        goScene(scene - 1);
+      }
+    }, { passive: true });
+
+    // повернулись скролом нагору — знову керуємо сценами
+    let ticking = false, lastY = 0;
+    const onScroll = () => {
+      ticking = false;
+      const y = window.scrollY, st = hero.offsetHeight;
+      heroDim.style.opacity = (clamp(y / st) * 0.55).toFixed(3);
+      if (!locked && y <= 2 && y < lastY) setLock(true);           // тільки коли повертаються вгору
+      lastY = y;
+    };
+    window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+  }
+
+
+  // ============================================================
+  // ЛЕНДИНГ ПІСЛЯ HERO
+  // ============================================================
+
+  // довжина треку на ПК: секція 2 вища за екран, тож додаємо різницю,
+  // щоб вона доїхала до верху й далі гортнулась звичайним скролом
+  function sizeTrack() {
+    if (TOUCH) return;
+    const vh = hero.offsetHeight;
+    const extra = Math.max(0, section2.offsetHeight - vh);
+    scrollContainer.style.height = (vh * 10 + extra) + 'px';
+  }
+
+  // ---------- 3. формати співпраці (таби) ----------
+  const FORMATS = [
+    { d: '<b>«Королівський Смак».</b> Готова харчова продукція для Retail, HoReCa та оптової торгівлі.', l: ['Соняшникова олія', 'Майонез', 'Соуси', 'Кетчуп'] },
+    { d: '<b>Ваш бренд. Наше виробництво.</b> Харчова продукція під брендом замовника для європейського ринку.', l: ['Олії', 'Майонези', 'Соуси', 'Кетчупи'] },
+    { d: '<b>Олії та промислова сировина</b> для харчових і виробничих підприємств європейського ринку.', l: ['Олії', 'Лецитин', 'Шрот', 'Інша сировина'] }
+  ];
+  const fTabs = [...document.querySelectorAll('.f-tab')], fImgs = [...document.querySelectorAll('#f-imgs img')];
+  const fDesc = document.getElementById('f-desc'), fList = document.getElementById('f-list');
+  function setFormat(i) {
+    fTabs.forEach((t, k) => { t.classList.toggle('on', k === i); t.setAttribute('aria-selected', k === i); });
+    fImgs.forEach((im, k) => im.classList.toggle('on', k === i));
+    fDesc.innerHTML = FORMATS[i].d;
+    fList.innerHTML = FORMATS[i].l.map(x => `<li>${x}</li>`).join('');
+  }
+  fTabs.forEach(t => t.addEventListener('click', () => setFormat(+t.dataset.i)));
+  setFormat(0);
+
+  // ---------- 4. карусель продукції ----------
+  const cTrack = document.getElementById('c-track'), cCards = [...cTrack.children];
+  const cPrev = document.getElementById('c-prev'), cNext = document.getElementById('c-next'), cCount = document.getElementById('c-count');
+  let cIdx = cCards.findIndex(c => c.classList.contains('on')); if (cIdx < 0) cIdx = 0;
+  const clampPx = (min, v, max) => Math.max(min, Math.min(max, v));
+  function setCarousel(i, instant) {
+    cIdx = Math.max(0, Math.min(cCards.length - 1, i));
+    cCards.forEach((c, k) => c.classList.toggle('on', k === cIdx));
+    const vw = window.innerWidth, narrow = vw <= 760;
+    const small = narrow ? vw * .30 : clampPx(130, vw * .11, 230);
+    const big   = narrow ? vw * .68 : clampPx(260, vw * .25, 520);
+    const gap = parseFloat(getComputedStyle(cTrack).columnGap) || 16;
+    const cont = cTrack.parentElement.clientWidth;
+    const x = cont / 2 - (cIdx * (small + gap) + big / 2);
+    if (instant) { cTrack.style.transition = 'none'; requestAnimationFrame(() => { cTrack.style.transition = ''; }); }
+    cTrack.style.transform = `translate3d(${x.toFixed(1)}px,0,0)`;
+    cPrev.disabled = cIdx === 0; cNext.disabled = cIdx === cCards.length - 1;
+    cCount.innerHTML = `<b>${String(cIdx + 1).padStart(2, '0')}</b> / ${String(cCards.length).padStart(2, '0')}`;
+  }
+  cPrev.addEventListener('click', () => setCarousel(cIdx - 1));
+  cNext.addEventListener('click', () => setCarousel(cIdx + 1));
+  cCards.forEach((c, k) => c.addEventListener('click', () => { if (k !== cIdx) setCarousel(k); }));
+  let cx0 = null;
+  cTrack.addEventListener('touchstart', e => { cx0 = e.touches[0].clientX; }, { passive: true });
+  cTrack.addEventListener('touchend', e => {
+    if (cx0 === null) return; const dx = cx0 - e.changedTouches[0].clientX; cx0 = null;
+    if (Math.abs(dx) > 40) setCarousel(cIdx + (dx > 0 ? 1 : -1));
+  }, { passive: true });
+  setCarousel(cIdx, true);
+
+
+  // ---------- 7. 3D-карта ----------
+  function initMap() {
+    const M = window.VIRA_MAP; if (!M) return;
+    const NS = 'http://www.w3.org/2000/svg';
+    const svg = document.getElementById('map-svg'), pinsBox = document.getElementById('map-pins');
+    const stage = document.getElementById('map3d'), plane = document.getElementById('map-plane');
+    const list = document.getElementById('clist');
+    svg.setAttribute('viewBox', `0 0 ${M.w} ${M.h}`);
+    const land = M.countries.map(c => c.d).join('');
+    const DEPTH = 16;   // товщина «плити» в пікселях карти
+    // сторона плити: шари знизу вгору, від темного до світлішого
+    let side = '';
+    for (let k = DEPTH; k >= 1; k--) {
+      const l = Math.round(10 + (DEPTH - k) * 2.2);
+      side += `<path d="${land}" transform="translate(0 ${k})" fill="rgb(${l},${l + 2},${l + 8})"/>`;
+    }
+    svg.innerHTML = `
+      <defs>
+        <clipPath id="landClip"><path d="${land}"/></clipPath>
+        <linearGradient id="topFill" x1="0" y1="0" x2="1" y2=".35">
+          <stop offset="0" stop-color="#E9DFC8"/><stop offset=".28" stop-color="#9C9A92"/>
+          <stop offset=".55" stop-color="#4A5262"/><stop offset="1" stop-color="#1B2740"/>
+        </linearGradient>
+        <radialGradient id="ctxFade" cx=".55" cy=".5" r=".62"><stop offset=".55" stop-color="#fff"/><stop offset="1" stop-color="#000"/></radialGradient>
+        <mask id="ctxMask" maskUnits="userSpaceOnUse" x="-200" y="-200" width="${M.w + 400}" height="${M.h + 400}"><rect x="-200" y="-200" width="${M.w + 400}" height="${M.h + 400}" fill="url(#ctxFade)"/></mask>
+        <radialGradient id="sheen" cx=".18" cy=".1" r=".9"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".6" stop-color="#fff" stop-opacity="0"/></radialGradient>
+      </defs>
+      <path class="ctx" d="${M.context}" mask="url(#ctxMask)"/>
+      <g>${side}</g>
+      <path d="${land}" fill="url(#topFill)"/>
+      <path d="${land}" fill="url(#sheen)"/>
+      <path class="topo" clip-path="url(#landClip)" d="${M.topo}"/>
+      <g id="map-countries">${M.countries.map(c => `<path class="c" data-id="${c.id}" d="${c.d}"/>`).join('')}</g>
+      <g class="lift" id="map-lift"></g>`;
+    // піни
+    pinsBox.innerHTML = M.countries.map(c =>
+      `<div class="pin${c.id === 'me' ? ' home' : ''}" data-id="${c.id}" style="left:${(c.x / M.w * 100).toFixed(2)}%;top:${(c.y / M.h * 100).toFixed(2)}%">
+         <div class="up"><span class="lbl">${c.ua}${c.id === 'me' ? ' · офіс VIRA' : ''}</span><span class="dot"></span><span class="beam"></span></div></div>`).join('');
+    // список країн
+    list.innerHTML = M.countries.map((c, i) =>
+      `<li><button type="button" data-id="${c.id}" class="${c.id === 'me' ? 'home' : ''}"><span class="k">${String(i + 1).padStart(2, '0')}</span>${c.ua}</button></li>`).join('');
+
+    const lift = document.getElementById('map-lift');
+    const byId = Object.fromEntries(M.countries.map(c => [c.id, c]));
+    let active = null;
+    function setActive(id) {
+      if (id === active) return; active = id;
+      svg.querySelectorAll('.c').forEach(p => p.classList.toggle('on', p.dataset.id === id));
+      pinsBox.querySelectorAll('.pin').forEach(p => p.classList.toggle('on', p.dataset.id === id));
+      list.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.id === id));
+      if (!id) { lift.innerHTML = ''; return; }
+      // країна «піднімається» над плитою
+      const d = byId[id].d; let h = '';
+      for (let k = 10; k >= 1; k--) h += `<path class="side" d="${d}" transform="translate(0 ${k - 12})"/>`;
+      lift.innerHTML = h + `<path class="top" d="${d}" transform="translate(0 -12)"/>`;
+    }
+    svg.addEventListener('mouseover', e => { const p = e.target.closest('.c'); if (p) setActive(p.dataset.id); });
+    svg.addEventListener('click', e => { const p = e.target.closest('.c'); if (p) setActive(p.dataset.id); });
+    list.addEventListener('mouseover', e => { const b = e.target.closest('button'); if (b) setActive(b.dataset.id); });
+    list.addEventListener('click', e => { const b = e.target.closest('button'); if (b) setActive(b.dataset.id); });
+    stage.addEventListener('mouseleave', () => setActive('me'));
+    list.addEventListener('mouseleave', () => setActive('me'));
+    setActive('me');
+
+    // поява: плита «лягає» з крутого нахилу
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { stage.classList.add('in'); setTimeout(() => stage.classList.add('live'), 1700); io.disconnect(); }
+    }), { threshold: .25 });
+    io.observe(stage);
+    // карту малюємо тільки поруч із екраном — на hero вона не навантажує браузер
+    new IntersectionObserver(es => es.forEach(e => stage.classList.toggle('near', e.isIntersecting)), { rootMargin: '600px 0px' }).observe(stage);
+
+    // нахил за курсором (тільки ПК)
+    if (!TOUCH) {
+      let raf = 0;
+      stage.addEventListener('mousemove', e => {
+        if (!stage.classList.contains('live')) return;
+        const r = stage.getBoundingClientRect();
+        const nx = (e.clientX - r.left) / r.width - .5, ny = (e.clientY - r.top) / r.height - .5;
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(() => {
+          plane.style.setProperty('--rx', (44 - ny * 8).toFixed(2) + 'deg');
+          plane.style.setProperty('--rz', (-7 + nx * 6).toFixed(2) + 'deg');
+        });
+      });
+      stage.addEventListener('mouseleave', () => { plane.style.removeProperty('--rx'); plane.style.removeProperty('--rz'); });
+    }
+  }
+  if (window.VIRA_MAP) initMap(); else window.addEventListener('load', initMap);
+
+  // ---------- футер: VIRA на всю ширину сітки ----------
+  const wordmark = document.getElementById('wordmark');
+  function fitWordmark() {
+    wordmark.style.fontSize = '100px';
+    const w = wordmark.scrollWidth, cw = wordmark.parentElement.clientWidth;
+    wordmark.style.fontSize = (100 * cw / w) + 'px';
+  }
+  fitWordmark();
+  if (document.fonts) document.fonts.ready.then(() => { fitWordmark(); sizeTrack(); });
+
+  // ---------- поява блоків ----------
+  const rvEls = [...document.querySelectorAll('.rv')];
+  rvEls.forEach(el => {
+    const sib = [...el.parentElement.children].filter(x => x.classList.contains('rv'));
+    el.style.transitionDelay = Math.min(sib.indexOf(el) * 70, 350) + 'ms';
+  });
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+    rvEls.forEach(el => io.observe(el));
+  } else rvEls.forEach(el => el.classList.add('in'));
+
+  // ---------- якорі меню ----------
+  function anchorTop(id) {
+    if (id === 'top') return 0;
+    if (!TOUCH && (id === 'about' || id === 'section-2')) return hero.offsetHeight * 9;   // секція 2 повністю наїхала
+    const el = document.getElementById(id); if (!el) return null;
+    return el.getBoundingClientRect().top + window.scrollY - (TOUCH ? 0 : 0);
+  }
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href^="#"]'); if (!a) return;
+    const id = a.getAttribute('href').slice(1); const top = anchorTop(id);
+    if (top === null) return;
+    e.preventDefault();
+    if (TOUCH) {
+      if (top > 0) setLock(false);
+      window.scrollTo({ top, behavior: 'smooth' });
+    } else {
+      targetScrollY = Math.min(top, maxScroll());
+    }
+  });
+
+  // ---------- форма (Netlify Forms) ----------
+  const form = document.getElementById('lead-form');
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const body = new URLSearchParams(new FormData(form)).toString();
+    fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body })
+      .then(r => { if (!r.ok) throw 0; form.classList.add('sent'); form.reset(); })
+      .catch(() => HTMLFormElement.prototype.submit.call(form));
+  });
+
+  // ============================================================
+  // SCROLL ENGINE: десктоп — плавне колесо, мобайл — нативний скрол
+  // ============================================================
+  const EASE = 0.09;
+  let targetScrollY = 0, smoothScrollY = 0;
+  // висота сторінки кешується і оновлюється лише при зміні розмірів (не читаємо layout щокадру)
+  let maxScrollCache = 0;
+  const maxScroll = () => maxScrollCache;
+  const measureMax = () => { maxScrollCache = Math.max(0, document.documentElement.scrollHeight - window.innerHeight); };
+
+  // після оновлення сторінки завжди стартуємо з першого екрана (інакше браузер
+  // відновлює позицію посеред відео, а інтро й тексти сцен розʼїжджаються)
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
+  sizeTrack();
+  measureMax();
+  if ('ResizeObserver' in window) new ResizeObserver(measureMax).observe(document.body);
+  window.addEventListener('load', () => { sizeTrack(); measureMax(); });
+
+  if (TOUCH) {
+    initTouchScenes();
+  } else {
+    window.scrollTo(0, 0);
+    let expectedY = 0;
+
+    window.addEventListener('wheel', (e) => {
+      if (e.ctrlKey) return;                                   // зум трекпадом
+      e.preventDefault();
+      targetScrollY = clamp(targetScrollY + e.deltaY * 1.2, 0, maxScroll());
+    }, { passive: false });
+
+    // клавіатура, скролбар, відновлення позиції — синхронізуємо плавний скрол
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      if (Math.abs(y - expectedY) > 3) { targetScrollY = smoothScrollY = expectedY = y; }
+    }, { passive: true });
+
+    let lastDrawn = -1;
+    (function tick() {
+      requestAnimationFrame(tick);
+      targetScrollY = clamp(targetScrollY, 0, maxScroll());
+      const d = targetScrollY - smoothScrollY;
+      smoothScrollY = Math.abs(d) < 0.5 ? targetScrollY : smoothScrollY + d * EASE;
+      if (Math.abs(smoothScrollY - expectedY) > 0.5) { expectedY = smoothScrollY; window.scrollTo(0, smoothScrollY); }
+      if (smoothScrollY !== lastDrawn) { lastDrawn = smoothScrollY; updateHeroAnimation(smoothScrollY); }
+    })();
+  }
+</script>
+</body>
+</html>
