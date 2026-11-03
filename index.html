@@ -126,6 +126,27 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 1180px) { .nav-burger { display: inline-flex; } }
 @media (max-width: 640px) { .nav-burger { width: 42px; } }
 
+
+/* телефон: UA | EN завжди на виду в шапці */
+.nav-lang-m { display: none; }
+@media (max-width: 640px) {
+  .nav-lang-m { display: inline-flex; padding: 3px; height: 42px; border-radius: 100px; border: 1.5px solid rgba(255,255,255,.75); }
+  .nav-lang-m button { border: 0; background: transparent; color: #fff; font: inherit; font-size: 12px; font-weight: 600; letter-spacing: .04em; padding: 0 9px; border-radius: 100px; cursor: pointer; }
+  .nav-lang-m button[aria-pressed="true"] { background: #fff; color: var(--ink); }
+  #hero-nav .container { gap: 8px; }
+  .nav-right { gap: 8px; flex: none; }
+  .nav-right > * { flex: none; }
+  .nav-logo { gap: 8px; font-size: 24px; }
+}
+@media (max-width: 400px) {
+  .nav-logo { font-size: 20px; gap: 6px; }
+  #hero-nav .nav-cta { padding: 0 11px; font-size: 11px; letter-spacing: .02em; height: 40px; }
+  #hero-nav .nav-lang-m button { padding: 0 7px; font-size: 11px; }
+  #hero-nav .nav-burger { width: 40px; height: 40px; }
+  #hero-nav .nav-lang-m { height: 40px; }
+}
+@media (max-width: 364px) { #hero-nav .nav-cta { display: none; } }   /* CTA залишається в бургер-меню */
+
 /* мобільне меню */
 #mobile-menu { position: fixed; inset: 0; z-index: 1000; display: flex; flex-direction: column; padding: 20px var(--gutter) 28px; color: #fff; background: rgba(8,10,16,.98); opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility 0s linear .3s; touch-action: none; overscroll-behavior: contain; }
 #mobile-menu.open { opacity: 1; visibility: visible; transition: opacity .3s ease, visibility 0s; }
@@ -597,13 +618,13 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
 
 /* статичний вертикальний фон першого екрана; зникає, щойно починаються сцени відео */
 .is-touch #hero-static, .is-touch #hero-static-shade { display: block; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; z-index: 1; pointer-events: none; transition: opacity .5s ease, visibility 0s; }
-.is-touch #hero-static-shade { background: linear-gradient(to bottom, rgba(3,10,11,0) 43%, rgba(3,10,11,.08) 65%, rgba(3,10,11,.62) 75%, rgba(3,10,11,.80) 89%, rgba(3,10,11,.94) 100%); }   /* затемнення низу, як у макеті */
+.is-touch #hero-static-shade { background: linear-gradient(to bottom, rgba(3,10,11,0) 50%, rgba(3,10,11,.34) 62%, rgba(3,10,11,.74) 72%, rgba(3,10,11,.88) 86%, rgba(3,10,11,.95) 100%); }   /* затемнення низу, як у макеті */
 .is-touch:not(.scene-0) #hero-static, .is-touch:not(.scene-0) #hero-static-shade { opacity: 0; visibility: hidden; transition: opacity .5s ease, visibility 0s linear .5s; }
 .is-touch #hero-matte { display: none; }   /* маска поля підганялась під горизонтальний кадр */
 
 /* легше: без розмиття, світіння, будь-яких фільтрів */
 .is-touch #bg-video { will-change: auto; }
-.is-touch .cap { text-shadow: 0 1px 14px rgba(0,0,0,.4); will-change: auto; }
+.is-touch .cap { text-shadow: 0 1px 3px rgba(0,0,0,.55), 0 2px 18px rgba(0,0,0,.65); will-change: auto; }
 @keyframes stageInLite { from { transform: scale(1.1); opacity: .4; } to { transform: none; opacity: 1; } }
 .is-touch.intro #hero-stage { animation-name: stageInLite; }
 .is-touch.intro-wait #hero-stage { filter: none; }
@@ -695,6 +716,10 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
         </ul>
         <div class="nav-right">
           <button type="button" class="nav-search nav-lang" id="lang-toggle" aria-label="Змінити мову"><span>EN</span></button>
+          <div class="nav-lang-m" role="group" aria-label="Змінити мову">
+            <button type="button" data-lang="uk" aria-pressed="true">UA</button>
+            <button type="button" data-lang="en" aria-pressed="false">EN</button>
+          </div>
           <a href="#contact" class="nav-cta">Форма зв'язку</a>
           <button type="button" class="nav-burger" id="burger" aria-label="Меню" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
         </div>
@@ -2003,7 +2028,7 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
     .observe(document.body, { childList: true, subtree: true });
 
   const langBtn = document.getElementById('lang-toggle');
-  const mmLangBtns = [...document.querySelectorAll('.mm-lang button')];
+  const mmLangBtns = [...document.querySelectorAll('.mm-lang button, .nav-lang-m button')];
   function setLang(l, save = true) {
     LANG = l === 'en' ? 'en' : 'uk';
     root.lang = LANG;
