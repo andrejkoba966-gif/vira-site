@@ -298,7 +298,8 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
 
 /* ---------- 2. ХТО МИ ---------- */
 .statement-row { display: grid; grid-template-columns: 1fr clamp(180px, 15vw, 320px); gap: clamp(28px, 4vw, 90px); align-items: start; }
-.statement { font-size: clamp(23px, 2.3vw, 50px); font-weight: 600; line-height: 1.14; letter-spacing: -.03em; color: #fff; }
+#about-title { font-size: clamp(30px, 3.4vw, 50px); }
+.statement { font-size: clamp(21px, 2.03vw, 30px); font-weight: 600; line-height: 1.14; letter-spacing: -.03em; color: #fff; }
 .statement .dim { color: var(--mute2); }
 .statement-row .img-tile { aspect-ratio: 4/3; }
 .bento { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: clamp(140px, 11vw, 230px); gap: var(--gap); margin-top: clamp(40px, 4.5vw, 90px); }
@@ -306,9 +307,9 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
 .stat .n { font-size: clamp(32px, 2.8vw, 60px); font-weight: 500; letter-spacing: -.04em; line-height: 1; }
 .stat .n sup { font-size: .45em; color: var(--sun); vertical-align: top; margin-left: .1em; }
 .stat .t { font-size: clamp(13px, .85vw, 16px); line-height: 1.4; color: var(--mute); max-width: 14em; }
-.bento .img-tile { grid-column: span 2; }
+.bento .bento-img { grid-column: 1 / span 2; grid-row: 1 / span 2; }
+.bento .stat-wide { grid-column: span 2; }
 .bento .img-tile figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 20px; font-size: clamp(13px, .85vw, 16px); color: #fff; background: linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,0)); }
-.bento .spacer { visibility: hidden; }
 
 /* ---------- 3. ФОРМАТИ ---------- */
 .formats { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--gap); align-items: stretch; }
@@ -575,9 +576,10 @@ footer .container { padding-bottom: clamp(24px, 2vw, 40px); }
   .sec-head .thumb { display: none; }
   .statement-row { grid-template-columns: 1fr; }
   .statement-row .img-tile { display: none; }
-  .bento { grid-template-columns: 1fr 1fr; grid-auto-rows: 132px; }
-  .bento .spacer { display: none; }
-  .bento .img-tile { grid-column: 1 / -1; grid-row: auto; height: 200px; }
+  .bento { grid-template-columns: 1fr 1fr; grid-auto-rows: auto; }
+  .bento .stat { min-height: 132px; }
+  .bento .bento-img { grid-column: 1 / -1; grid-row: auto; height: 200px; }
+  .bento .stat-wide { grid-column: 1 / -1; }
   .f-bottom { grid-template-columns: 1fr 130px; }
   .why-row { grid-template-columns: 40px 1fr; }
   .why-row p { grid-column: 2; }
@@ -799,13 +801,10 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
         <figure class="img-tile rv"><img src="img/f-field.webp" alt="Соняшникове поле на заході сонця" loading="lazy"></figure>
       </div>
       <div class="bento">
+        <figure class="img-tile bento-img rv"><img src="img/f-factory.webp" alt="Виробничий комплекс Victor &amp; K" loading="lazy"><figcaption>Victor &amp; K — один із провідних виробників харчової продукції України</figcaption></figure>
         <div class="tile stat rv"><span class="n">2022</span><span class="t">Рік заснування VIRA</span></div>
-        <div class="spacer"></div>
         <div class="tile stat rv"><span class="n">20</span><span class="t">Країн Європи та Балкан, з якими працюємо</span></div>
-        <div class="tile stat rv"><span class="n">3</span><span class="t">Формати співпраці: продукція, Private&nbsp;Label, сировина</span></div>
-        <figure class="img-tile rv"><img src="img/f-factory.webp" alt="Виробничий комплекс Victor &amp; K" loading="lazy"><figcaption>Victor &amp; K — один із провідних виробників харчової продукції України</figcaption></figure>
-        <div class="spacer"></div>
-        <div class="tile stat rv"><span class="n">0</span><span class="t">Посередників між вами та&nbsp;виробником</span></div>
+        <div class="tile stat stat-wide rv"><span class="n">3</span><span class="t">Формати співпраці: продукція, Private&nbsp;Label, сировина</span></div>
       </div>
     </div>
   </section>
