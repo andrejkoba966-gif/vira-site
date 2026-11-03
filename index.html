@@ -2020,12 +2020,12 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
   langBtn.addEventListener('click', () => setLang(LANG === 'en' ? 'uk' : 'en'));
   mmLangBtns.forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang)));
 
-  // ?lang=en|uk у посиланні > збережений вибір > мова браузера (англійська → EN) > українська
+  // ?lang=en|uk у посиланні > збережений вибір > мова браузера (українська → UA, будь-яка інша → EN)
   (() => {
     const q = new URLSearchParams(location.search).get('lang');
     let saved = null; try { saved = localStorage.getItem('vira-lang'); } catch (e) {}
     const browser = String((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
-    const want = (q === 'en' || q === 'uk') ? q : (saved === 'en' || saved === 'uk') ? saved : (browser.startsWith('en') ? 'en' : 'uk');
+    const want = (q === 'en' || q === 'uk') ? q : (saved === 'en' || saved === 'uk') ? saved : (browser.startsWith('uk') || !browser ? 'uk' : 'en');
     if (want === 'en') setLang('en', false);
   })();
 
