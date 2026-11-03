@@ -118,6 +118,31 @@ a { color: inherit; text-decoration: none; }
 .nav-search { width: clamp(46px, 3.6vw, 64px); aspect-ratio: 1; border-radius: 50%; background: #fff; display: grid; place-items: center; color: var(--ink); transition: transform .2s; }
 .nav-search:hover { transform: scale(1.06); }
 .nav-search svg { width: 36%; height: 36%; }
+/* перемикач мови (замість пошуку) */
+.nav-lang { border: 0; cursor: pointer; font: inherit; font-size: clamp(13px, .95vw, 16px); font-weight: 600; letter-spacing: .04em; }
+/* бургер: зʼявляється, коли зникає горизонтальне меню */
+.nav-burger { display: none; width: clamp(46px, 3.6vw, 64px); aspect-ratio: 1; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.75); background: transparent; cursor: pointer; padding: 0; flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
+.nav-burger span { display: block; width: 40%; height: 2px; border-radius: 2px; background: #fff; }
+@media (max-width: 1180px) { .nav-burger { display: inline-flex; } }
+@media (max-width: 640px) { .nav-burger { width: 42px; } }
+
+/* мобільне меню */
+#mobile-menu { position: fixed; inset: 0; z-index: 1000; display: flex; flex-direction: column; padding: 20px var(--gutter) 28px; color: #fff; background: rgba(8,10,16,.98); opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility 0s linear .3s; touch-action: none; overscroll-behavior: contain; }
+#mobile-menu.open { opacity: 1; visibility: visible; transition: opacity .3s ease, visibility 0s; }
+html.menu-open, html.menu-open body { overflow: hidden; }
+.mm-top { display: flex; align-items: center; justify-content: space-between; }
+.mm-close { position: relative; width: 42px; height: 42px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.75); background: transparent; cursor: pointer; }
+.mm-close::before, .mm-close::after { content: ''; position: absolute; left: 50%; top: 50%; width: 18px; height: 2px; border-radius: 2px; background: #fff; transform: translate(-50%, -50%) rotate(45deg); }
+.mm-close::after { transform: translate(-50%, -50%) rotate(-45deg); }
+.mm-links { list-style: none; margin: auto 0; display: flex; flex-direction: column; }
+.mm-links a { display: block; padding: 14px 0; font-size: clamp(26px, 7.5vw, 38px); font-weight: 500; letter-spacing: -.01em; border-bottom: 1px solid rgba(255,255,255,.14); }
+.mm-links a:active { color: var(--sun); }
+.mm-bottom { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.mm-lang { display: inline-flex; padding: 3px; border-radius: 100px; border: 1.5px solid rgba(255,255,255,.5); }
+.mm-lang button { border: 0; background: transparent; color: #fff; font: inherit; font-size: 13px; font-weight: 600; letter-spacing: .06em; padding: 9px 16px; border-radius: 100px; cursor: pointer; }
+.mm-lang button[aria-pressed="true"] { background: #fff; color: var(--ink); }
+.mm-cta { display: inline-flex; align-items: center; height: 46px; padding: 0 24px; border-radius: 100px; background: var(--sun); color: var(--ink); font-size: 13px; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; }
+
 .nav-cta { height: clamp(46px, 3.6vw, 64px); display: inline-flex; align-items: center; padding: 0 clamp(22px, 2.2vw, 40px); border-radius: 100px; border: 1.5px solid rgba(255,255,255,.75); font-size: clamp(13px, .95vw, 17px); font-weight: 500; letter-spacing: .03em; text-transform: uppercase; color: #fff; transition: background .2s, color .2s; }
 .nav-cta:hover { background: #fff; color: var(--ink); }
 
@@ -669,8 +694,9 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
           <li><a href="#contact">Контакти</a></li>
         </ul>
         <div class="nav-right">
-          <a href="https://virabalkans.com/?s=" class="nav-search" aria-label="Пошук"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/></svg></a>
+          <button type="button" class="nav-search nav-lang" id="lang-toggle" aria-label="Змінити мову"><span>EN</span></button>
           <a href="#contact" class="nav-cta">Форма зв'язку</a>
+          <button type="button" class="nav-burger" id="burger" aria-label="Меню" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
         </div>
       </div>
     </nav>
@@ -983,11 +1009,45 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
   </div>
 </footer>
 
+
+<!-- ======================= МОБІЛЬНЕ МЕНЮ ======================= -->
+<div id="mobile-menu" role="dialog" aria-modal="true" aria-label="Меню" aria-hidden="true">
+  <div class="mm-top">
+    <a href="#top" class="nav-logo" aria-label="VIRA">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke-width="2.2" stroke-linejoin="round">
+        <path d="M20 26C16 18 16 10 20 4c4 6 4 14 0 22Z" stroke="#F5D90A"/>
+        <path d="M20 26C13 22 9 16 9 9c6 1 11 7 11 17Z" stroke="#C9DC2B"/>
+        <path d="M20 26c7-4 11-10 11-17-6 1-11 7-11 17Z" stroke="#C9DC2B"/>
+        <path d="M20 26c-8 1-14-2-17-7 7-2 13 1 17 7Z" stroke="#F5D90A"/>
+        <path d="M20 26c8 1 14-2 17-7-7-2-13 1-17 7Z" stroke="#F5D90A"/>
+      </g></svg>
+      VIRA
+    </a>
+    <button type="button" class="mm-close" id="mm-close" aria-label="Закрити меню"></button>
+  </div>
+  <ul class="mm-links">
+    <li><a href="#about">Про VIRA</a></li>
+    <li><a href="#formats">Формати</a></li>
+    <li><a href="#products">Продукція</a></li>
+    <li><a href="#geo">Географія</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#contact">Контакти</a></li>
+  </ul>
+  <div class="mm-bottom">
+    <div class="mm-lang" role="group" aria-label="Змінити мову">
+      <button type="button" data-lang="uk" aria-pressed="true">UA</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <a href="#contact" class="mm-cta">Форма зв'язку</a>
+  </div>
+</div>
+
 <script src="img/map-data.js" defer></script>
 <script>
   // ---------- інтро: запускаємо, коли постер і маска готові ----------
   const root = document.documentElement;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let LANG = 'uk', curFormat = 0;   // поточна мова сайту (див. блок «МОВИ» внизу)
   // телефони/планшети: окремий режим «свайп — сцена» (відео грає, а не перемотується)
   const TOUCH = window.matchMedia('(pointer: coarse)').matches;
   if (TOUCH) root.classList.add('is-touch', 'scene-0');
@@ -1410,14 +1470,14 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
     // жест
     let y0 = null, x0 = 0, t0 = 0;
     window.addEventListener('touchstart', e => {
-      if (!locked) return;
+      if (!locked || root.classList.contains('menu-open')) return;
       y0 = e.touches[0].clientY; x0 = e.touches[0].clientX; t0 = Date.now();
     }, { passive: true });
     window.addEventListener('touchmove', e => {
       if (locked && e.cancelable) e.preventDefault();             // сторінка не їде під пальцем
     }, { passive: false });
     window.addEventListener('touchend', e => {
-      if (!locked || y0 === null) return;
+      if (!locked || y0 === null || root.classList.contains('menu-open')) return;
       const t = e.changedTouches[0];
       const dy = y0 - t.clientY, dx = x0 - t.clientX;
       y0 = null;
@@ -1462,13 +1522,20 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
     { d: '<b>Ваш бренд. Наше виробництво.</b> Харчова продукція під брендом замовника для європейського ринку.', l: ['Олії', 'Майонези', 'Соуси', 'Кетчупи'] },
     { d: '<b>Олії та промислова сировина</b> для харчових і виробничих підприємств європейського ринку.', l: ['Олії', 'Лецитин', 'Шрот', 'Інша сировина'] }
   ];
+  const FORMATS_EN = [
+    { d: '<b>“Royal Taste”.</b> Ready-made food products for Retail, HoReCa and wholesale.', l: ['Sunflower oil', 'Mayonnaise', 'Sauces', 'Ketchup'] },
+    { d: '<b>Your brand. Our production.</b> Food products under the customer’s brand for the European market.', l: ['Oils', 'Mayonnaises', 'Sauces', 'Ketchups'] },
+    { d: '<b>Oils and industrial raw materials</b> for food and manufacturing companies in the European market.', l: ['Oils', 'Lecithin', 'Meal', 'Other raw materials'] }
+  ];
   const fTabs = [...document.querySelectorAll('.f-tab')], fImgs = [...document.querySelectorAll('#f-imgs img')];
   const fDesc = document.getElementById('f-desc'), fList = document.getElementById('f-list');
   function setFormat(i) {
     fTabs.forEach((t, k) => { t.classList.toggle('on', k === i); t.setAttribute('aria-selected', k === i); });
     fImgs.forEach((im, k) => im.classList.toggle('on', k === i));
-    fDesc.innerHTML = FORMATS[i].d;
-    fList.innerHTML = FORMATS[i].l.map(x => `<li>${x}</li>`).join('');
+    curFormat = i;
+    const F = (LANG === 'en' ? FORMATS_EN : FORMATS)[i];
+    fDesc.innerHTML = F.d;
+    fList.innerHTML = F.l.map(x => `<li>${x}</li>`).join('');
   }
   fTabs.forEach(t => t.addEventListener('click', () => setFormat(+t.dataset.i)));
   setFormat(0);
@@ -1674,6 +1741,7 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
 
     window.addEventListener('wheel', (e) => {
       if (e.ctrlKey) return;                                   // зум трекпадом
+      if (root.classList.contains('menu-open')) { e.preventDefault(); return; }
       e.preventDefault();
       // нормалізуємо одиниці (Firefox — рядки/сторінки) і обмежуємо один «тик»,
       // а також відрив цілі від поточної позиції: швидкий свайп/інерція трекпада
@@ -1703,6 +1771,280 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
       if (smoothScrollY !== lastDrawn) { lastDrawn = smoothScrollY; updateHeroAnimation(smoothScrollY); }
     })();
   }
+
+  // ============================================================
+  // МОВИ: UA / EN і мобільне меню
+  // Україномовний текст залишається в HTML як є (SEO, запасний варіант);
+  // англійська підставляється зі словника за точним збігом рядка.
+  // ============================================================
+  const I18N_EN = {
+ "Про VIRA": "About VIRA",
+ "Формати": "Formats",
+ "Продукція": "Products",
+ "Географія": "Geography",
+ "Контакти": "Contacts",
+ "Форма зв'язку": "Contact us",
+ "Виробництво харчової продукції та промислової сировини": "Production of food products and industrial raw materials",
+ "Від розробки рецептури до готового продукту під вашим брендом. Власні торгові марки, Private Label та промислова сировина": "From recipe development to a finished product under your brand. Own brands, Private Label and industrial raw materials",
+ "Виробництво": "Production",
+ "Сучасне виробництво. Високі стандарти.": "Modern production. High standards.",
+ "Потужна виробнича база, технологічне обладнання та контроль процесів на кожному етапі виготовлення продукції.": "A powerful production base, process equipment and control at every stage of manufacturing.",
+ "Готова продукція": "Finished products",
+ "Готові продукти для вашого асортименту": "Ready-made products for your range",
+ "Рослинні олії, майонези, кетчупи та соуси для торговельних мереж, дистриб'юторів і професійного використання.": "Vegetable oils, mayonnaise, ketchups and sauces for retail chains, distributors and professional use.",
+ "Ваш бренд. Наше виробництво.": "Your brand. Our production.",
+ "Виготовлення продукції під вашою торговою маркою з індивідуальним оформленням етикеток, брендуванням та пакуванням.": "Manufacturing under your own trademark with custom label design, branding and packaging.",
+ "Відвантаження": "Shipping",
+ "Продукція готова до відправлення": "Products ready for dispatch",
+ "Пакування, комплектація замовлень та підготовка продукції до транспортування відповідно до потреб партнерів.": "Packaging, order picking and preparing products for transportation according to partners' needs.",
+ "Логістика": "Logistics",
+ "Поставки на європейський ринок": "Supplies to the European market",
+ "Організація логістики та доставки продукції з Чорногорії для торговельних мереж і бізнес-партнерів.": "Organization of logistics and delivery of products from Montenegro for retail chains and business partners.",
+ "Використання продукції": "Product use",
+ "Смак, який обирають щодня": "A taste chosen every day",
+ "Рослинні олії, майонези та соуси для приготування страв у ресторанах, професійних кухнях і закладах харчування.": "Vegetable oils, mayonnaise and sauces for preparing dishes in restaurants, professional kitchens and catering establishments.",
+ "Портфоліо": "Product",
+ "продуктів": "portfolio",
+ "Стати": "Become",
+ "партнером": "a partner",
+ "Міст між виробником": "A bridge between the manufacturer",
+ "і Європою": "and Europe",
+ "VIRA, з 2022 року": "VIRA, since 2022",
+ "Офіційне європейське представництво Victor & K Group": "Official European representative office of Victor & K Group",
+ "Ми не дистриб'ютор": "We are not a distributor",
+ "і не логістична компанія.": "and not a logistics company.",
+ "Ми — офіційне представництво": "We are the official representative",
+ "українського виробника": "of the Ukrainian manufacturer",
+ "у Європі й працюємо від його імені, щоб ваш бізнес отримував": "in Europe and work on its behalf so that your business receives",
+ "якісну продукцію напряму,": "quality products directly,",
+ "за прямими контрактами.": "under direct contracts.",
+ "Рік заснування VIRA": "VIRA founding year",
+ "Країн Європи та Балкан, з якими працюємо": "European and Balkan countries we work with",
+ "Формати співпраці: продукція, Private Label, сировина": "Cooperation formats: products, Private Label, raw materials",
+ "Victor & K — один із провідних виробників харчової продукції України": "Victor & K — one of the leading food producers in Ukraine",
+ "Посередників між вами та виробником": "Intermediaries between you and the manufacturer",
+ "Три формати": "Three formats",
+ "співпраці": "of cooperation",
+ "B2B сировина": "B2B raw materials",
+ "Переглянути": "View",
+ "каталог": "the catalogue",
+ "Олії, соуси та промислова сировина виробництва Victor & K.": "Oils, sauces and industrial raw materials produced by Victor & K.",
+ "Повний каталог": "Full catalogue",
+ "Соняшникова олія": "Sunflower oil",
+ "Олії": "Oils",
+ "Ріпакова та соєва олія": "Rapeseed and soybean oil",
+ "Олія для фритюру Pro HoReCa": "Frying oil Pro HoReCa",
+ "Майонез, кетчуп і соуси": "Mayonnaise, ketchup and sauces",
+ "Соуси": "Sauces",
+ "Шрот соняшниковий, ріпаковий, соєвий": "Sunflower, rapeseed and soybean meal",
+ "Сировина": "Raw materials",
+ "Лецитин": "Lecithin",
+ "Каталог продукції": "Product catalogue",
+ "Торгові марки": "Brands",
+ "Чому VIRA": "Why VIRA",
+ "Працюємо від імені виробника —": "We work on behalf of the manufacturer —",
+ "і в інтересах вашого бізнесу": "and in the interest of your business",
+ "Прямий зв'язок із виробником": "Direct contact with the manufacturer",
+ "Ви працюєте з офіційним представництвом Victor & K, а не з ланцюжком перекупників.": "You work with the official representative office of Victor & K, not with a chain of resellers.",
+ "Прозоре ціноутворення": "Transparent pricing",
+ "Ціни виробника без додаткових націнок посередників.": "Manufacturer's prices with no additional intermediary markups.",
+ "Стабільне виробництво": "Stable production",
+ "Власні виробничі потужності та контроль якості на кожному етапі.": "Own production capacity and quality control at every stage.",
+ "Виготовлення продукції під вашою торговою маркою: етикетки, брендування, пакування.": "Manufacturing under your own trademark: labels, branding, packaging.",
+ "Довгострокова співпраця": "Long-term cooperation",
+ "Гнучкі умови, що адаптуються до специфіки вашого бізнесу та ринку.": "Flexible terms adapted to the specifics of your business and market.",
+ "З ким працюємо": "Who we work with",
+ "Торговельні мережі": "Retail chains",
+ "Дистриб'ютори": "Distributors",
+ "Оптова торгівля": "Wholesale",
+ "Виробники харчової продукції": "Food manufacturers",
+ "Промислові клієнти": "Industrial customers",
+ "Готельні мережі": "Hotel chains",
+ "Лайнерні перевезення": "Liner shipping",
+ "Як почати": "How to start",
+ "співпрацю": "cooperation",
+ "Від першого запиту": "From the first inquiry",
+ "до відвантаження": "to shipment",
+ "Запит": "Inquiry",
+ "Залиште заявку на сайті або напишіть менеджеру у WhatsApp.": "Leave a request on the website or message a manager on WhatsApp.",
+ "Підбір": "Selection",
+ "Підбираємо продукцію, формат співпраці та умови під ваш ринок.": "We select products, cooperation format and terms for your market.",
+ "Контракт": "Contract",
+ "Укладаємо прямий контракт від імені виробника.": "We sign a direct contract on behalf of the manufacturer.",
+ "Пакування, комплектація замовлення та доставка до вашого складу.": "Packaging, order picking and delivery to your warehouse.",
+ "Залишити": "Leave",
+ "заявку": "a request",
+ "VIRA — прямий зв'язок Victor & K з європейським ринком": "VIRA — a direct link between Victor & K and the European market",
+ "поставок": "of supplies",
+ "Забезпечуємо зв'язок між виробником і клієнтами": "We connect the manufacturer with customers",
+ "у 20 країнах": "in 20 countries",
+ "Європи та на Балканах. Оберіть країну — покажемо її на карті.": "of Europe and the Balkans. Choose a country — we will show it on the map.",
+ "Новини": "News",
+ "Виставки, контракти та новинки.": "Exhibitions, contracts and new products.",
+ "Усі новини": "All news",
+ "Експорт": "Export",
+ "VIRA взяла участь у міжнародній виставці Alimentaria 2026": "VIRA took part in the international exhibition Alimentaria 2026",
+ "Участь VIRA у світовій конференції Fi Europe": "VIRA at the global conference Fi Europe",
+ "Контракти": "Contracts",
+ "Майбутні контракти на ріпакову олію: відкрито обговорення та бронювання": "Upcoming rapeseed oil contracts: discussion and booking are open",
+ "Питання": "Questions",
+ "та відповіді": "and answers",
+ "Не знайшли відповідь?": "Didn't find an answer?",
+ "Напишіть нам": "Write to us",
+ "Чим VIRA відрізняється від дистриб'ютора?": "How is VIRA different from a distributor?",
+ "VIRA — офіційне європейське представництво Victor & K. Ми працюємо від імені виробника: ви отримуєте прямий контракт і продукцію без посередників.": "VIRA is the official European representative office of Victor & K. We work on behalf of the manufacturer: you get a direct contract and products without intermediaries.",
+ "Чи можна отримати ціни виробника?": "Can I get manufacturer's prices?",
+ "Так. Ми працюємо без посередників, тому ви отримуєте ціни виробника без додаткових націнок.": "Yes. We work without intermediaries, so you get manufacturer's prices without additional markups.",
+ "Чи працюєте ви з невеликими обсягами?": "Do you work with small volumes?",
+ "Так, ми відвантажуємо як великі, так і малі партії продукції.": "Yes, we ship both large and small batches of products.",
+ "Чи можна виготовити продукцію під нашою торговою маркою?": "Can you produce under our own trademark?",
+ "Так, це формат Private Label: олії, майонези, соуси та кетчупи з вашим оформленням етикеток, брендуванням і пакуванням.": "Yes, this is the Private Label format: oils, mayonnaise, sauces and ketchups with your label design, branding and packaging.",
+ "Які умови співпраці?": "What are the terms of cooperation?",
+ "Умови гнучкі й адаптуються до потреб кожного клієнта з урахуванням специфіки вашого бізнесу та ринку.": "Terms are flexible and adapted to the needs of each customer, taking into account the specifics of your business and market.",
+ "У які країни ви постачаєте?": "Which countries do you supply?",
+ "Працюємо з 20 країнами Європи та Балкан: від Бельгії, Німеччини й Франції до Хорватії, Сербії, Чорногорії, Греції та України.": "We work with 20 countries of Europe and the Balkans: from Belgium, Germany and France to Croatia, Serbia, Montenegro, Greece and Ukraine.",
+ "Обговоримо": "Let's discuss",
+ "Розкажіть про ваш бізнес і продукцію, яка вас цікавить, — менеджер підбере формат і умови та зв'яжеться з вами.": "Tell us about your business and the products you are interested in — a manager will select the format and terms and get in touch with you.",
+ "Не заповнюйте:": "Do not fill in:",
+ "Заявка на співпрацю": "Cooperation request",
+ "Що вас цікавить": "What interests you",
+ "Інше": "Other",
+ "Я погоджуюсь на збереження та використання моїх персональних даних згідно з": "I agree to the storage and use of my personal data in accordance with the",
+ "політикою конфіденційності": "privacy policy",
+ "Надіслати запит": "Send request",
+ "Дякуємо! Ми отримали заявку й зв'яжемося з вами найближчим часом.": "Thank you! We have received your request and will contact you shortly.",
+ "Смак України —": "The taste of Ukraine —",
+ "на столі в Європі": "on the table in Europe",
+ "Офіційне представництво Victor & K у Європі": "Official representative office of Victor & K in Europe",
+ "Формати співпраці": "Cooperation formats",
+ "Блог": "Blog",
+ "Про Victor & K": "About Victor & K",
+ "VIRA © 2026. Усі права захищені.": "VIRA © 2026. All rights reserved.",
+ "Політика конфіденційності": "Privacy policy",
+ "Попередній": "Previous",
+ "Наступний": "Next",
+ "Соняшникове поле на заході сонця": "Sunflower field at sunset",
+ "Виробничий комплекс Victor & K": "Victor & K production complex",
+ "Лінія розливу соняшникової олії": "Sunflower oil bottling line",
+ "Пляшки олії з етикетками": "Oil bottles with labels",
+ "Виробничий комплекс із силосами": "Production complex with silos",
+ "Королівський Смак": "Korolivskyi Smak",
+ "Кухар Рішельє": "Kukhar Rishelie",
+ "Чугуєв Продукт": "Chuhuiv Product",
+ "Карта країн поставок VIRA": "Map of VIRA supply countries",
+ "Ім'я": "Name",
+ "Компанія": "Company",
+ "Країна": "Country",
+ "Телефон / WhatsApp": "Phone / WhatsApp",
+ "Коментар: продукція, обсяги, ринок": "Comment: products, volumes, market",
+ "Нагору": "Back to top",
+ "Меню": "Menu",
+ "Закрити меню": "Close menu",
+ "Змінити мову": "Change language",
+ "Бельгія": "Belgium",
+ "Німеччина": "Germany",
+ "Швейцарія": "Switzerland",
+ "Франція": "France",
+ "Італія": "Italy",
+ "Австрія": "Austria",
+ "Чехія": "Czechia",
+ "Словаччина": "Slovakia",
+ "Угорщина": "Hungary",
+ "Хорватія": "Croatia",
+ "Боснія та Герцеговина": "Bosnia and Herzegovina",
+ "Сербія": "Serbia",
+ "Чорногорія": "Montenegro",
+ "Албанія": "Albania",
+ "Македонія": "North Macedonia",
+ "Греція": "Greece",
+ "Болгарія": "Bulgaria",
+ "Румунія": "Romania",
+ "Молдова": "Moldova",
+ "Україна": "Ukraine",
+ "Чорногорія · офіс VIRA": "Montenegro · VIRA office"
+};
+  const EN_TITLE = 'VIRA — production of food products and industrial raw materials';
+  const EN_DESC  = 'From recipe development to a finished product under your brand. Own brands, Private Label contract manufacturing and industrial raw materials for European business';
+  const CYR = /[А-Яа-яІіЇїЄєҐґ]/;
+  const norm = t => t.replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
+  const L_ATTRS = ['alt', 'aria-label', 'placeholder', 'title'];
+  const L_SKIP = new Set(['SCRIPT', 'STYLE', 'NOSCRIPT']);
+  const origText = new WeakMap();
+  const metaDesc = document.querySelector('meta[name="description"]');
+  const UK_TITLE = document.title, UK_DESC = metaDesc ? metaDesc.getAttribute('content') : '';
+
+  function trText(n) {
+    if (!origText.has(n)) { if (!CYR.test(n.nodeValue)) return; origText.set(n, n.nodeValue); }
+    const o = origText.get(n);
+    if (LANG === 'en') {
+      const t = I18N_EN[norm(o)];
+      if (t !== undefined) n.nodeValue = o.match(/^\s*/)[0] + t + o.match(/\s*$/)[0];
+    } else n.nodeValue = o;
+  }
+  function trAttrs(el) {
+    for (const a of L_ATTRS) {
+      if (!el.hasAttribute(a)) continue;
+      const k = 'data-uk-' + a;
+      if (!el.hasAttribute(k)) { const v = el.getAttribute(a); if (!CYR.test(v)) continue; el.setAttribute(k, v); }
+      const o = el.getAttribute(k);
+      if (LANG === 'en') { const t = I18N_EN[norm(o)]; if (t !== undefined) el.setAttribute(a, t); }
+      else el.setAttribute(a, o);
+    }
+  }
+  function trWalk(node) {
+    if (node.nodeType === 3) return trText(node);
+    if (node.nodeType !== 1 || L_SKIP.has(node.tagName)) return;
+    trAttrs(node);
+    if (node.tagName === 'TEXTAREA') return;   // вміст поля (те, що вводить користувач) не чіпаємо
+    node.childNodes.forEach(trWalk);
+  }
+  // карта й інші блоки створюються скриптом вже після старту — ловимо нові вузли
+  new MutationObserver(ms => { if (LANG === 'en') ms.forEach(m => m.addedNodes.forEach(trWalk)); })
+    .observe(document.body, { childList: true, subtree: true });
+
+  const langBtn = document.getElementById('lang-toggle');
+  const mmLangBtns = [...document.querySelectorAll('.mm-lang button')];
+  function setLang(l, save = true) {
+    LANG = l === 'en' ? 'en' : 'uk';
+    root.lang = LANG;
+    trWalk(document.body);
+    document.title = LANG === 'en' ? EN_TITLE : UK_TITLE;
+    if (metaDesc) metaDesc.setAttribute('content', LANG === 'en' ? EN_DESC : UK_DESC);
+    langBtn.firstElementChild.textContent = LANG === 'en' ? 'UA' : 'EN';
+    mmLangBtns.forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === LANG));
+    setFormat(curFormat);
+    if (save) { try { localStorage.setItem('vira-lang', LANG); } catch (e) {} }
+    // довжина текстів змінилась — перераховуємо розкладку
+    try { layoutLetters(); sizeTrack(); fitWordmark(); setCarousel(cIdx, true); measureMax(); lastProgress = -1; if (!TOUCH) updateHeroAnimation(window.scrollY); } catch (e) {}
+  }
+  langBtn.addEventListener('click', () => setLang(LANG === 'en' ? 'uk' : 'en'));
+  mmLangBtns.forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang)));
+
+  // ?lang=en|uk у посиланні > збережений вибір > українська
+  (() => {
+    const q = new URLSearchParams(location.search).get('lang');
+    let saved = null; try { saved = localStorage.getItem('vira-lang'); } catch (e) {}
+    const want = (q === 'en' || q === 'uk') ? q : saved;
+    if (want === 'en') setLang('en', false);
+  })();
+
+  // ---------- мобільне меню (бургер) ----------
+  const mMenu = document.getElementById('mobile-menu'), burger = document.getElementById('burger'), mmClose = document.getElementById('mm-close');
+  function openMenu() {
+    mMenu.classList.add('open'); mMenu.setAttribute('aria-hidden', 'false');
+    root.classList.add('menu-open'); burger.setAttribute('aria-expanded', 'true');
+    mmClose.focus({ preventScroll: true });
+  }
+  function closeMenu() {
+    if (!mMenu.classList.contains('open')) return;
+    mMenu.classList.remove('open'); mMenu.setAttribute('aria-hidden', 'true');
+    root.classList.remove('menu-open'); burger.setAttribute('aria-expanded', 'false');
+  }
+  burger.addEventListener('click', openMenu);
+  mmClose.addEventListener('click', closeMenu);
+  mMenu.addEventListener('click', e => { if (e.target.closest('a')) closeMenu(); });
+  window.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+  window.addEventListener('resize', () => { if (window.innerWidth > 1180) closeMenu(); });
 </script>
 </body>
 </html>
