@@ -65,7 +65,7 @@ a { color: inherit; text-decoration: none; }
 #final-v.on { opacity: 1; visibility: visible; transition: opacity .45s ease, visibility 0s; }
 #bg-video { z-index: 0; background: url("img/vira-hero-poster.jpg") center / cover no-repeat; }
 #hero-matte { z-index: 3; pointer-events: none; will-change: opacity; }
-#hero-static { display: none; }
+#hero-static, #hero-static-shade { display: none; }
 
 /* ============================================================
   VIRA — великі літери у полі (варіант 2a)
@@ -571,8 +571,9 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
 .is-touch #hero-bottom, .is-touch #hero-bar { translate: 0 calc(-1 * var(--tb)); }
 
 /* статичний вертикальний фон першого екрана; зникає, щойно починаються сцени відео */
-.is-touch #hero-static { display: block; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; z-index: 1; pointer-events: none; transition: opacity .5s ease, visibility 0s; }
-.is-touch:not(.scene-0) #hero-static { opacity: 0; visibility: hidden; transition: opacity .5s ease, visibility 0s linear .5s; }
+.is-touch #hero-static, .is-touch #hero-static-shade { display: block; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; z-index: 1; pointer-events: none; transition: opacity .5s ease, visibility 0s; }
+.is-touch #hero-static-shade { background: linear-gradient(to bottom, rgba(3,10,11,0) 43%, rgba(3,10,11,.08) 65%, rgba(3,10,11,.62) 75%, rgba(3,10,11,.80) 89%, rgba(3,10,11,.94) 100%); }   /* затемнення низу, як у макеті */
+.is-touch:not(.scene-0) #hero-static, .is-touch:not(.scene-0) #hero-static-shade { opacity: 0; visibility: hidden; transition: opacity .5s ease, visibility 0s linear .5s; }
 .is-touch #hero-matte { display: none; }   /* маска поля підганялась під горизонтальний кадр */
 
 /* легше: без розмиття, світіння, будь-яких фільтрів */
@@ -635,6 +636,7 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
 
       <!-- мобільна версія: статичний вертикальний фон першого екрана (лише .is-touch) -->
       <img id="hero-static" src="img/hero-mobile-bg.webp" alt="" aria-hidden="true">
+      <div id="hero-static-shade" aria-hidden="true"></div>
 
       <!-- VIRA у полі -->
       <div id="hero-letters" aria-hidden="true">
