@@ -309,7 +309,10 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
 .stat .t { font-size: clamp(13px, .85vw, 16px); line-height: 1.4; color: var(--mute); max-width: 14em; }
 .bento .bento-img { grid-column: 1 / span 2; grid-row: 1 / span 2; }
 .bento .stat-wide { grid-column: span 2; }
-.bento .img-tile figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 20px; font-size: clamp(13px, .85vw, 16px); color: #fff; background: linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,0)); }
+.bento-img .scene-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .7s ease; pointer-events: none; }
+.bento-img .scene-video.on { opacity: 1; }
+.bento-img figcaption { z-index: 2; }
+.bento .img-tile figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 20px; font-size: clamp(13px, .85vw, 16px); color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,.6); background: linear-gradient(to top, rgba(0,0,0,.82), rgba(0,0,0,0)); }
 
 /* ---------- 3. ФОРМАТИ ---------- */
 .formats { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--gap); align-items: stretch; }
@@ -801,7 +804,7 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
         <figure class="img-tile rv"><img src="img/f-field.webp" alt="Соняшникове поле на заході сонця" loading="lazy"></figure>
       </div>
       <div class="bento">
-        <figure class="img-tile bento-img rv"><img src="img/f-factory.webp" alt="Виробничий комплекс Victor &amp; K" loading="lazy"><figcaption>Victor &amp; K — один із провідних виробників харчової продукції України</figcaption></figure>
+        <figure class="img-tile bento-img rv"><img src="img/f-factory.webp" alt="Виробничий комплекс Victor &amp; K" loading="lazy"><video class="scene-video" muted playsinline preload="none" aria-hidden="true" tabindex="-1"></video><figcaption>Victor &amp; K — один із провідних виробників харчової продукції України</figcaption></figure>
         <div class="tile stat rv"><span class="n">2022</span><span class="t">Рік заснування VIRA</span></div>
         <div class="tile stat rv"><span class="n">20</span><span class="t">Країн Європи та Балкан, з якими працюємо</span></div>
         <div class="tile stat stat-wide rv"><span class="n">3</span><span class="t">Формати співпраці: продукція, Private&nbsp;Label, сировина</span></div>
@@ -1795,6 +1798,31 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
       if (smoothScrollY !== lastDrawn) { lastDrawn = smoothScrollY; updateHeroAnimation(smoothScrollY); }
     })();
   }
+
+  // ---------- плитка «Victor & K»: сцена з брендингом з hero (Private Label, 10.83–16.08 с) ----------
+  (() => {
+    const sv = document.querySelector('.scene-video');
+    if (!sv || reduceMotion || (navigator.connection && navigator.connection.saveData)) return;
+    const START = 10.95, END = 16.0;          // трохи всередині склейок, щоб не мигали сусідні сцени
+    const SRC = video.getAttribute('src');    // той самий файл, що й у hero — береться з кешу
+    let started = false, visible = false, timer = 0;
+    const wrap = () => { if (sv.currentTime >= END || sv.currentTime < START - 0.4) sv.currentTime = START; };
+    function loop(now, meta) { if (meta && meta.mediaTime >= END) sv.currentTime = START; if (visible) sv.requestVideoFrameCallback(loop); }
+    function play() {
+      const p = sv.play(); if (p && p.catch) p.catch(() => {});
+      if ('requestVideoFrameCallback' in sv) sv.requestVideoFrameCallback(loop);
+      else { clearInterval(timer); timer = setInterval(wrap, 80); }
+    }
+    sv.addEventListener('loadedmetadata', () => { sv.currentTime = START; });
+    sv.addEventListener('playing', () => sv.classList.add('on'));
+    new IntersectionObserver(es => es.forEach(e => {
+      visible = e.isIntersecting;
+      if (visible) {
+        if (!started) { started = true; sv.src = SRC; sv.load(); }
+        if (sv.readyState >= 1) play(); else sv.addEventListener('loadedmetadata', () => visible && play(), { once: true });
+      } else { sv.pause(); clearInterval(timer); }
+    }), { rootMargin: '200px 0px' }).observe(sv.parentElement);
+  })();
 
   // ============================================================
   // МОВИ: UA / EN і мобільне меню
