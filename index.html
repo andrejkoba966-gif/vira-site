@@ -1165,14 +1165,16 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
     if (Math.abs(targetTime - currentTime) < 0.04) { seekLocked = false; return; }
     seekLocked = true;
     currentTime = targetTime;
-    if ('requestVideoFrameCallback' in video) {
-      video.requestVideoFrameCallback(() => { seekLocked = false; doSeek(); });
-    } else {
-      video.addEventListener('seeked', function onSeeked() {
-        video.removeEventListener('seeked', onSeeked);
-        seekLocked = false; doSeek();
-      }, { once: true });
-    }
+    // розблокування по 'seeked' (рівно коли кадр готовий) + страховка по таймеру:
+    // раніше requestVideoFrameCallback міг не спрацювати — замок залишався назавжди і відео «замерзало»
+    let done = false, tm;
+    const finish = () => {
+      if (done) return; done = true;
+      clearTimeout(tm); video.removeEventListener('seeked', finish);
+      seekLocked = false; doSeek();
+    };
+    tm = setTimeout(finish, 250);
+    video.addEventListener('seeked', finish);
     video.currentTime = currentTime;
   }
 
@@ -1629,7 +1631,9 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
   // ============================================================
   // SCROLL ENGINE: десктоп — плавне колесо, мобайл — нативний скрол
   // ============================================================
-  const EASE = 0.09;
+  const EASE_K = 5.7;       // ≈ 0.09 за кадр на 60 Гц
+  const MAX_STEP = 160;     // макс. дельта одного wheel-івенту, px
+  const MAX_LEAD = 1.0;     // на скільки екранів ціль може випереджати поточну позицію
   let targetScrollY = 0, smoothScrollY = 0;
   // висота сторінки кешується і оновлюється лише при зміні розмірів (не читаємо layout щокадру)
   let maxScrollCache = 0;
@@ -1654,7 +1658,14 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
     window.addEventListener('wheel', (e) => {
       if (e.ctrlKey) return;                                   // зум трекпадом
       e.preventDefault();
-      targetScrollY = clamp(targetScrollY + e.deltaY * 1.2, 0, maxScroll());
+      // нормалізуємо одиниці (Firefox — рядки/сторінки) і обмежуємо один «тик»,
+      // а також відрив цілі від поточної позиції: швидкий свайп/інерція трекпада
+      // більше не «викидає» сторінку через кілька блоків за раз
+      let dy = e.deltaY;
+      if (e.deltaMode === 1) dy *= 32; else if (e.deltaMode === 2) dy *= window.innerHeight;
+      dy = clamp(dy, -MAX_STEP, MAX_STEP) * 1.2;
+      const lead = window.innerHeight * MAX_LEAD;
+      targetScrollY = clamp(targetScrollY + dy, Math.max(0, smoothScrollY - lead), Math.min(maxScroll(), smoothScrollY + lead));
     }, { passive: false });
 
     // клавіатура, скролбар, відновлення позиції — синхронізуємо плавний скрол
@@ -1663,12 +1674,14 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
       if (Math.abs(y - expectedY) > 3) { targetScrollY = smoothScrollY = expectedY = y; }
     }, { passive: true });
 
-    let lastDrawn = -1;
-    (function tick() {
+    let lastDrawn = -1, lastTs = 0;
+    (function tick(ts) {
       requestAnimationFrame(tick);
+      // згладжування за часом, а не за кадром — однаково на 60/120/144 Гц
+      const dt = lastTs ? Math.min(0.05, (ts - lastTs) / 1000) : 1 / 60; lastTs = ts;
       targetScrollY = clamp(targetScrollY, 0, maxScroll());
       const d = targetScrollY - smoothScrollY;
-      smoothScrollY = Math.abs(d) < 0.5 ? targetScrollY : smoothScrollY + d * EASE;
+      smoothScrollY = Math.abs(d) < 0.5 ? targetScrollY : smoothScrollY + d * (1 - Math.exp(-dt * EASE_K));
       if (Math.abs(smoothScrollY - expectedY) > 0.5) { expectedY = smoothScrollY; window.scrollTo(0, smoothScrollY); }
       if (smoothScrollY !== lastDrawn) { lastDrawn = smoothScrollY; updateHeroAnimation(smoothScrollY); }
     })();
