@@ -325,7 +325,7 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
 .formats .img-tile video.on { opacity: 1; }
 .formats .img-tile img { position: absolute; inset: 0; opacity: 0; transition: opacity .6s ease, transform 1.2s cubic-bezier(.2,.8,.2,1); }
 .formats .img-tile img.on { opacity: 1; }
-.formats .img-tile img.b2b-img { object-position: 50% 42%; }
+.formats .img-tile img.b2b-img { object-fit: contain; object-position: 50% 50%; background: #000; }   /* фото майже квадратне — показуємо повністю, чорний фон збігається з фоном знімка */
 .f-side { grid-column: 1 / 6; order: -1; display: flex; flex-direction: column; justify-content: space-between; gap: 28px; }
 .f-tabs { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
 .f-tab { display: flex; align-items: baseline; gap: 18px; padding: clamp(14px, 1.2vw, 22px) 0; border-bottom: 1px solid var(--line); background: none; border-left: 0; border-right: 0; border-top: 0; color: var(--mute2); font: inherit; text-align: left; cursor: pointer; transition: color .25s; }
