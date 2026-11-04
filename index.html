@@ -325,6 +325,7 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
 .formats .img-tile video.on { opacity: 1; }
 .formats .img-tile img { position: absolute; inset: 0; opacity: 0; transition: opacity .6s ease, transform 1.2s cubic-bezier(.2,.8,.2,1); }
 .formats .img-tile img.on { opacity: 1; }
+.formats .img-tile img.b2b-img { object-position: 50% 42%; }
 .f-side { grid-column: 1 / 6; order: -1; display: flex; flex-direction: column; justify-content: space-between; gap: 28px; }
 .f-tabs { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
 .f-tab { display: flex; align-items: baseline; gap: 18px; padding: clamp(14px, 1.2vw, 22px) 0; border-bottom: 1px solid var(--line); background: none; border-left: 0; border-right: 0; border-top: 0; color: var(--mute2); font: inherit; text-align: left; cursor: pointer; transition: color .25s; }
@@ -833,7 +834,7 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
       <figure class="img-tile rv" id="f-imgs">
         <video class="on" data-i="0" muted loop playsinline preload="none" poster="img/ready-products-poster.jpg" data-src="video/ready-products.mp4" aria-label="Картопля фрі з соусом"></video>
         <video data-i="1" muted loop playsinline preload="none" poster="img/private-label-poster.jpg" data-src="video/private-label.mp4" aria-label="Пляшки олії з етикетками Private Label"></video>
-        <img src="img/f-factory.webp" alt="Виробничий комплекс із силосами" loading="lazy">
+        <img class="b2b-img" src="img/b2b-lecithin.webp" alt="Соняшниковий лецитин: мішок 25 кг, склянка з олією та соняшник" loading="lazy">
       </figure>
       <div class="f-side rv">
         <div>
@@ -2062,6 +2063,7 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
     "якість на кожному етапі.": "quality at every stage.",
     "Пляшки олії з етикетками Private Label": "Oil bottles with Private Label labels",
     "Картопля фрі з соусом": "French fries with sauce",
+    "Соняшниковий лецитин: мішок 25 кг, склянка з олією та соняшник": "Sunflower lecithin: 25 kg bag, a beaker of oil and a sunflower",
     "Повний цикл": "The full cycle",
     "під вашим брендом": "under your brand"
   });
