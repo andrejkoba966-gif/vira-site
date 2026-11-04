@@ -299,8 +299,6 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
 /* ---------- 2. ХТО МИ ---------- */
 .statement-row { display: grid; grid-template-columns: 1fr clamp(180px, 15vw, 227px); gap: clamp(28px, 4vw, 60px); align-items: start; }
 #about-title, #formats-title, #products-title { font-size: clamp(28px, 2.5vw, 37px); }
-/* великі екрани (ширші за ноутбук 14"): CTA стоїть поруч з абзацом, а не біля правого краю */
-@media (min-width: 1513px) { .statement-row { grid-template-columns: auto 227px; justify-content: start; column-gap: 80px; } }
 .statement { text-wrap: pretty; max-width: 30em; font-size: clamp(19px, 1.75vw, 26px); font-weight: 600; line-height: 1.22; letter-spacing: -.03em; color: #fff; }
 .statement .dim { color: var(--mute2); }
 .statement .acc { color: var(--sun); }
