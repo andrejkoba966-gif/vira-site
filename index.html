@@ -398,7 +398,7 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
 .step p { font-size: clamp(14px, .9vw, 17px); line-height: 1.5; color: var(--mute); }
 .steps .cta-tile { aspect-ratio: auto; }
 
-/* ---------- 7. ГЕОГРАФІЯ: 3D-карта ---------- */
+/* ---------- 5. ГЕОГРАФІЯ: 3D-карта ---------- */
 #geo { overflow: hidden; }
 .geo-grid { display: grid; grid-template-columns: minmax(0, 4.2fr) minmax(0, 7.8fr); gap: clamp(24px, 3vw, 64px); align-items: center; }
 .geo-left .h-xl { margin: 16px 0 18px; }
@@ -897,7 +897,29 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
   </div>
 </section>
 
-<!-- ======================= 5. ЧОМУ VIRA ======================= -->
+<!-- ======================= 7. ГЕОГРАФІЯ ======================= -->
+<section class="l-sec" id="geo" aria-labelledby="geo-title">
+  <div class="container">
+    <div class="geo-grid">
+      <div class="geo-left">
+        <span class="eyebrow rv">VIRA — прямий зв'язок Victor &amp; K з європейським ринком</span>
+        <h2 class="h-xl rv" id="geo-title">Географія<br>поставок</h2>
+        <p class="lead rv">Забезпечуємо зв'язок між виробником і клієнтами <b>у&nbsp;20&nbsp;країнах</b> Європи та на&nbsp;Балканах. Оберіть країну — покажемо її на карті.</p>
+        <ul class="clist rv" id="clist"></ul>
+        <div class="geo-note rv"><span><b>Tivat</b> — Porto Montenegro, Arsenal Business Club</span><span><b>Budva</b> — VIRA DOO, Drobni Pijesak BB</span></div>
+      </div>
+      <div class="map3d" id="map3d" aria-label="Карта країн поставок VIRA">
+        <div class="map-plane" id="map-plane">
+          <div class="map-shadow"></div>
+          <svg class="map-svg" id="map-svg" role="img" aria-hidden="true"></svg>
+          <div id="map-pins"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 6. ЧОМУ VIRA ======================= -->
 <section class="l-sec" id="why" aria-labelledby="why-title">
   <div class="container">
     <div class="sec-head rv">
@@ -918,7 +940,7 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
   </div>
 </section>
 
-<!-- ======================= 6. ЯК ПОЧАТИ ======================= -->
+<!-- ======================= 7. ЯК ПОЧАТИ ======================= -->
 <section class="l-sec" id="how" aria-labelledby="how-title">
   <div class="container">
     <div class="sec-head rv">
@@ -931,28 +953,6 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
       <div class="tile step rv"><span class="n">03</span><div><h3>Контракт</h3><p>Укладаємо прямий контракт від імені виробника.</p></div></div>
       <div class="tile step rv"><span class="n">04</span><div><h3>Відвантаження</h3><p>Пакування, комплектація замовлення та доставка до вашого складу.</p></div></div>
       <a class="cta-tile rv" href="#contact">Залишити<br>заявку<span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 5v7H5"/></svg></span></a>
-    </div>
-  </div>
-</section>
-
-<!-- ======================= 7. ГЕОГРАФІЯ ======================= -->
-<section class="l-sec" id="geo" aria-labelledby="geo-title">
-  <div class="container">
-    <div class="geo-grid">
-      <div class="geo-left">
-        <span class="eyebrow rv">VIRA — прямий зв'язок Victor &amp; K з європейським ринком</span>
-        <h2 class="h-xl rv" id="geo-title">Географія<br>поставок</h2>
-        <p class="lead rv">Забезпечуємо зв'язок між виробником і клієнтами <b>у&nbsp;20&nbsp;країнах</b> Європи та на&nbsp;Балканах. Оберіть країну — покажемо її на карті.</p>
-        <ul class="clist rv" id="clist"></ul>
-        <div class="geo-note rv"><span><b>Tivat</b> — Porto Montenegro, Arsenal Business Club</span><span><b>Budva</b> — VIRA DOO, Drobni Pijesak BB</span></div>
-      </div>
-      <div class="map3d" id="map3d" aria-label="Карта країн поставок VIRA">
-        <div class="map-plane" id="map-plane">
-          <div class="map-shadow"></div>
-          <svg class="map-svg" id="map-svg" role="img" aria-hidden="true"></svg>
-          <div id="map-pins"></div>
-        </div>
-      </div>
     </div>
   </div>
 </section>
