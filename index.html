@@ -421,13 +421,35 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
 .pill { padding: .7em 1.2em; border-radius: 100px; border: 1px solid var(--line); font-size: clamp(14px, .9vw, 17px); color: #e6e6ea; }
 
 /* ---------- 6. ЯК ПОЧАТИ ---------- */
-.steps { display: grid; grid-template-columns: repeat(4, 1fr) clamp(170px, 13vw, 260px); gap: var(--gap); }
-.step { padding: clamp(18px, 1.6vw, 30px); min-height: clamp(220px, 16vw, 330px); display: flex; flex-direction: column; justify-content: space-between; }
-.step .n { font-size: clamp(32px, 2.8vw, 60px); font-weight: 400; letter-spacing: -.05em; color: var(--mute2); line-height: 1; }
-.step h3 { font-size: clamp(18px, 1.3vw, 26px); font-weight: 500; letter-spacing: -.02em; margin-bottom: 8px; }
-.step p { font-size: clamp(14px, .9vw, 17px); line-height: 1.5; color: var(--mute); }
-.steps .cta-tile { aspect-ratio: auto; }
-@media (min-width: 761px) { .step p { min-height: 4.5em; } }   /* заголовки кроків на одній висоті */
+/* ---------- ЯК ПОЧАТИ: розсувна фотогалерея кроків ---------- */
+.hw { display: flex; gap: clamp(8px, .9vw, 16px); height: clamp(420px, 38vw, 600px); }
+.hw-p { position: relative; flex: 1 1 0; min-width: 0; overflow: hidden; border-radius: var(--r); background: #15171c; color: #fff; isolation: isolate; transition: flex-grow .6s cubic-bezier(.22,.68,.24,1); }
+.hw-p.is-on { flex-grow: 2; }
+.hw-p img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--pos, 50% 50%); z-index: -2; transition: transform .8s cubic-bezier(.22,.68,.24,1); }
+.hw-p.is-on img { transform: scale(1.03); }
+.hw-p::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to top, rgba(6,7,10,.86) 0%, rgba(6,7,10,.45) 32%, rgba(6,7,10,0) 62%), linear-gradient(to bottom, rgba(6,7,10,.35), rgba(6,7,10,0) 24%); pointer-events: none; }
+.hw-hit { position: absolute; inset: 0; z-index: 3; width: 100%; background: none; border: 0; cursor: pointer; border-radius: inherit; }
+.hw-hit:focus-visible { outline: 2px solid var(--sun); outline-offset: -4px; }
+.hw-n { position: absolute; top: clamp(16px, 1.5vw, 26px); left: clamp(16px, 1.5vw, 26px); font-size: clamp(14px, 1.05vw, 19px); font-weight: 500; letter-spacing: .02em; transition: opacity .35s; }
+.hw-p.is-on .hw-n { opacity: 0; }
+.hw-badge { position: absolute; top: clamp(14px, 1.3vw, 22px); left: clamp(14px, 1.3vw, 22px); display: inline-flex; gap: .45em; padding: .55em 1.05em; border-radius: 100px; background: var(--sun); color: var(--ink); font-size: clamp(12px, .9vw, 16px); font-weight: 600; letter-spacing: .02em; text-transform: uppercase; opacity: 0; transform: translateY(-6px); transition: opacity .4s .12s, transform .4s .12s; }
+.hw-p.is-on .hw-badge { opacity: 1; transform: none; }
+.hw-arr { position: absolute; top: clamp(14px, 1.3vw, 22px); right: clamp(14px, 1.3vw, 22px); width: clamp(34px, 2.8vw, 48px); aspect-ratio: 1; border-radius: 50%; background: var(--sun); color: var(--ink); display: grid; place-items: center; opacity: 0; transform: scale(.8); transition: opacity .4s .12s, transform .4s .12s; }
+.hw-arr svg { width: 42%; height: 42%; }
+.hw-p.is-on .hw-arr { opacity: 1; transform: none; }
+.hw-body { position: absolute; left: clamp(16px, 1.5vw, 26px); right: clamp(16px, 1.5vw, 26px); bottom: clamp(18px, 1.7vw, 30px); }
+.hw-t { font-size: clamp(17px, 1.45vw, 26px); font-weight: 500; letter-spacing: -.02em; line-height: 1.1; transition: font-size .5s cubic-bezier(.22,.68,.24,1); }
+.hw-p.is-on .hw-t { font-size: clamp(24px, 2.3vw, 40px); }
+.hw-d { max-width: 22em; max-height: 0; overflow: hidden; margin-top: 0; font-size: clamp(14px, 1vw, 18px); line-height: 1.45; color: rgba(255,255,255,.88); opacity: 0; transform: translateY(10px); transition: max-height .5s cubic-bezier(.22,.68,.24,1), margin .5s, opacity .4s, transform .4s; }
+.hw-p.is-on .hw-d { max-height: 6em; margin-top: .6em; opacity: 1; transform: none; transition-delay: 0s, 0s, .22s, .22s; }
+.hw-line { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--sun); transform: scaleX(0); transform-origin: left; transition: transform .6s cubic-bezier(.22,.68,.24,1); }
+.hw-p.is-on .hw-line { transform: none; }
+.hw-foot { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-top: clamp(18px, 1.8vw, 28px); }
+.hw-cap { font-size: clamp(14px, .95vw, 17px); color: var(--mute); }
+.hw-cta { display: inline-flex; align-items: center; gap: 14px; padding: .55em .6em .55em 1.5em; border-radius: 100px; background: var(--sun); color: var(--ink); font-size: clamp(14px, 1vw, 18px); font-weight: 600; letter-spacing: .01em; transition: transform .25s, box-shadow .25s; }
+.hw-cta:hover { transform: translateY(-3px); box-shadow: 0 16px 34px -18px rgba(245,217,10,.7); }
+.hw-cta .circle { width: clamp(32px, 2.4vw, 42px); }
+@media (prefers-reduced-motion: reduce) { .hw-p, .hw-p img, .hw-d, .hw-line, .hw-badge, .hw-arr, .hw-t, .hw-cta { transition: none; } .hw-p.is-on img { transform: none; } }
 
 /* ---------- 5. ГЕОГРАФІЯ: 3D-карта ---------- */
 #geo { overflow: hidden; }
@@ -617,8 +639,13 @@ footer .container { padding-bottom: clamp(24px, 2vw, 40px); }
   .geo-left .clist, .geo-left .geo-note { order: 3; }
   .formats .img-tile { grid-column: 1 / -1; aspect-ratio: 16/9; }
   .f-side { grid-column: 1 / -1; order: 0; }
-  .steps { grid-template-columns: repeat(2, 1fr); }
-  .steps .cta-tile { grid-column: span 2; aspect-ratio: auto; min-height: 140px; }
+  .hw { flex-direction: column; height: auto; }
+  .hw-p { flex: none; height: 120px; transition: height .55s cubic-bezier(.22,.68,.24,1); }
+  .hw-p.is-on { height: 350px; flex-grow: 0; }
+  .hw-t { font-size: 20px; } .hw-p.is-on .hw-t { font-size: 26px; }
+  .hw-d { font-size: 15px; }
+  .hw-foot { flex-direction: column; align-items: stretch; gap: 16px; }
+  .hw-cta { justify-content: space-between; padding: .8em .8em .8em 1.6em; }
   .brands { flex-direction: column; align-items: stretch; gap: 14px; }
   .faq-grid { grid-template-columns: 1fr; }
   .contact { grid-template-columns: 1fr; }
@@ -989,12 +1016,47 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
       <h2 class="h-xl" id="how-title">Як почати<br>співпрацю</h2>
       <p class="sec-aside">Від першого запиту<br>до відвантаження</p>
     </div>
-    <div class="steps">
-      <div class="tile step rv"><span class="n">01</span><div><h3>Запит</h3><p>Залиште заявку на сайті або напишіть менеджеру у&nbsp;WhatsApp.</p></div></div>
-      <div class="tile step rv"><span class="n">02</span><div><h3>Підбір</h3><p>Підбираємо продукцію, формат співпраці та умови під ваш ринок.</p></div></div>
-      <div class="tile step rv"><span class="n">03</span><div><h3>Контракт</h3><p>Укладаємо прямий контракт від імені виробника.</p></div></div>
-      <div class="tile step rv"><span class="n">04</span><div><h3>Відвантаження</h3><p>Пакування, комплектація замовлення та доставка до вашого складу.</p></div></div>
-      <a class="cta-tile rv" href="#contact">Залишити<br>заявку<span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 5v7H5"/></svg></span></a>
+    <div class="hw rv" id="hw">
+      <article class="hw-p" style="--pos:50% 55%">
+        <img src="img/news-alimentaria.jpg" width="900" height="1200" alt="" loading="lazy">
+        <span class="hw-n" aria-hidden="true">01</span>
+        <span class="hw-badge" aria-hidden="true"><span>01</span> / <span>Запит</span></span>
+        <span class="hw-arr" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 4l8 8M12 5v7H5"/></svg></span>
+        <div class="hw-body"><h3 class="hw-t" id="hw-t0">Запит</h3><p class="hw-d" id="hw-d0" aria-hidden="true">Заявка на сайті або повідомлення менеджеру.</p></div>
+        <span class="hw-line" aria-hidden="true"></span>
+        <button class="hw-hit" type="button" aria-expanded="false" aria-controls="hw-d0" aria-labelledby="hw-t0"></button>
+      </article>
+      <article class="hw-p is-on" style="--pos:22% 50%">
+        <img src="img/f-bottling.webp" width="1400" height="788" alt="" loading="lazy">
+        <span class="hw-n" aria-hidden="true">02</span>
+        <span class="hw-badge" aria-hidden="true"><span>02</span> / <span>Підбір</span></span>
+        <span class="hw-arr" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 4l8 8M12 5v7H5"/></svg></span>
+        <div class="hw-body"><h3 class="hw-t" id="hw-t1">Підбір</h3><p class="hw-d" id="hw-d1">Продукція та формат співпраці під ваш ринок.</p></div>
+        <span class="hw-line" aria-hidden="true"></span>
+        <button class="hw-hit" type="button" aria-expanded="true" aria-controls="hw-d1" aria-labelledby="hw-t1"></button>
+      </article>
+      <article class="hw-p" style="--pos:72% 50%">
+        <img src="img/f-labels2.webp" width="1400" height="788" alt="" loading="lazy">
+        <span class="hw-n" aria-hidden="true">03</span>
+        <span class="hw-badge" aria-hidden="true"><span>03</span> / <span>Контракт</span></span>
+        <span class="hw-arr" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 4l8 8M12 5v7H5"/></svg></span>
+        <div class="hw-body"><h3 class="hw-t" id="hw-t2">Контракт</h3><p class="hw-d" id="hw-d2" aria-hidden="true">Прямий контракт від імені виробника.</p></div>
+        <span class="hw-line" aria-hidden="true"></span>
+        <button class="hw-hit" type="button" aria-expanded="false" aria-controls="hw-d2" aria-labelledby="hw-t2"></button>
+      </article>
+      <article class="hw-p" style="--pos:78% 50%">
+        <img src="img/f-loading.webp" width="1400" height="788" alt="" loading="lazy">
+        <span class="hw-n" aria-hidden="true">04</span>
+        <span class="hw-badge" aria-hidden="true"><span>04</span> / <span>Відвантаження</span></span>
+        <span class="hw-arr" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 4l8 8M12 5v7H5"/></svg></span>
+        <div class="hw-body"><h3 class="hw-t" id="hw-t3">Відвантаження</h3><p class="hw-d" id="hw-d3" aria-hidden="true">Комплектація та доставка до вашого складу.</p></div>
+        <span class="hw-line" aria-hidden="true"></span>
+        <button class="hw-hit" type="button" aria-expanded="false" aria-controls="hw-d3" aria-labelledby="hw-t3"></button>
+      </article>
+    </div>
+    <div class="hw-foot rv">
+      <p class="hw-cap">Чотири кроки до спільного результату.</p>
+      <a class="hw-cta" href="#contact">Залишити заявку<span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 4l8 8M12 5v7H5"/></svg></span></a>
     </div>
   </div>
 </section>
@@ -2031,6 +2093,11 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
  "Від першого запиту": "From the first inquiry",
  "до відвантаження": "to shipment",
  "Запит": "Inquiry",
+ "Заявка на сайті або повідомлення менеджеру.": "A request on the website or a message to the manager.",
+ "Продукція та формат співпраці під ваш ринок.": "Products and cooperation format for your market.",
+ "Прямий контракт від імені виробника.": "A direct contract on behalf of the manufacturer.",
+ "Комплектація та доставка до вашого складу.": "Order picking and delivery to your warehouse.",
+ "Чотири кроки до спільного результату.": "Four steps to a shared result.",
  "Залиште заявку на сайті або напишіть менеджеру у WhatsApp.": "Leave a request on the website or message a manager on WhatsApp.",
  "Підбір": "Selection",
  "Підбираємо продукцію, формат співпраці та умови під ваш ринок.": "We select products, cooperation format and terms for your market.",
@@ -2038,6 +2105,7 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
  "Укладаємо прямий контракт від імені виробника.": "We sign a direct contract on behalf of the manufacturer.",
  "Пакування, комплектація замовлення та доставка до вашого складу.": "Packaging, order picking and delivery to your warehouse.",
  "Залишити": "Leave",
+ "Залишити заявку": "Leave a request",
  "заявку": "a request",
  "VIRA — прямий зв'язок Victor & K з європейським ринком": "VIRA — a direct link between Victor & K and the European market",
  "поставок": "of supplies",
@@ -2250,6 +2318,12 @@ if('IntersectionObserver' in window){
  new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting){w.classList.add('is-in');setTimeout(function(){w.classList.add('rev');},1800);}});},{threshold:.3}).observe(w);
 }else{bg.classList.add('ld');w.classList.add('is-in','rev');near=true;}
 addEventListener('scroll',req,{passive:true});addEventListener('resize',req);})();
+</script>
+<script>
+(function(){var box=document.getElementById('hw');if(!box)return;var ps=[].slice.call(box.querySelectorAll('.hw-p'));
+function set(i){ps.forEach(function(p,k){var on=k===i;p.classList.toggle('is-on',on);var b=p.querySelector('.hw-hit'),d=p.querySelector('.hw-d');b.setAttribute('aria-expanded',on?'true':'false');if(on)d.removeAttribute('aria-hidden');else d.setAttribute('aria-hidden','true');});}
+var fine=matchMedia('(hover:hover) and (pointer:fine)');
+ps.forEach(function(p,i){p.addEventListener('mouseenter',function(){if(fine.matches&&innerWidth>760)set(i)});p.querySelector('.hw-hit').addEventListener('click',function(){set(i)});p.querySelector('.hw-hit').addEventListener('focus',function(){set(i)});});})();
 </script>
 </body>
 </html>
