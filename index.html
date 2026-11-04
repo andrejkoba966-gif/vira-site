@@ -1836,28 +1836,52 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
   }
 
   // ---------- плитка «Victor & K»: сцена з брендингом з hero (Private Label, 10.83–16.08 с) ----------
+  // Блок «липкий» (залипає над hero, а далі його перекривають наступні секції), тому IntersectionObserver
+  // не годиться — він вважає плитку видимою й під перекриттям. Рахуємо видимість вручну:
+  // частка плитки в екрані мінус та частина, яку вже закрив наступний блок (#formats).
   (() => {
     const sv = document.querySelector('.scene-video');
     if (!sv || reduceMotion || (navigator.connection && navigator.connection.saveData)) return;
     const START = 10.95, END = 16.0;          // трохи всередині склейок, щоб не мигали сусідні сцени
     const SRC = video.getAttribute('src');    // той самий файл, що й у hero — береться з кешу
-    let started = false, visible = false, timer = 0;
+    const tile = sv.parentElement, nextSec = document.getElementById('formats');
+    let started = false, playing = false, ticking = false, timer = 0, rv = 0;
     const wrap = () => { if (sv.currentTime >= END || sv.currentTime < START - 0.4) sv.currentTime = START; };
-    function loop(now, meta) { if (meta && meta.mediaTime >= END) sv.currentTime = START; if (visible) sv.requestVideoFrameCallback(loop); }
-    function play() {
-      const p = sv.play(); if (p && p.catch) p.catch(() => {});
-      if ('requestVideoFrameCallback' in sv) sv.requestVideoFrameCallback(loop);
-      else { clearInterval(timer); timer = setInterval(wrap, 80); }
+    function loop(now, meta) {
+      if (meta && meta.mediaTime >= END) sv.currentTime = START;
+      if (playing) rv = sv.requestVideoFrameCallback(loop);
     }
-    sv.addEventListener('loadedmetadata', () => { sv.currentTime = START; });
+    function shown() {
+      const tb = tile.getBoundingClientRect(); if (tb.height <= 0) return 0;
+      const top = Math.max(tb.top, 0), bottom = Math.min(tb.bottom, innerHeight, nextSec ? nextSec.getBoundingClientRect().top : Infinity);
+      return Math.max(0, bottom - top) / Math.min(tb.height, innerHeight);
+    }
+    function start() {
+      playing = true;
+      const go = () => {
+        if (!playing) return;
+        try { sv.currentTime = START; } catch (e) {}          // щоразу з початку, коли блок відкривається
+        const p = sv.play(); if (p && p.catch) p.catch(() => {});
+        if ('requestVideoFrameCallback' in sv) rv = sv.requestVideoFrameCallback(loop);
+        else { clearInterval(timer); timer = setInterval(wrap, 80); }
+      };
+      if (sv.readyState >= 1) go(); else sv.addEventListener('loadedmetadata', go, { once: true });
+    }
+    function stop() {
+      playing = false; sv.pause(); clearInterval(timer);
+      if (rv && sv.cancelVideoFrameCallback) sv.cancelVideoFrameCallback(rv);
+    }
+    function update() {
+      ticking = false;
+      const f = shown();
+      if (!started && (f > 0 || tile.getBoundingClientRect().top < innerHeight * 1.2)) { started = true; sv.src = SRC; sv.load(); }
+      if (!playing && f >= 0.6) start();            // стартує, коли плитку видно ≥60%
+      else if (playing && f < 0.2) stop();          // зупиняється, коли видно <20% (або закрито наступним блоком)
+    }
     sv.addEventListener('playing', () => sv.classList.add('on'));
-    new IntersectionObserver(es => es.forEach(e => {
-      visible = e.isIntersecting;
-      if (visible) {
-        if (!started) { started = true; sv.src = SRC; sv.load(); }
-        if (sv.readyState >= 1) play(); else sv.addEventListener('loadedmetadata', () => visible && play(), { once: true });
-      } else { sv.pause(); clearInterval(timer); }
-    }), { rootMargin: '200px 0px' }).observe(sv.parentElement);
+    window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    window.addEventListener('resize', update);
+    update();
   })();
 
   // ============================================================
