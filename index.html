@@ -575,7 +575,6 @@ html[lang="en"] .clist button.home::after { content: 'office'; }
 .submit { height: clamp(50px, 3.5vw, 62px); border-radius: 10px; border: 0; background: #fff; color: var(--ink); font: inherit; font-size: clamp(15px, 1vw, 18px); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px; transition: background .2s; }
 .submit:hover { background: var(--sun); }
 .submit svg { width: 16px; height: 16px; }
-.form .img-tile { aspect-ratio: 16/6; margin-top: 6px; }
 .form-ok { display: none; padding: 14px 16px; border-radius: 10px; background: rgba(245,217,10,.12); color: #fff; font-size: 15px; }
 .form.sent .form-ok { display: block; }
 
@@ -674,7 +673,8 @@ footer .container { padding-bottom: clamp(24px, 2vw, 40px); }
   .post { min-height: 260px; }
   .brand { width: 132px; height: 66px; }
   .form .row { grid-template-columns: 1fr; }
-  .form .img-tile { display: none; }
+  .contact > div:first-child { display: contents; }   /* на мобільному: заголовок → форма → контакти */
+  #contact-title { order: 1; } .contact-lead { order: 2; margin-top: 0; } .contact > .form { order: 3; } .contact .team { order: 4; } .contact .offices { order: 5; }
   .person { grid-template-columns: 1fr; }
   .person a.wa { grid-column: 1; grid-row: auto; justify-self: start; margin-top: 8px; }
   .foot { grid-template-columns: 1fr; }
@@ -1121,18 +1121,12 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
         </div>
         <div class="row">
           <div class="field"><input name="country" placeholder="Країна" autocomplete="country-name"></div>
-          <div class="field"><input name="phone" type="tel" placeholder="Телефон / WhatsApp" autocomplete="tel" required></div>
+          <div class="field"><input name="email" type="email" placeholder="Email" autocomplete="email" required></div>
         </div>
-        <div class="field"><input name="email" type="email" placeholder="Email" autocomplete="email"></div>
-        <div class="field"><select name="interest" aria-label="Що вас цікавить">
-          <option value="">Що вас цікавить</option>
-          <option>Готова продукція</option><option>Private Label</option><option>B2B сировина</option><option>Інше</option>
-        </select></div>
         <div class="field"><textarea name="message" placeholder="Коментар: продукція, обсяги, ринок"></textarea></div>
         <label class="consent"><input type="checkbox" name="consent" required><span>Я погоджуюсь на збереження та використання моїх персональних даних згідно з <a href="https://virabalkans.com/privacy-policy/" target="_blank" rel="noopener">політикою конфіденційності</a></span></label>
         <button class="submit" type="submit">Надіслати запит<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 5v7H5"/></svg></button>
         <p class="form-ok">Дякуємо! Ми отримали заявку й зв'яжемося з вами найближчим часом.</p>
-        <figure class="img-tile"><img src="img/f-truck.webp" alt="" loading="lazy"></figure>
       </form>
     </div>
   </div>
