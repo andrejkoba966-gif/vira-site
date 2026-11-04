@@ -382,11 +382,21 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
 .brand img { display: block; width: auto; height: auto; max-width: 74%; max-height: 100%; object-fit: contain; }
 
 /* ---------- 5. ЧОМУ VIRA ---------- */
-.why { border-top: 1px solid var(--line); }
-.why-row { display: grid; grid-template-columns: clamp(50px, 6vw, 120px) 1fr minmax(0, 32em); gap: 24px; align-items: baseline; padding: clamp(20px, 1.9vw, 36px) 0; border-bottom: 1px solid var(--line); }
-.why-row .k { font-size: clamp(12px, .8vw, 14px); font-weight: 600; color: var(--sun); letter-spacing: .08em; }
-.why-row h3 { font-size: clamp(22px, 2.1vw, 44px); font-weight: 400; letter-spacing: -.04em; text-transform: uppercase; line-height: 1.02; }
-.why-row p { font-size: clamp(15px, 1vw, 19px); line-height: 1.55; color: var(--mute); }
+.why { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(10px, .9vw, 16px); align-items: stretch; }
+.why-list { display: grid; gap: clamp(10px, .9vw, 16px); }
+.why-card { position: relative; display: flex; flex-direction: column; justify-content: space-between; gap: 18px; min-height: clamp(150px, 12vw, 220px); padding: clamp(18px, 1.6vw, 30px); border-radius: var(--r); background: #171A21; color: #fff; border: 1px solid var(--line); cursor: pointer; outline: none; transition: transform .3s, box-shadow .3s; }
+.why-card.is-sun { background: var(--sun); color: var(--ink); border-color: transparent; }
+.why-card.is-white { background: #fff; color: var(--ink); border-color: transparent; }
+.why-card h3 { align-self: flex-end; text-align: right; font-size: clamp(22px, 2.2vw, 42px); font-weight: 400; letter-spacing: -.035em; text-transform: uppercase; line-height: 1.04; }
+.why-foot { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
+.why-foot p { max-width: 26em; font-size: clamp(11px, .8vw, 14px); line-height: 1.5; letter-spacing: .04em; text-transform: uppercase; opacity: .72; }
+.why-card .circle { width: clamp(36px, 2.6vw, 48px); }
+.why-card:hover, .why-card:focus-visible, .why-card.is-on { transform: translateY(-3px); box-shadow: 0 18px 40px -24px rgba(0,0,0,.7); }
+.why-card:hover .circle, .why-card:focus-visible .circle { transform: rotate(-45deg); }
+.why-card:focus-visible { box-shadow: 0 0 0 2px var(--sun); }
+.why-media { position: relative; overflow: hidden; border-radius: var(--r); background: #171A21; min-height: 340px; }
+.why-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .5s; }
+.why-media img.on { opacity: 1; }
 .segments { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: clamp(36px, 3.4vw, 51px); }
 .segments .eyebrow { margin-right: 14px; }
 .pill { padding: .7em 1.2em; border-radius: 100px; border: 1px solid var(--line); font-size: clamp(14px, .9vw, 17px); color: #e6e6ea; }
@@ -603,8 +613,11 @@ footer .container { padding-bottom: clamp(24px, 2vw, 40px); }
   .bento-cta { grid-column: span 2; display: flex; flex-direction: column; justify-content: space-between; padding: 14px; min-height: 132px; border-radius: var(--r); background: var(--sun); color: var(--ink); font-size: 13px; font-weight: 500; line-height: 1.25; text-transform: uppercase; }
   .bento-cta svg { width: 22px; height: 22px; align-self: flex-end; }
   .f-bottom { grid-template-columns: 1fr 130px; }
-  .why-row { grid-template-columns: 40px 1fr; }
-  .why-row p { grid-column: 2; }
+  .why { grid-template-columns: 1fr; }
+  .why-media { order: -1; min-height: 0; height: 220px; }
+  .why-card { min-height: 128px; padding: 16px; }
+  .why-card h3 { font-size: 22px; }
+  .why-foot p { font-size: 11px; }
   .news { grid-template-columns: 1fr; }
   .post { min-height: 200px; }
   .brand { width: 132px; height: 66px; }
@@ -932,12 +945,19 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
       <h2 class="h-xl" id="why-title">Чому VIRA</h2>
       <p class="sec-aside">Працюємо від імені виробника —<br>і в&nbsp;інтересах вашого бізнесу</p>
     </div>
-    <div class="why">
-      <div class="why-row rv"><span class="k">01</span><h3>Прямий зв'язок із&nbsp;виробником</h3><p>Ви працюєте з офіційним представництвом Victor&nbsp;&amp;&nbsp;K, а не з ланцюжком перекупників.</p></div>
-      <div class="why-row rv"><span class="k">02</span><h3>Прозоре ціноутворення</h3><p>Ціни виробника без додаткових націнок посередників.</p></div>
-      <div class="why-row rv"><span class="k">03</span><h3>Стабільне виробництво</h3><p>Власні виробничі потужності та контроль якості на кожному етапі.</p></div>
-      <div class="why-row rv"><span class="k">04</span><h3>Private Label</h3><p>Виготовлення продукції під вашою торговою маркою: етикетки, брендування, пакування.</p></div>
-      <div class="why-row rv"><span class="k">05</span><h3>Довгострокова співпраця</h3><p>Гнучкі умови, що адаптуються до специфіки вашого бізнесу та ринку.</p></div>
+    <div class="why rv">
+      <div class="why-list">
+        <div class="why-card is-sun is-on" tabindex="0"><h3>Прямий зв'язок із&nbsp;виробником</h3><div class="why-foot"><p>Ви працюєте з офіційним представництвом Victor&nbsp;&amp;&nbsp;K, а не з ланцюжком перекупників.</p><span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 5v7H5"/></svg></span></div></div>
+        <div class="why-card " tabindex="0"><h3>Стабільне виробництво</h3><div class="why-foot"><p>Власні виробничі потужності та контроль якості на кожному етапі.</p><span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 5v7H5"/></svg></span></div></div>
+        <div class="why-card is-white" tabindex="0"><h3>Private Label</h3><div class="why-foot"><p>Виготовлення продукції під вашою торговою маркою: етикетки, брендування, пакування.</p><span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 5v7H5"/></svg></span></div></div>
+        <div class="why-card " tabindex="0"><h3>Довгострокова співпраця</h3><div class="why-foot"><p>Гнучкі умови, що адаптуються до специфіки вашого бізнесу та ринку.</p><span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 5v7H5"/></svg></span></div></div>
+      </div>
+      <div class="why-media" aria-hidden="true">
+        <img src="img/f-factory.webp" alt="" class="on">
+        <img src="img/f-bottling.webp" alt="" loading="lazy">
+        <img src="img/f-labels.webp" alt="" loading="lazy">
+        <img src="img/f-loading.webp" alt="" loading="lazy">
+      </div>
     </div>
     <div class="segments rv">
       <span class="eyebrow">З ким працюємо</span>
@@ -2198,6 +2218,11 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
   mMenu.addEventListener('click', e => { if (e.target.closest('a')) closeMenu(); });
   window.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
   window.addEventListener('resize', () => { if (window.innerWidth > 1180) closeMenu(); });
+</script>
+<script>
+(function(){var w=document.querySelector('.why');if(!w)return;var cs=w.querySelectorAll('.why-card'),im=w.querySelectorAll('.why-media img');
+function on(i){cs.forEach(function(c,k){c.classList.toggle('is-on',k===i)});im.forEach(function(m,k){m.classList.toggle('on',k===i)});}
+cs.forEach(function(c,i){['mouseenter','focus','click'].forEach(function(e){c.addEventListener(e,function(){on(i)})});});})();
 </script>
 </body>
 </html>
