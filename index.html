@@ -320,12 +320,12 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
 
 /* ---------- 3. ФОРМАТИ ---------- */
 .formats { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--gap); align-items: stretch; }
-.formats .img-tile { grid-column: 1 / 7; aspect-ratio: 16/11; }
+.formats .img-tile { grid-column: 7 / 13; aspect-ratio: 16/11; }
 .formats .img-tile video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity .6s ease; }
 .formats .img-tile video.on { opacity: 1; }
 .formats .img-tile img { position: absolute; inset: 0; opacity: 0; transition: opacity .6s ease, transform 1.2s cubic-bezier(.2,.8,.2,1); }
 .formats .img-tile img.on { opacity: 1; }
-.f-side { grid-column: 8 / 13; display: flex; flex-direction: column; justify-content: space-between; gap: 28px; }
+.f-side { grid-column: 1 / 6; order: -1; display: flex; flex-direction: column; justify-content: space-between; gap: 28px; }
 .f-tabs { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
 .f-tab { display: flex; align-items: baseline; gap: 18px; padding: clamp(14px, 1.2vw, 22px) 0; border-bottom: 1px solid var(--line); background: none; border-left: 0; border-right: 0; border-top: 0; color: var(--mute2); font: inherit; text-align: left; cursor: pointer; transition: color .25s; }
 .f-tab .k { font-size: clamp(12px, .8vw, 14px); font-weight: 600; letter-spacing: .08em; color: inherit; min-width: 2em; }
@@ -570,7 +570,7 @@ footer .container { padding-bottom: clamp(24px, 2vw, 40px); }
   .map3d { order: 2; margin: 2% -8% 0; }
   .geo-left .clist, .geo-left .geo-note { order: 3; }
   .formats .img-tile { grid-column: 1 / -1; aspect-ratio: 16/9; }
-  .f-side { grid-column: 1 / -1; }
+  .f-side { grid-column: 1 / -1; order: 0; }
   .steps { grid-template-columns: repeat(2, 1fr); }
   .steps .cta-tile { grid-column: span 2; aspect-ratio: auto; min-height: 140px; }
   .brands { grid-template-columns: repeat(4, 1fr); }
@@ -828,7 +828,6 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
   <div class="container">
     <div class="sec-head rv">
       <h2 class="h-xl" id="formats-title">Три формати<br>співпраці</h2>
-      <img class="thumb" src="img/f-loading.webp" alt="" loading="lazy">
     </div>
     <div class="formats">
       <figure class="img-tile rv" id="f-imgs">
