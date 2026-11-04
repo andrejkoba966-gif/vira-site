@@ -401,6 +401,7 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
 /* ---------- 5. ГЕОГРАФІЯ: 3D-карта ---------- */
 #geo { overflow: hidden; }
 .geo-grid { display: grid; grid-template-columns: minmax(0, 4.2fr) minmax(0, 7.8fr); gap: clamp(24px, 3vw, 64px); align-items: center; }
+.geo-left { position: relative; z-index: 3; }   /* текст і список завжди над підкладкою карти */
 .geo-left .h-xl { margin: 16px 0 18px; }
 .geo-left .lead { font-size: clamp(15px, 1vw, 19px); line-height: 1.55; color: var(--mute); max-width: 28em; }
 .geo-left .lead b { color: #fff; font-weight: 500; }
@@ -420,12 +421,13 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
   position: absolute; inset: 0; transform-style: preserve-3d;
   transform: rotateX(var(--rx, 44deg)) rotateZ(var(--rz, -7deg)) translateY(-3%) scale(var(--sc, 1));
   transition: transform .2s linear;
+  will-change: transform;   /* шар не перемальовується заново на кожному кадрі 3D-анімації */
 }
 .map3d:not(.in) .map-plane { --rx: 72deg; --sc: .86; opacity: 0; }
 .map3d:not(.near) .map-plane { visibility: hidden; }
 .map3d.in .map-plane { opacity: 1; transition: transform 1.6s cubic-bezier(.16,.84,.3,1), opacity 1s ease; }
 .map3d.in.live .map-plane { transition: transform .35s ease-out; }
-.map-shadow { position: absolute; left: 6%; right: 6%; top: 12%; bottom: -4%; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.85), rgba(0,0,0,0)); transform: translateZ(-40px); filter: blur(10px); }
+.map-shadow { position: absolute; left: 6%; right: 6%; top: 12%; bottom: -4%; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.85), rgba(0,0,0,0)); transform: translateZ(-40px); }
 .map-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 #map-pins { position: absolute; inset: 0; transform-style: preserve-3d; pointer-events: none; }
 .map-svg .ctx { fill: #141417; stroke: #222228; stroke-width: .8; pointer-events: none; }
@@ -448,6 +450,7 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
 .pin.on .lbl { opacity: 1; transform: none; }
 .pin.home .dot { background: var(--sun); box-shadow: 0 0 0 4px rgba(245,217,10,.22), 0 0 22px rgba(245,217,10,.9); }
 .pin.home .dot::after { content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 1.5px solid var(--sun); animation: ping 2.2s ease-out infinite; }
+.map3d:not(.onscreen) .pin.home .dot::after { animation-play-state: paused; }
 .pin.home .dot { position: relative; }
 .pin.home .beam { height: clamp(34px, 3.2vw, 62px); background: linear-gradient(to bottom, var(--sun), rgba(245,217,10,0)); }
 @keyframes ping { from { transform: scale(.6); opacity: 1; } to { transform: scale(2.4); opacity: 0; } }
@@ -1655,7 +1658,7 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
     const DEPTH = 16;   // товщина «плити» в пікселях карти
     // сторона плити: шари знизу вгору, від темного до світлішого
     let side = '';
-    for (let k = DEPTH; k >= 1; k--) {
+    for (let k = DEPTH; k >= 2; k -= 2) {   // крок 2px: вдвічі менше шарів, на вигляд те саме
       const l = Math.round(10 + (DEPTH - k) * 2.2);
       side += `<path d="${land}" transform="translate(0 ${k})" fill="rgb(${l},${l + 2},${l + 8})"/>`;
     }
@@ -1666,11 +1669,11 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
           <stop offset="0" stop-color="#E9DFC8"/><stop offset=".28" stop-color="#9C9A92"/>
           <stop offset=".55" stop-color="#4A5262"/><stop offset="1" stop-color="#1B2740"/>
         </linearGradient>
-        <radialGradient id="ctxFade" cx=".55" cy=".5" r=".62"><stop offset=".55" stop-color="#fff"/><stop offset="1" stop-color="#000"/></radialGradient>
-        <mask id="ctxMask" maskUnits="userSpaceOnUse" x="-200" y="-200" width="${M.w + 400}" height="${M.h + 400}"><rect x="-200" y="-200" width="${M.w + 400}" height="${M.h + 400}" fill="url(#ctxFade)"/></mask>
+        <radialGradient id="ctxFade" cx=".55" cy=".5" r=".62"><stop offset=".55" stop-color="#0A0A0B" stop-opacity="0"/><stop offset="1" stop-color="#0A0A0B" stop-opacity="1"/></radialGradient>
         <radialGradient id="sheen" cx=".18" cy=".1" r=".9"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".6" stop-color="#fff" stop-opacity="0"/></radialGradient>
       </defs>
-      <path class="ctx" d="${M.context}" mask="url(#ctxMask)"/>
+      <path class="ctx" d="${M.context}"/>
+      <rect x="-200" y="-200" width="${M.w + 400}" height="${M.h + 400}" fill="url(#ctxFade)" pointer-events="none"/>
       <g>${side}</g>
       <path d="${land}" fill="url(#topFill)"/>
       <path d="${land}" fill="url(#sheen)"/>
@@ -1696,7 +1699,7 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
       if (!id) { lift.innerHTML = ''; return; }
       // країна «піднімається» над плитою
       const d = byId[id].d; let h = '';
-      for (let k = 10; k >= 1; k--) h += `<path class="side" d="${d}" transform="translate(0 ${k - 12})"/>`;
+      for (let k = 10; k >= 2; k -= 2) h += `<path class="side" d="${d}" transform="translate(0 ${k - 12})"/>`;   // 5 шарів замість 10
       lift.innerHTML = h + `<path class="top" d="${d}" transform="translate(0 -12)"/>`;
     }
     svg.addEventListener('mouseover', e => { const p = e.target.closest('.c'); if (p) setActive(p.dataset.id); });
@@ -1713,7 +1716,8 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
     }), { threshold: .25 });
     io.observe(stage);
     // карту малюємо тільки поруч із екраном — на hero вона не навантажує браузер
-    new IntersectionObserver(es => es.forEach(e => stage.classList.toggle('near', e.isIntersecting)), { rootMargin: '600px 0px' }).observe(stage);
+    new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) stage.classList.add('near'); }), { rootMargin: '600px 0px' }).observe(stage);
+    new IntersectionObserver(es => es.forEach(e => stage.classList.toggle('onscreen', e.isIntersecting))).observe(stage);
 
     // нахил за курсором (тільки ПК)
     if (!TOUCH) {
