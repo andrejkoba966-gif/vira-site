@@ -313,6 +313,7 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
 .stat .t { font-size: clamp(13px, .85vw, 16px); line-height: 1.4; color: var(--mute); max-width: 14em; }
 .bento .bento-img { grid-column: 1 / span 2; grid-row: 1 / span 2; }
 .bento .stat-wide { grid-column: span 2; }
+.bento-cta { display: none; }
 .bento-img .scene-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .7s ease; pointer-events: none; }
 .bento-img .scene-video.on { opacity: 1; }
 .bento-img figcaption { z-index: 2; }
@@ -593,13 +594,13 @@ footer .container { padding-bottom: clamp(24px, 2vw, 40px); }
   .sec-aside { text-align: left; padding-top: 0; }
   .sec-head .thumb { display: none; }
   .statement-row { grid-template-columns: 1fr; }
-  .about-cta { aspect-ratio: auto; height: 64px; flex-direction: row; align-items: center; padding: 0 20px; font-size: 16px; letter-spacing: 0; }
-  .about-cta svg { width: 24px; height: 24px; align-self: center; flex: none; }
-  .about-cta br { display: none; }
-  .bento { grid-template-columns: 1fr 1fr; grid-auto-rows: auto; }
-  .bento .stat { min-height: 132px; }
+  .statement-row .about-cta { display: none; }   /* замість смуги під текстом — жовтий квадрат поруч із плиткою «3» */
+  .bento { grid-template-columns: repeat(6, 1fr); grid-auto-rows: auto; }
+  .bento .stat { grid-column: span 3; min-height: 132px; }
   .bento .bento-img { grid-column: 1 / -1; grid-row: auto; height: 200px; }
-  .bento .stat-wide { grid-column: 1 / -1; }
+  .bento .stat-wide { grid-column: span 4; }
+  .bento-cta { grid-column: span 2; display: flex; flex-direction: column; justify-content: space-between; padding: 14px; min-height: 132px; border-radius: var(--r); background: var(--sun); color: var(--ink); font-size: 13px; font-weight: 500; line-height: 1.25; text-transform: uppercase; }
+  .bento-cta svg { width: 22px; height: 22px; align-self: flex-end; }
   .f-bottom { grid-template-columns: 1fr 130px; }
   .why-row { grid-template-columns: 40px 1fr; }
   .why-row p { grid-column: 2; }
@@ -621,6 +622,7 @@ footer .container { padding-bottom: clamp(24px, 2vw, 40px); }
   .pin .lbl { font-size: 11px; padding: 4px 9px; }
   .c-card.on { width: 68vw; }
 }
+@media (max-width: 400px) { .bento-cta { padding: 12px; font-size: 11px; letter-spacing: 0; } }
 /* ============================================================
   MOBILE / TOUCH — «свайп — сцена»
   висота екрана фіксована (lvh), адресний рядок нічого не смикає;
@@ -826,6 +828,7 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
         <div class="tile stat rv"><span class="n">2022</span><span class="t">Рік заснування VIRA</span></div>
         <div class="tile stat rv"><span class="n">20</span><span class="t">Країн Європи та Балкан, з якими працюємо</span></div>
         <div class="tile stat stat-wide rv"><span class="n">3</span><span class="t">Формати співпраці: продукція, Private&nbsp;Label, сировина</span></div>
+        <a href="#contact" class="bento-cta">Стати<br> партнером<svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 11h14M12 5l6 6-6 6"/></svg></a>
       </div>
     </div>
   </section>
