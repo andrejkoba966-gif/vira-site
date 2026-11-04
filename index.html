@@ -298,7 +298,7 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
 
 /* ---------- 2. ХТО МИ ---------- */
 .statement-row { display: grid; grid-template-columns: 1fr clamp(180px, 15vw, 320px); gap: clamp(28px, 4vw, 90px); align-items: start; }
-#about-title, #formats-title { font-size: clamp(28px, 2.5vw, 37px); }
+#about-title, #formats-title, #products-title { font-size: clamp(28px, 2.5vw, 37px); }
 .statement { text-wrap: pretty; max-width: 30em; font-size: clamp(19px, 1.75vw, 26px); font-weight: 600; line-height: 1.22; letter-spacing: -.03em; color: #fff; }
 .statement .dim { color: var(--mute2); }
 .statement .acc { color: var(--sun); }
@@ -859,16 +859,16 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
   <div class="container">
     <div class="sec-head rv">
       <h2 class="h-xl" id="products-title">Продукція</h2>
-      <p class="sec-aside">Олії, соуси та промислова сировина виробництва Victor&nbsp;&amp;&nbsp;K.<br><a href="https://virabalkans.com/portfolio-products/">Повний каталог</a></p>
+      <p class="sec-aside">Готовий продукт або створення для&nbsp;вашого бренду.<br><a href="https://virabalkans.com/portfolio-products/">Повний каталог</a></p>
     </div>
     <div class="carousel rv">
       <div class="c-track" id="c-track">
-        <article class="c-card"><div class="img-tile"><img src="img/f-bottling.webp" alt="" loading="lazy"></div><div class="c-meta"><b>Соняшникова олія</b><span>Олії</span></div></article>
-        <article class="c-card"><div class="img-tile"><img src="img/f-labels2.webp" alt="" loading="lazy"></div><div class="c-meta"><b>Ріпакова та соєва олія</b><span>Олії</span></div></article>
-        <article class="c-card on"><div class="img-tile"><img src="img/f-fryer.webp" alt="" loading="lazy"></div><div class="c-meta"><b>Олія для фритюру Pro&nbsp;HoReCa</b><span>Олії</span></div></article>
-        <article class="c-card"><div class="img-tile"><img src="img/f-plate.webp" alt="" loading="lazy"></div><div class="c-meta"><b>Майонез, кетчуп і соуси</b><span>Соуси</span></div></article>
-        <article class="c-card"><div class="img-tile"><img src="img/f-field.webp" alt="" loading="lazy"></div><div class="c-meta"><b>Шрот соняшниковий, ріпаковий, соєвий</b><span>Сировина</span></div></article>
-        <article class="c-card"><div class="img-tile"><img src="img/f-factory.webp" alt="" loading="lazy"></div><div class="c-meta"><b>Лецитин</b><span>Сировина</span></div></article>
+        <article class="c-card on"><div class="img-tile"><img src="img/p-frying-oil.webp" alt="" loading="lazy"></div><div class="c-meta"><b>Олія для фритюру Pro&nbsp;HoReCa</b><span>Олії</span></div></article>
+        <article class="c-card"><div class="img-tile"><img src="img/p-cheese-sauce.webp" alt="" loading="lazy"></div><div class="c-meta"><b>Сирний соус «Подвійний сир»</b><span>Соуси</span></div></article>
+        <article class="c-card"><div class="img-tile"><img src="img/p-adjika.webp" alt="" loading="lazy"></div><div class="c-meta"><b>Аджика: кавказька, домашня, гостра</b><span>Соуси</span></div></article>
+        <article class="c-card"><div class="img-tile"><img src="img/p-chili-sauce.webp" alt="" loading="lazy"></div><div class="c-meta"><b>Соус «Солодкий чилі»</b><span>Соуси</span></div></article>
+        <article class="c-card"><div class="img-tile"><img src="img/p-soy-sauce.webp" alt="" loading="lazy"></div><div class="c-meta"><b>Соєвий соус класичний</b><span>Соуси</span></div></article>
+        <article class="c-card"><div class="img-tile"><img src="img/p-mustard.webp" alt="" loading="lazy"></div><div class="c-meta"><b>Гірчиця королівська та французька</b><span>Гірчиця</span></div></article>
       </div>
       <div class="c-nav">
         <div class="c-btns">
@@ -1616,7 +1616,9 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
     const big   = narrow ? vw * .68 : clampPx(260, vw * .25, 520);
     const gap = parseFloat(getComputedStyle(cTrack).columnGap) || 16;
     const cont = cTrack.parentElement.clientWidth;
-    const x = cont / 2 - (cIdx * (small + gap) + big / 2);
+    const total = cCards.length * small + (cCards.length - 1) * gap + (big - small);
+    // активна картка по центру, але на краях стрічка прилягає до краю контейнера (без порожнечі збоку)
+    const x = Math.min(0, Math.max(Math.min(0, cont - total), cont / 2 - (cIdx * (small + gap) + big / 2)));
     if (instant) { cTrack.style.transition = 'none'; requestAnimationFrame(() => { cTrack.style.transition = ''; }); }
     cTrack.style.transform = `translate3d(${x.toFixed(1)}px,0,0)`;
     cPrev.disabled = cIdx === 0; cNext.disabled = cIdx === cCards.length - 1;
@@ -2087,6 +2089,13 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
     "якість на кожному етапі.": "quality at every stage.",
     "Пляшки олії з етикетками Private Label": "Oil bottles with Private Label labels",
     "Картопля фрі з соусом": "French fries with sauce",
+    "Готовий продукт або створення для вашого бренду.": "A ready-made product or one created for your brand.",
+    "Сирний соус «Подвійний сир»": "Cheese sauce “Double Cheese”",
+    "Аджика: кавказька, домашня, гостра": "Adjika: Caucasian, homemade, hot",
+    "Соус «Солодкий чилі»": "Sweet chili sauce",
+    "Соєвий соус класичний": "Classic soy sauce",
+    "Гірчиця королівська та французька": "Royal and French mustard",
+    "Гірчиця": "Mustard",
     "Лінія етикетування пляшок з олією": "Bottle labelling line for oil",
     "Соняшниковий лецитин: мішок 25 кг, склянка з олією та соняшник": "Sunflower lecithin: 25 kg bag, a beaker of oil and a sunflower",
     "Повний цикл": "The full cycle",
