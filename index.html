@@ -487,11 +487,15 @@ html[lang="en"] .clist button.home::after { content: 'office'; }
 
 /* ---------- 8. НОВИНИ ---------- */
 .news { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); }
-.post { padding: clamp(18px, 1.6vw, 30px); min-height: clamp(240px, 17vw, 340px); display: flex; flex-direction: column; justify-content: space-between; gap: 24px; transition: background .3s, border-color .3s; }
+.post { position: relative; overflow: hidden; isolation: isolate; padding: clamp(18px, 1.6vw, 30px); min-height: clamp(300px, 22vw, 430px); display: flex; flex-direction: column; justify-content: space-between; gap: 24px; transition: background .3s, border-color .3s; }
 .post:hover { background: var(--tile2); border-color: rgba(255,255,255,.16); }
 .post-top { display: flex; justify-content: space-between; gap: 12px; font-size: clamp(12px, .8vw, 14px); color: var(--mute); }
 .post-top .cat { color: var(--sun); font-weight: 500; letter-spacing: .06em; text-transform: uppercase; }
-.post h3 { font-size: clamp(19px, 1.45vw, 30px); font-weight: 500; line-height: 1.2; letter-spacing: -.025em; }
+.post-img { position: absolute; z-index: -1; left: 0; right: 0; top: 0; height: 64%; width: 100%; object-fit: cover; object-position: var(--pos, 50% 40%); -webkit-mask-image: linear-gradient(to bottom, #000 35%, transparent 100%); mask-image: linear-gradient(to bottom, #000 35%, transparent 100%); transition: transform .8s cubic-bezier(.2,.8,.2,1); }
+.post::before { content: ""; position: absolute; z-index: -1; left: 0; right: 0; top: 0; height: 40%; background: linear-gradient(to bottom, rgba(8,10,14,.55), transparent); pointer-events: none; }
+.post:hover .post-img { transform: scale(1.06); }
+.post-top { text-shadow: 0 1px 8px rgba(0,0,0,.5); } .post-top span:not(.cat) { color: #fff; opacity: .85; }
+.post h3 { font-size: clamp(16px, 1.15vw, 23px); font-weight: 500; line-height: 1.2; letter-spacing: -.025em; }
 .post-bot { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; }
 
 /* ---------- 9. FAQ ---------- */
@@ -638,7 +642,7 @@ footer .container { padding-bottom: clamp(24px, 2vw, 40px); }
   .whyb-cap { order: 9; margin-top: 8px; }
   .whyb-tile { position: relative; left: auto !important; top: auto !important; width: auto; aspect-ratio: auto; min-height: 170px; font-size: 12px; }
   .news { grid-template-columns: 1fr; }
-  .post { min-height: 200px; }
+  .post { min-height: 260px; }
   .brand { width: 132px; height: 66px; }
   .form .row { grid-template-columns: 1fr; }
   .form .img-tile { display: none; }
@@ -1001,9 +1005,9 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
       <p class="sec-aside">Виставки, контракти та новинки.<br><a href="https://virabalkans.com/blog-standard/">Усі новини</a></p>
     </div>
     <div class="news">
-      <a class="tile post rv" href="https://virabalkans.com/kompaniya-virabalkans-vzyala-uchast%ca%b9-u-mizhnarodniy-vystavtsi-alimentaria-2026/"><div class="post-top"><span class="cat">Експорт</span><span>24.04.2026</span></div><div class="post-bot"><h3>VIRA взяла участь у&nbsp;міжнародній виставці Alimentaria 2026</h3><span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 5v7H5"/></svg></span></div></a>
-      <a class="tile post rv" href="https://virabalkans.com/kompaniya-virabalkans-vzyala-uchast%ca%b9-u-mizhnarod/"><div class="post-top"><span class="cat">Експорт</span><span>22.04.2026</span></div><div class="post-bot"><h3>Участь VIRA у&nbsp;світовій конференції Fi&nbsp;Europe</h3><span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 5v7H5"/></svg></span></div></a>
-      <a class="tile post rv" href="https://virabalkans.com/maybutni-kontrakty-na-ripakovu-oliyu-vidkryto-obhovorennya-ta-bronyuvannya/"><div class="post-top"><span class="cat">Контракти</span><span>12.08.2025</span></div><div class="post-bot"><h3>Майбутні контракти на&nbsp;ріпакову олію: відкрито обговорення та бронювання</h3><span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 5v7H5"/></svg></span></div></a>
+      <a class="tile post rv" href="https://virabalkans.com/kompaniya-virabalkans-vzyala-uchast%ca%b9-u-mizhnarodniy-vystavtsi-alimentaria-2026/"><img class="post-img" src="img/news-alimentaria.jpg" alt="" loading="lazy" style="--pos:50% 52%"><div class="post-top"><span class="cat">Експорт</span><span>24.04.2026</span></div><div class="post-bot"><h3>VIRA взяла участь у&nbsp;міжнародній виставці Alimentaria 2026</h3><span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 5v7H5"/></svg></span></div></a>
+      <a class="tile post rv" href="https://virabalkans.com/kompaniya-virabalkans-vzyala-uchast%ca%b9-u-mizhnarod/"><img class="post-img" src="img/news-fieurope.jpg" alt="" loading="lazy" style="--pos:50% 46%"><div class="post-top"><span class="cat">Експорт</span><span>22.04.2026</span></div><div class="post-bot"><h3>Участь VIRA у&nbsp;світовій конференції Fi&nbsp;Europe</h3><span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 5v7H5"/></svg></span></div></a>
+      <a class="tile post rv" href="https://virabalkans.com/maybutni-kontrakty-na-ripakovu-oliyu-vidkryto-obhovorennya-ta-bronyuvannya/"><img class="post-img" src="img/news-rapeseed.jpg" alt="" loading="lazy" style="--pos:60% 40%"><div class="post-top"><span class="cat">Контракти</span><span>12.08.2025</span></div><div class="post-bot"><h3>Майбутні контракти на&nbsp;ріпакову олію: відкрито обговорення та бронювання</h3><span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 5v7H5"/></svg></span></div></a>
     </div>
   </div>
 </section>
