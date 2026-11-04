@@ -385,7 +385,8 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
 /* ---------- 5b. ЧОМУ VIRA (варіант B: скляні плитки) ---------- */
 @property --bgs { syntax: "<number>"; inherits: true; initial-value: 1.18; }
 .whyb { position: relative; overflow: hidden; border-radius: calc(var(--r) * 1.4); aspect-ratio: 16 / 9; min-height: 560px; background: #111; isolation: isolate; }
-.whyb-bg { position: absolute; inset: -9% 0; background: url(img/f-factory.webp) center / cover; transform: translate3d(0, var(--bgy, 0px), 0) scale(var(--bgs, 1.18)); will-change: transform; transition: --bgs 1s; }
+.whyb-bg.ld { background: url(img/f-factory.webp) center / cover; }
+.whyb-bg { position: absolute; inset: -9% 0; transform: translate3d(0, var(--bgy, 0px), 0) scale(var(--bgs, 1.18)); will-change: transform; transition: --bgs 1s; }
 .whyb::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(8,10,14,.62) 0%, rgba(8,10,14,.18) 55%, rgba(8,10,14,.1) 100%); }
 .whyb-title { z-index: 2; position: absolute; left: clamp(22px, 3.4vw, 58px); top: clamp(22px, 3.4vw, 58px); font-size: clamp(64px, 9.6vw, 168px); font-weight: 300; letter-spacing: -.06em; line-height: .88; text-transform: uppercase; }
 .whyb-cap { z-index: 2; position: absolute; left: clamp(22px, 3.4vw, 58px); bottom: clamp(22px, 3vw, 50px); max-width: 24em; font-size: clamp(11px, .8vw, 14px); line-height: 1.5; letter-spacing: .04em; text-transform: uppercase; opacity: .85; }
@@ -1610,13 +1611,13 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
   // відео вкладок: підвантажуємо заздалегідь, запускаємо, коли плитку видно щонайменше на 60%,
   // зупиняємо, коли видно менше ніж на 20% (гістерезис — без «мигання» на межі); грає лише відео активної вкладки
   const fVids = [...document.querySelectorAll('#f-imgs video')];
-  let fVisible = false;
+  let fVisible = false, fNear = false;
   const fSaveData = !!(navigator.connection && navigator.connection.saveData);
   function fLoad(v) { if (!v.getAttribute('src')) { v.src = v.dataset.src; v.load(); } }
   function fSync() {
     fVids.forEach(v => {
       const active = +v.dataset.i === curFormat;
-      if (active && !reduceMotion && !fSaveData) fLoad(v);
+      if (active && fNear && !reduceMotion && !fSaveData) fLoad(v);
       if (active && fVisible && !reduceMotion && !fSaveData) { const p = v.play(); if (p && p.catch) p.catch(() => {}); }
       else v.pause();
     });
@@ -1631,7 +1632,7 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
       fSync();
     }), { threshold: fThresholds }).observe(fBox);
     // трохи заздалегідь вантажимо активне відео, щоб старт був миттєвим
-    new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting && !reduceMotion && !fSaveData) fLoad(fVids.find(v => +v.dataset.i === curFormat) || fVids[0]); }), { rootMargin: '500px 0px' }).observe(fBox);
+    new IntersectionObserver(es => es.forEach(e => { fNear = e.isIntersecting; if (fNear && !reduceMotion && !fSaveData) fLoad(fVids.find(v => +v.dataset.i === curFormat) || fVids[0]); }), { rootMargin: '500px 0px' }).observe(fBox);
   }
   function setFormat(i) {
     fTabs.forEach((t, k) => { t.classList.toggle('on', k === i); t.setAttribute('aria-selected', k === i); });
@@ -2232,14 +2233,17 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
 <script>
 (function(){var w=document.querySelector('.whyb');if(!w)return;
 var bg=w.querySelector('.whyb-bg'),tiles=[].slice.call(w.querySelectorAll('.whyb-tile'));
-var sp=[-34,22,-18,30],rm=matchMedia('(prefers-reduced-motion: reduce)').matches,act=false,tk=false;
-if('IntersectionObserver' in window){new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting){w.classList.add('is-in');}});},{threshold:.3}).observe(w);}else w.classList.add('is-in');
-function upd(){tk=false;var r=w.getBoundingClientRect(),vh=innerHeight;if(r.bottom<-100||r.top>vh+100)return;
-var p=(vh/2-(r.top+r.height/2))/(vh/2+r.height/2);/* -1..1 */
-if(rm)return;bg.style.setProperty('--bgy',(p*-5).toFixed(2)+'%');
+var sp=[-34,22,-18,30],rm=matchMedia('(prefers-reduced-motion: reduce)').matches,near=false,tk=false;
+function upd(){tk=false;if(!near||rm)return;var r=w.getBoundingClientRect(),vh=innerHeight;
+var p=(vh/2-(r.top+r.height/2))/(vh/2+r.height/2);
+bg.style.setProperty('--bgy',(p*-5).toFixed(2)+'%');
 var m=innerWidth<=760;tiles.forEach(function(t,i){t.style.setProperty('--py',m?'0px':(p*sp[i]).toFixed(1)+'px');});}
-function req(){if(!tk){tk=true;requestAnimationFrame(upd);}}
-addEventListener('scroll',req,{passive:true});addEventListener('resize',req);upd();})();
+function req(){if(near&&!tk){tk=true;requestAnimationFrame(upd);}}
+if('IntersectionObserver' in window){
+ new IntersectionObserver(function(e){e.forEach(function(x){near=x.isIntersecting;if(near){bg.classList.add('ld');req();}});},{rootMargin:'300px 0px'}).observe(w);
+ new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)w.classList.add('is-in');});},{threshold:.3}).observe(w);
+}else{bg.classList.add('ld');w.classList.add('is-in');near=true;}
+addEventListener('scroll',req,{passive:true});addEventListener('resize',req);})();
 </script>
 </body>
 </html>
