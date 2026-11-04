@@ -401,6 +401,7 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
 .whyb-tile::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,.55) 50%, transparent 70%); transform: translateX(-120%); pointer-events: none; mix-blend-mode: overlay; }
 .whyb-cap { transform: translateY(16px); transition: opacity .9s ease 1.2s, transform .9s ease 1.2s; }
 .whyb.is-in .whyb-title .ln > i { transform: none; }
+.whyb.rev .whyb-title .ln { overflow: visible; }   /* після появи маску знімаємо, щоб не різало хвостик «У» */
 .whyb.is-in .whyb-tile { opacity: 1; transform: none; filter: none; }
 .whyb.is-in .whyb-tile::after { transform: translateX(120%); transition: transform 1.3s ease; transition-delay: calc(.9s + var(--i) * .16s); }
 .whyb.is-in .whyb-cap { opacity: 1; transform: none; }
@@ -2246,8 +2247,8 @@ var m=innerWidth<=760;tiles.forEach(function(t,i){t.style.setProperty('--py',m?'
 function req(){if(near&&!tk){tk=true;requestAnimationFrame(upd);}}
 if('IntersectionObserver' in window){
  new IntersectionObserver(function(e){e.forEach(function(x){near=x.isIntersecting;if(near){bg.classList.add('ld');req();}});},{rootMargin:'300px 0px'}).observe(w);
- new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)w.classList.add('is-in');});},{threshold:.3}).observe(w);
-}else{bg.classList.add('ld');w.classList.add('is-in');near=true;}
+ new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting){w.classList.add('is-in');setTimeout(function(){w.classList.add('rev');},1800);}});},{threshold:.3}).observe(w);
+}else{bg.classList.add('ld');w.classList.add('is-in','rev');near=true;}
 addEventListener('scroll',req,{passive:true});addEventListener('resize',req);})();
 </script>
 </body>
