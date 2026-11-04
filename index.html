@@ -368,10 +368,16 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
 .link-arrow .circle { width: 42px; }
 
 /* торгові марки */
-.brands { display: grid; grid-template-columns: auto repeat(4, 1fr); gap: var(--gap); align-items: stretch; margin-top: clamp(56px, 6vw, 120px); }
-.brands .eyebrow { align-self: center; padding-right: 20px; }
-.brands > * { min-width: 0; }
-.brand { background: #F3F2EE; border-radius: var(--r); display: flex; align-items: center; justify-content: center; height: clamp(96px, 7.6vw, 160px); padding: clamp(14px, 1.2vw, 24px); }
+.brands { display: flex; align-items: center; gap: clamp(20px, 3vw, 48px); margin-top: clamp(56px, 6vw, 120px); }
+.brands .eyebrow { flex: none; }
+/* бігуча стрічка брендів: 4 однакові групи, зсув на одну групу (−25%) = безшовна петля */
+.brand-marquee { flex: 1; min-width: 0; overflow: hidden; -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); }
+.brand-track { display: flex; width: max-content; animation: brandScroll 24s linear infinite; will-change: transform; }
+.brand-marquee:hover .brand-track { animation-play-state: paused; }
+.brand-group { display: flex; gap: var(--gap); padding-right: var(--gap); flex: none; }
+@keyframes brandScroll { from { transform: translate3d(0,0,0); } to { transform: translate3d(-25%,0,0); } }
+@media (prefers-reduced-motion: reduce) { .brand-track { animation: none; } .brand-group[aria-hidden="true"] { display: none; } .brand-marquee { overflow-x: auto; -webkit-mask-image: none; mask-image: none; } }
+.brand { background: #F3F2EE; border-radius: var(--r); display: flex; align-items: center; justify-content: center; flex: none; width: clamp(130px, 11.5vw, 230px); height: clamp(64px, 5.4vw, 112px); padding: clamp(10px, .9vw, 18px); }
 .brand img { display: block; width: auto; height: auto; max-width: 74%; max-height: 100%; object-fit: contain; }
 
 /* ---------- 5. ЧОМУ VIRA ---------- */
@@ -574,8 +580,7 @@ footer .container { padding-bottom: clamp(24px, 2vw, 40px); }
   .f-side { grid-column: 1 / -1; order: 0; }
   .steps { grid-template-columns: repeat(2, 1fr); }
   .steps .cta-tile { grid-column: span 2; aspect-ratio: auto; min-height: 140px; }
-  .brands { grid-template-columns: repeat(4, 1fr); }
-  .brands .eyebrow { grid-column: 1 / -1; padding: 0 0 6px; }
+  .brands { flex-direction: column; align-items: stretch; gap: 14px; }
   .faq-grid { grid-template-columns: 1fr; }
   .contact { grid-template-columns: 1fr; }
   .foot { grid-template-columns: 1fr 1fr; }
@@ -597,7 +602,7 @@ footer .container { padding-bottom: clamp(24px, 2vw, 40px); }
   .why-row p { grid-column: 2; }
   .news { grid-template-columns: 1fr; }
   .post { min-height: 200px; }
-  .brands { grid-template-columns: 1fr 1fr; }
+  .brand { width: 132px; height: 66px; }
   .form .row { grid-template-columns: 1fr; }
   .form .img-tile { display: none; }
   .person { grid-template-columns: 1fr; }
@@ -882,10 +887,12 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
 
     <div class="brands">
       <span class="eyebrow rv">Торгові марки</span>
-      <div class="brand rv"><img src="img/brand-korolivskyi-smak.webp" alt="Королівський Смак" loading="lazy"></div>
-      <div class="brand rv"><img src="img/brand-kraljevski-ukus.webp" alt="Kraljevski Ukus" loading="lazy"></div>
-      <div class="brand rv"><img src="img/brand-kukhar-rishelie.webp" alt="Кухар Рішельє" loading="lazy"></div>
-      <div class="brand rv"><img src="img/brand-chuhuiv.webp" alt="Чугуєв Продукт" loading="lazy"></div>
+      <div class="brand-marquee rv"><div class="brand-track">
+        <div class="brand-group"><div class="brand"><img src="img/brand-korolivskyi-smak.webp" alt="Королівський Смак" loading="lazy"></div><div class="brand"><img src="img/brand-kraljevski-ukus.webp" alt="Kraljevski Ukus" loading="lazy"></div><div class="brand"><img src="img/brand-kukhar-rishelie.webp" alt="Кухар Рішельє" loading="lazy"></div><div class="brand"><img src="img/brand-chuhuiv.webp" alt="Чугуєв Продукт" loading="lazy"></div></div>
+        <div class="brand-group" aria-hidden="true"><div class="brand"><img src="img/brand-korolivskyi-smak.webp" alt="" loading="lazy"></div><div class="brand"><img src="img/brand-kraljevski-ukus.webp" alt="" loading="lazy"></div><div class="brand"><img src="img/brand-kukhar-rishelie.webp" alt="" loading="lazy"></div><div class="brand"><img src="img/brand-chuhuiv.webp" alt="" loading="lazy"></div></div>
+        <div class="brand-group" aria-hidden="true"><div class="brand"><img src="img/brand-korolivskyi-smak.webp" alt="" loading="lazy"></div><div class="brand"><img src="img/brand-kraljevski-ukus.webp" alt="" loading="lazy"></div><div class="brand"><img src="img/brand-kukhar-rishelie.webp" alt="" loading="lazy"></div><div class="brand"><img src="img/brand-chuhuiv.webp" alt="" loading="lazy"></div></div>
+        <div class="brand-group" aria-hidden="true"><div class="brand"><img src="img/brand-korolivskyi-smak.webp" alt="" loading="lazy"></div><div class="brand"><img src="img/brand-kraljevski-ukus.webp" alt="" loading="lazy"></div><div class="brand"><img src="img/brand-kukhar-rishelie.webp" alt="" loading="lazy"></div><div class="brand"><img src="img/brand-chuhuiv.webp" alt="" loading="lazy"></div></div>
+      </div></div>
     </div>
   </div>
 </section>
