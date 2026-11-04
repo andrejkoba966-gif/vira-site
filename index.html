@@ -831,15 +831,15 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
     </div>
     <div class="formats">
       <figure class="img-tile rv" id="f-imgs">
-        <video class="on" id="f-video" muted loop playsinline preload="none" poster="img/private-label-poster.jpg" data-src="video/private-label.mp4" aria-label="Пляшки олії з етикетками Private Label"></video>
-        <img src="img/f-bottling.webp" alt="Лінія розливу соняшникової олії" loading="lazy">
+        <video class="on" data-i="0" muted loop playsinline preload="none" poster="img/ready-products-poster.jpg" data-src="video/ready-products.mp4" aria-label="Картопля фрі з соусом"></video>
+        <video data-i="1" muted loop playsinline preload="none" poster="img/private-label-poster.jpg" data-src="video/private-label.mp4" aria-label="Пляшки олії з етикетками Private Label"></video>
         <img src="img/f-factory.webp" alt="Виробничий комплекс із силосами" loading="lazy">
       </figure>
       <div class="f-side rv">
         <div>
           <div class="f-tabs" role="tablist">
-            <button class="f-tab on" role="tab" aria-selected="true" data-i="0"><span class="k">01</span><span class="nm">Private Label</span></button>
-            <button class="f-tab" role="tab" aria-selected="false" data-i="1"><span class="k">02</span><span class="nm">Готова продукція</span></button>
+            <button class="f-tab on" role="tab" aria-selected="true" data-i="0"><span class="k">01</span><span class="nm">Готова продукція</span></button>
+            <button class="f-tab" role="tab" aria-selected="false" data-i="1"><span class="k">02</span><span class="nm">Private Label</span></button>
             <button class="f-tab" role="tab" aria-selected="false" data-i="2"><span class="k">03</span><span class="nm">B2B сировина</span></button>
           </div>
         </div>
@@ -1553,34 +1553,48 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
 
   // ---------- 3. формати співпраці (таби) ----------
   const FORMATS = [
-    { d: '<b>Ваш бренд. Наше виробництво.</b> Харчова продукція під брендом замовника для європейського ринку.', l: ['Олії', 'Майонези', 'Соуси', 'Кетчупи'] },
     { d: '<b>«Королівський Смак».</b> Готова харчова продукція для Retail, HoReCa та оптової торгівлі.', l: ['Соняшникова олія', 'Майонез', 'Соуси', 'Кетчуп'] },
+    { d: '<b>Ваш бренд. Наше виробництво.</b> Харчова продукція під брендом замовника для європейського ринку.', l: ['Олії', 'Майонези', 'Соуси', 'Кетчупи'] },
     { d: '<b>Олії та промислова сировина</b> для харчових і виробничих підприємств європейського ринку.', l: ['Олії', 'Лецитин', 'Шрот', 'Інша сировина'] }
   ];
   const FORMATS_EN = [
-    { d: '<b>Your brand. Our production.</b> Food products under the customer’s brand for the European market.', l: ['Oils', 'Mayonnaises', 'Sauces', 'Ketchups'] },
     { d: '<b>“Royal Taste”.</b> Ready-made food products for Retail, HoReCa and wholesale.', l: ['Sunflower oil', 'Mayonnaise', 'Sauces', 'Ketchup'] },
+    { d: '<b>Your brand. Our production.</b> Food products under the customer’s brand for the European market.', l: ['Oils', 'Mayonnaises', 'Sauces', 'Ketchups'] },
     { d: '<b>Oils and industrial raw materials</b> for food and manufacturing companies in the European market.', l: ['Oils', 'Lecithin', 'Meal', 'Other raw materials'] }
   ];
   const fTabs = [...document.querySelectorAll('.f-tab')], fImgs = [...document.querySelectorAll('#f-imgs img, #f-imgs video')];
   const fDesc = document.getElementById('f-desc'), fList = document.getElementById('f-list');
-  // відео Private Label: вантажимо, коли блок поруч, грає лише на першій вкладці й коли його видно
-  const plVideo = document.getElementById('f-video');
-  let plVisible = false;
-  function plSync() {
-    if (!plVideo) return;
-    const want = plVisible && curFormat === 0 && !reduceMotion && !(navigator.connection && navigator.connection.saveData);
-    if (want) {
-      if (!plVideo.getAttribute('src')) { plVideo.src = plVideo.dataset.src; plVideo.load(); }
-      const p = plVideo.play(); if (p && p.catch) p.catch(() => {});
-    } else plVideo.pause();
+  // відео вкладок: підвантажуємо заздалегідь, запускаємо, коли плитку видно щонайменше на 60%,
+  // зупиняємо, коли видно менше ніж на 20% (гістерезис — без «мигання» на межі); грає лише відео активної вкладки
+  const fVids = [...document.querySelectorAll('#f-imgs video')];
+  let fVisible = false;
+  const fSaveData = !!(navigator.connection && navigator.connection.saveData);
+  function fLoad(v) { if (!v.getAttribute('src')) { v.src = v.dataset.src; v.load(); } }
+  function fSync() {
+    fVids.forEach(v => {
+      const active = +v.dataset.i === curFormat;
+      if (active && !reduceMotion && !fSaveData) fLoad(v);
+      if (active && fVisible && !reduceMotion && !fSaveData) { const p = v.play(); if (p && p.catch) p.catch(() => {}); }
+      else v.pause();
+    });
   }
-  if (plVideo) new IntersectionObserver(es => es.forEach(e => { plVisible = e.isIntersecting; plSync(); }), { rootMargin: '200px 0px' }).observe(plVideo.parentElement);
+  const fBox = document.getElementById('f-imgs');
+  if (fBox && fVids.length) {
+    const fThresholds = Array.from({ length: 21 }, (_, k) => k / 20);
+    new IntersectionObserver(es => es.forEach(e => {
+      const need = Math.min(e.boundingClientRect.height, (e.rootBounds || { height: innerHeight }).height);
+      const shown = e.intersectionRect.height / Math.max(need, 1);      // доля видимої висоти (з поправкою на низькі екрани)
+      if (shown >= 0.6) fVisible = true; else if (shown < 0.2) fVisible = false;
+      fSync();
+    }), { threshold: fThresholds }).observe(fBox);
+    // трохи заздалегідь вантажимо активне відео, щоб старт був миттєвим
+    new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting && !reduceMotion && !fSaveData) fLoad(fVids.find(v => +v.dataset.i === curFormat) || fVids[0]); }), { rootMargin: '500px 0px' }).observe(fBox);
+  }
   function setFormat(i) {
     fTabs.forEach((t, k) => { t.classList.toggle('on', k === i); t.setAttribute('aria-selected', k === i); });
     fImgs.forEach((im, k) => im.classList.toggle('on', k === i));
     curFormat = i;
-    plSync();
+    fSync();
     const F = (LANG === 'en' ? FORMATS_EN : FORMATS)[i];
     fDesc.innerHTML = F.d;
     fList.innerHTML = F.l.map(x => `<li>${x}</li>`).join('');
@@ -2047,6 +2061,7 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
     "Працюємо напряму з виробником, забезпечуючи": "We work directly with the\u00a0manufacturer, ensuring",
     "якість на кожному етапі.": "quality at every stage.",
     "Пляшки олії з етикетками Private Label": "Oil bottles with Private Label labels",
+    "Картопля фрі з соусом": "French fries with sauce",
     "Повний цикл": "The full cycle",
     "під вашим брендом": "under your brand"
   });
