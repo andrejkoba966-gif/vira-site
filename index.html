@@ -403,7 +403,7 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
 #geo { overflow: hidden; }
 .geo-grid { display: grid; grid-template-columns: minmax(0, 4.2fr) minmax(0, 7.8fr); gap: clamp(24px, 3vw, 45px); align-items: center; }
 .geo-left { position: relative; z-index: 3; }   /* текст і список завжди над підкладкою карти */
-.geo-left .h-xl { margin: 16px 0 18px; }
+.geo-left .h-xl { margin: 0 0 18px; }
 .geo-left .lead { font-size: clamp(15px, 1vw, 19px); line-height: 1.55; color: var(--mute); max-width: 28em; }
 .geo-left .lead b { color: #fff; font-weight: 500; }
 .clist { list-style: none; display: grid; grid-template-columns: 1fr 1fr; column-gap: 24px; margin-top: clamp(24px, 2.4vw, 36px); border-top: 1px solid var(--line); }
@@ -413,6 +413,7 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
 .clist button.on .k { color: var(--sun); }
 .clist button.home { color: #fff; }
 .clist button.home::after { content: 'офіс'; margin-left: auto; padding: 2px 8px; border-radius: 100px; background: var(--sun); color: var(--ink); font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; align-self: center; }
+html[lang="en"] .clist button.home::after { content: 'office'; }
 .geo-left .geo-note { margin-top: clamp(20px, 2vw, 30px); }
 .geo-note { display: flex; gap: 8px 28px; flex-wrap: wrap; font-size: clamp(13px, .85vw, 16px); color: var(--mute); }
 .geo-note b { color: #fff; font-weight: 500; }
@@ -908,7 +909,6 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
   <div class="container">
     <div class="geo-grid">
       <div class="geo-left">
-        <span class="eyebrow rv">VIRA — прямий зв'язок Victor &amp; K з європейським ринком</span>
         <h2 class="h-xl rv" id="geo-title">Географія<br>поставок</h2>
         <p class="lead rv">Забезпечуємо зв'язок між виробником і клієнтами <b>у&nbsp;20&nbsp;країнах</b> Європи та на&nbsp;Балканах. Оберіть країну — покажемо її на карті.</p>
         <ul class="clist rv" id="clist"></ul>
