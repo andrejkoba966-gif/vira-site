@@ -298,7 +298,7 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
 
 /* ---------- 2. ХТО МИ ---------- */
 .statement-row { display: grid; grid-template-columns: 1fr clamp(180px, 15vw, 227px); gap: clamp(28px, 4vw, 60px); align-items: start; }
-#about-title, #formats-title, #products-title, #news-title { font-size: clamp(28px, 2.5vw, 37px); }
+#about-title, #formats-title, #products-title, #news-title, #how-title { font-size: clamp(28px, 2.5vw, 37px); }
 .statement { text-wrap: pretty; max-width: 30em; font-size: clamp(19px, 1.75vw, 26px); font-weight: 600; line-height: 1.22; letter-spacing: -.03em; color: #fff; }
 .statement .dim { color: var(--mute2); }
 .statement .acc { color: var(--sun); }
@@ -426,6 +426,7 @@ a:hover > .circle, a:hover .circle { transform: rotate(-45deg); }
 .step h3 { font-size: clamp(18px, 1.3vw, 26px); font-weight: 500; letter-spacing: -.02em; margin-bottom: 8px; }
 .step p { font-size: clamp(14px, .9vw, 17px); line-height: 1.5; color: var(--mute); }
 .steps .cta-tile { aspect-ratio: auto; }
+@media (min-width: 761px) { .step p { min-height: 4.5em; } }   /* заголовки кроків на одній висоті */
 
 /* ---------- 5. ГЕОГРАФІЯ: 3D-карта ---------- */
 #geo { overflow: hidden; }
