@@ -61,7 +61,7 @@ _links = ''.join(f'<li><a href="{h}">{t}</a></li>' for h, t in MENU)
 
 SITE_NAV = f'''<nav id="hero-nav">
       <div class="container">
-        <a href="/#about" class="nav-logo" aria-label="VIRA">{LOGO}VIRA</a>
+        <a href="/" class="nav-logo" aria-label="VIRA">{LOGO}VIRA</a>
         <ul class="nav-links">{_links}</ul>
         <div class="nav-right">
           <button type="button" class="nav-search nav-lang" id="lang-toggle" aria-label="Змінити мову"><span>EN</span></button>
@@ -76,7 +76,7 @@ SITE_NAV = f'''<nav id="hero-nav">
     </nav>'''
 
 MOBILE_MENU = f'''<div id="mobile-menu" role="dialog" aria-modal="true" aria-label="Меню" aria-hidden="true">
-  <div class="mm-top"><a href="/#about" class="nav-logo" aria-label="VIRA">{LOGO}VIRA</a><button type="button" class="mm-close" id="mm-close" aria-label="Закрити меню"></button></div>
+  <div class="mm-top"><a href="/" class="nav-logo" aria-label="VIRA">{LOGO}VIRA</a><button type="button" class="mm-close" id="mm-close" aria-label="Закрити меню"></button></div>
   <ul class="mm-links">{_links}</ul>
   <div class="mm-bottom">
     <div class="mm-lang" role="group" aria-label="Змінити мову">
