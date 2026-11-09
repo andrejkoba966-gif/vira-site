@@ -121,8 +121,8 @@ EN = {
     'Портфоліо VIRA': 'VIRA portfolio', 'Оберіть категорію': 'Choose a category',
     'Увесь асортимент зібрано за напрямами. У кожної категорії є власна сторінка.': 'The whole range is grouped by category. Each category has its own page.',
     'Спеціальна добірка': 'Special selection', 'Категорія продукції': 'Product category',
-    'Співпраця': 'Cooperation', 'Обговоримо поставку?': 'Shall we discuss a supply?',
-    'Залиште заявку — підберемо асортимент, пакування та умови поставки під ваш ринок.': 'Leave a request and we will select the range, packaging and delivery terms for your market.',
+    'Співпраця': 'Cooperation', 'Обговоримо співпрацю?': "Shall we discuss cooperation?",
+    'Від готового продукту до власного бренду. Напишіть нам, і ми підберемо рішення під ваші задачі.': 'From a ready-made product to your own brand. Write to us and we will find the right solution for your needs.',
     # категорії й товари
     'Олія ріпак': 'Rapeseed oil', 'Ріпакова олія': 'Rapeseed oil', 'Олія соняшник': 'Sunflower oil',
     'Соняшникова олія': 'Sunflower oil', 'Олія соя': 'Soybean oil', 'Соєва олія': 'Soybean oil', 'Соєва ОЛІЯ': 'Soybean oil',
@@ -248,8 +248,8 @@ def category_tile(category):
 
 def cta(category):
     eyebrow = esc(category['title']) if category else 'Співпраця'
-    return f'''<aside class="cta-block"><div><p class="eyebrow">{eyebrow}</p><h2>Обговоримо поставку?</h2>
-      <p>Залиште заявку — підберемо асортимент, пакування та умови поставки під ваш ринок.</p></div>
+    return f'''<aside class="cta-block"><div><p class="eyebrow">{eyebrow}</p><h2>Обговоримо співпрацю?</h2>
+      <p>Від готового продукту до власного бренду. Напишіть нам, і ми підберемо рішення під ваші задачі.</p></div>
       <a class="cta-btn" href="/#contact">Форма зв'язку<span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 5v7H5"/></svg></span></a></aside>'''
 
 
