@@ -6,6 +6,7 @@
 Node.js не потрібен.
 """
 import ast
+import json
 import re
 from html import escape as _esc
 from pathlib import Path
@@ -60,9 +61,14 @@ _links = ''.join(f'<li><a href="{h}">{t}</a></li>' for h, t in MENU)
 
 SITE_NAV = f'''<nav id="hero-nav">
       <div class="container">
-        <a href="/" class="nav-logo" aria-label="VIRA">{LOGO}VIRA</a>
+        <a href="/#about" class="nav-logo" aria-label="VIRA">{LOGO}VIRA</a>
         <ul class="nav-links">{_links}</ul>
         <div class="nav-right">
+          <button type="button" class="nav-search nav-lang" id="lang-toggle" aria-label="Змінити мову"><span>EN</span></button>
+          <div class="nav-lang-m" role="group" aria-label="Змінити мову">
+            <button type="button" data-lang="uk" aria-pressed="true">UA</button>
+            <button type="button" data-lang="en" aria-pressed="false">EN</button>
+          </div>
           <a href="/#contact" class="nav-cta">Форма зв'язку</a>
           <button type="button" class="nav-burger" id="burger" aria-label="Меню" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
         </div>
@@ -70,9 +76,15 @@ SITE_NAV = f'''<nav id="hero-nav">
     </nav>'''
 
 MOBILE_MENU = f'''<div id="mobile-menu" role="dialog" aria-modal="true" aria-label="Меню" aria-hidden="true">
-  <div class="mm-top"><a href="/" class="nav-logo" aria-label="VIRA">{LOGO}VIRA</a><button type="button" class="mm-close" id="mm-close" aria-label="Закрити меню"></button></div>
+  <div class="mm-top"><a href="/#about" class="nav-logo" aria-label="VIRA">{LOGO}VIRA</a><button type="button" class="mm-close" id="mm-close" aria-label="Закрити меню"></button></div>
   <ul class="mm-links">{_links}</ul>
-  <div class="mm-bottom"><a href="/#contact" class="mm-cta">Форма зв'язку</a></div>
+  <div class="mm-bottom">
+    <div class="mm-lang" role="group" aria-label="Змінити мову">
+      <button type="button" data-lang="uk" aria-pressed="true">UA</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <a href="/#contact" class="mm-cta">Форма зв'язку</a>
+  </div>
 </div>'''
 
 SITE_FOOTER = '''<footer>
@@ -91,8 +103,92 @@ SITE_FOOTER = '''<footer>
   </div>
 </footer>'''
 
-MENU_SCRIPT = '''<script>
+EN = {
+    # шапка й футер (ті самі переклади, що на головній)
+    'Про VIRA': 'About VIRA', 'Формати': 'Formats', 'Продукція': 'Products', 'Географія': 'Geography',
+    'Контакти': 'Contacts', "Форма зв'язку": 'Contact us', 'Смак України —': 'The taste of Ukraine —',
+    'на столі в Європі': 'on the table in Europe',
+    'Офіційне представництво Victor & K у Європі': 'Official representative office of Victor & K in Europe',
+    'Формати співпраці': 'Cooperation formats', 'Блог': 'Blog', 'Про Victor & K': 'About Victor & K',
+    'VIRA © 2026. Усі права захищені.': 'VIRA © 2026. All rights reserved.',
+    'Політика конфіденційності': 'Privacy policy', 'Нагору': 'Back to top', 'Меню': 'Menu',
+    'Закрити меню': 'Close menu', 'Змінити мову': 'Change language',
+    # каталог
+    'Перейти до каталогу': 'Skip to the catalogue', 'Продукція VIKTOR & K': 'VIKTOR & K products',
+    'Каталог продукції': 'Product catalogue', 'Асортимент VIRA для міжнародних ринків': 'VIRA range for international markets',
+    'Каталог': 'Catalogue', 'Головна': 'Home', 'Навігація': 'Navigation', 'Усі категорії': 'All categories',
+    'Категорії': 'Categories', 'Спеціальні добірки': 'Special selections', 'Категорії каталогу': 'Catalogue categories',
+    'Портфоліо VIRA': 'VIRA portfolio', 'Оберіть категорію': 'Choose a category',
+    'Увесь асортимент зібрано за напрямами. У кожної категорії є власна сторінка.': 'The whole range is grouped by category. Each category has its own page.',
+    'Спеціальна добірка': 'Special selection', 'Категорія продукції': 'Product category',
+    'Співпраця': 'Cooperation', 'Обговоримо поставку?': 'Shall we discuss a supply?',
+    'Залиште заявку — підберемо асортимент, пакування та умови поставки під ваш ринок.': 'Leave a request and we will select the range, packaging and delivery terms for your market.',
+    # категорії й товари
+    'Олія ріпак': 'Rapeseed oil', 'Ріпакова олія': 'Rapeseed oil', 'Олія соняшник': 'Sunflower oil',
+    'Соняшникова олія': 'Sunflower oil', 'Олія соя': 'Soybean oil', 'Соєва олія': 'Soybean oil', 'Соєва ОЛІЯ': 'Soybean oil',
+    'Олія для фритюру': 'Frying oil', 'Олія ріпакова фритюрна': 'Rapeseed frying oil',
+    'Олія соєва фритюрна': 'Soybean frying oil', 'Олія соняшникова фритюрна': 'Sunflower frying oil',
+    'Шрот соєвий': 'Soybean meal', 'Соєвий шрот': 'Soybean meal', 'Шрот Соєвий': 'Soybean meal',
+    'Шрот ріпаковий': 'Rapeseed meal', 'Ріпаковий шрот': 'Rapeseed meal',
+    'Шрот соняшниковий': 'Sunflower meal', 'Соняшниковий шрот': 'Sunflower meal',
+    'Лецитин': 'Lecithin', 'Етикетки': 'Labels', 'Виготовлення етикеток для персонального бренду': 'Label production for your own brand',
+    'Тара': 'Packaging', 'Ексклюзивно для Балкан': 'Exclusively for the Balkans', 'За особистим запитом': 'On personal request',
+    'Ексклюзивно для Європи': 'Exclusively for Europe',
+}
+
+MENU_SCRIPT = r'''<script>
 (function () {
+  var root = document.documentElement, LANG = 'uk';
+  var EN = __DICT__;
+  var CYR = /[А-Яа-яІіЇїЄєҐґ]/, ATTRS = ['alt', 'aria-label', 'title'], SKIP = { SCRIPT: 1, STYLE: 1, NOSCRIPT: 1 };
+  var origText = new WeakMap(), UK_TITLE = document.title;
+  var norm = function (t) { return t.replace(/ /g, ' ').replace(/\s+/g, ' ').trim(); };
+  function tr(o) {
+    var k = norm(o), m;
+    if (EN[k] !== undefined) return EN[k];
+    if ((m = k.match(/^(\d+) (позиція|позиції|позицій)$/))) return m[1] + (m[1] === '1' ? ' item' : ' items');
+    if ((m = k.match(/^(\d+) категорій$/))) return m[1] + ' categories';
+  }
+  function text(n) {
+    if (!origText.has(n)) { if (!CYR.test(n.nodeValue)) return; origText.set(n, n.nodeValue); }
+    var o = origText.get(n);
+    if (LANG === 'en') { var t = tr(o); if (t !== undefined) n.nodeValue = o.match(/^\s*/)[0] + t + o.match(/\s*$/)[0]; }
+    else n.nodeValue = o;
+  }
+  function attrs(el) {
+    ATTRS.forEach(function (a) {
+      if (!el.hasAttribute(a)) return;
+      var k = 'data-uk-' + a;
+      if (!el.hasAttribute(k)) { var v = el.getAttribute(a); if (!CYR.test(v)) return; el.setAttribute(k, v); }
+      var o = el.getAttribute(k);
+      if (LANG === 'en') { var t = tr(o); if (t !== undefined) el.setAttribute(a, t); } else el.setAttribute(a, o);
+    });
+  }
+  function walk(n) {
+    if (n.nodeType === 3) return text(n);
+    if (n.nodeType !== 1 || SKIP[n.tagName]) return;
+    attrs(n); n.childNodes.forEach(walk);
+  }
+  var langBtn = document.getElementById('lang-toggle');
+  var pills = [].slice.call(document.querySelectorAll('.mm-lang button, .nav-lang-m button'));
+  function setLang(l, save) {
+    LANG = l === 'en' ? 'en' : 'uk'; root.lang = LANG; walk(document.body);
+    var m = UK_TITLE.match(/^(.*) — Каталог VIRA$/);
+    document.title = LANG === 'uk' ? UK_TITLE : m ? (tr(m[1]) || m[1]) + ' — VIRA catalogue' : 'Product catalogue — VIRA';
+    langBtn.firstElementChild.textContent = LANG === 'en' ? 'UA' : 'EN';
+    pills.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.lang === LANG); });
+    if (save !== false) { try { localStorage.setItem('vira-lang', LANG); } catch (e) {} }
+  }
+  langBtn.addEventListener('click', function () { setLang(LANG === 'en' ? 'uk' : 'en'); });
+  pills.forEach(function (b) { b.addEventListener('click', function () { setLang(b.dataset.lang); }); });
+  (function () {
+    var q = new URLSearchParams(location.search).get('lang'), saved = null;
+    try { saved = localStorage.getItem('vira-lang'); } catch (e) {}
+    var br = String((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
+    var want = (q === 'en' || q === 'uk') ? q : (saved === 'en' || saved === 'uk') ? saved : (br.indexOf('uk') === 0 || !br ? 'uk' : 'en');
+    if (want === 'en') setLang('en', false);
+  })();
+
   var m = document.getElementById('mobile-menu'), b = document.getElementById('burger'), c = document.getElementById('mm-close');
   function set(open) {
     m.classList.toggle('open', open); m.setAttribute('aria-hidden', open ? 'false' : 'true');
@@ -150,16 +246,23 @@ def category_tile(category):
   </a>'''
 
 
+def cta(category):
+    eyebrow = esc(category['title']) if category else 'Співпраця'
+    return f'''<aside class="cta-block"><div><p class="eyebrow">{eyebrow}</p><h2>Обговоримо поставку?</h2>
+      <p>Залиште заявку — підберемо асортимент, пакування та умови поставки під ваш ринок.</p></div>
+      <a class="cta-btn" href="/#contact">Форма зв'язку<span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 5v7H5"/></svg></span></a></aside>'''
+
+
 def content(category):
     if not category:
         tiles = ''.join(category_tile(c) for c in CATEGORIES)
         return (f'<div class="section-heading"><div><p class="eyebrow dark">Портфоліо VIRA</p><h2>Оберіть категорію</h2>'
                 f'<p class="section-intro">Увесь асортимент зібрано за напрямами. У кожної категорії є власна сторінка.</p></div>'
-                f'<span class="result-count">{len(CATEGORIES)} категорій</span></div>\n      <div class="category-grid">{tiles}</div>')
+                f'<span class="result-count">{len(CATEGORIES)} категорій</span></div>\n      <div class="category-grid">{tiles}</div>\n      {cta(None)}')
     eyebrow = 'Спеціальна добірка' if category['group'] == 'collections' else 'Категорія продукції'
     cards = ''.join(product_card(item, i) for i, item in enumerate(category['products']))
     return (f'<div class="section-heading"><div><p class="eyebrow dark">{eyebrow}</p><h2>{esc(category["title"])}</h2></div>'
-            f'<span class="result-count">{quantity(len(category["products"]))}</span></div>\n    <div class="product-grid">{cards}</div>')
+            f'<span class="result-count">{quantity(len(category["products"]))}</span></div>\n    <div class="product-grid">{cards}</div>\n    {cta(category)}')
 
 
 def page(category=None):
@@ -188,12 +291,12 @@ def page(category=None):
     {SITE_NAV}
     <div class="hero-copy container"><p class="eyebrow light">Продукція VIKTOR &amp; K</p><h1>Каталог продукції</h1><p>Асортимент VIRA для міжнародних ринків</p></div></div></div>
   <main id="main" class="catalog-surface"><div class="container">
-    <nav class="breadcrumbs" aria-label="Навігація"><a href="/">Головна</a><span aria-hidden="true">/</span>{catalog_crumb}</nav>
+    <nav class="breadcrumbs" aria-label="Навігація"><a href="/#about">Головна</a><span aria-hidden="true">/</span>{catalog_crumb}</nav>
     <div class="catalog-layout">{navigation(selected)}<section class="catalog-content" aria-label="{esc(label)}">{content(category)}</section></div>
   </div></main>
   {SITE_FOOTER}
   {MOBILE_MENU}
-  {MENU_SCRIPT}
+  {MENU_SCRIPT.replace('__DICT__', json.dumps(EN, ensure_ascii=False))}
 </body></html>
 '''
 

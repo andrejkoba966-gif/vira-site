@@ -1626,6 +1626,14 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
     setLock(true);
+    // перехід із інших сторінок за якорем (/#about, /#contact …) — одразу до потрібного блоку
+    const jumpHash = () => {
+      const id = location.hash.slice(1); if (!id) return;
+      const top = anchorTop(id); if (!top) return;
+      setLock(false); window.scrollTo(0, top);
+    };
+    jumpHash();
+    window.addEventListener('load', () => { if (window.scrollY > 0) jumpHash(); });
 
     // жест
     let y0 = null, x0 = 0, t0 = 0;
@@ -1928,6 +1936,16 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
   } else {
     window.scrollTo(0, 0);
     let expectedY = 0;
+
+    // перехід із інших сторінок за якорем (/#about, /#contact …) — одразу до потрібного блоку
+    const jumpHash = () => {
+      const id = location.hash.slice(1); if (!id) return;
+      const top = anchorTop(id); if (!top) return;
+      const y = Math.min(top, maxScroll());
+      targetScrollY = smoothScrollY = expectedY = y; window.scrollTo(0, y);
+    };
+    jumpHash();
+    window.addEventListener('load', () => { if (Math.abs(window.scrollY - expectedY) < 3 && window.scrollY > 0) jumpHash(); });
 
     window.addEventListener('wheel', (e) => {
       if (e.ctrlKey) return;                                   // зум трекпадом
