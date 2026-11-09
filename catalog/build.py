@@ -54,6 +54,8 @@ LOGO = '''<svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke-widt
             <path d="M20 26c8 1 14-2 17-7-7-2-13 1-17 7Z" stroke="#F5D90A"/>
           </g></svg>'''
 
+SPEC_RULES = '''<script type="speculationrules">{"prefetch":[{"urls":["/portfolio-products/","/blog/"],"eagerness":"eager"}],"prerender":[{"where":{"href_matches":["/portfolio-products/*","/blog/*"]},"eagerness":"moderate"}]}</script>'''
+
 MENU = [('/#about', 'Про VIRA'), ('/#formats', 'Формати'), ('/portfolio-products/', 'Продукція'),
         ('/#faq', 'FAQ'), ('/blog/', 'Блог'), ('/#contact', 'Контакти')]
 
@@ -305,7 +307,7 @@ def page(category=None):
   <link rel="icon" type="image/svg+xml" href="{BASE}assets/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
-  <script type="speculationrules">{"prefetch":[{"urls":["/portfolio-products/","/blog/"],"eagerness":"eager"}],"prerender":[{"where":{"href_matches":["/portfolio-products/*","/blog/*"]},"eagerness":"moderate"}]}</script>
+  {SPEC_RULES}
   <link rel="stylesheet" href="{BASE}assets/site.css"><link rel="preload" as="image" href="{BASE}assets/hero-sunflowers.jpg">
 </head><body id="top">
   <a class="skip-link" href="#main">Перейти до каталогу</a>
