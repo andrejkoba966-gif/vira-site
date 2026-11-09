@@ -53,7 +53,7 @@ LOGO = '''<svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke-widt
             <path d="M20 26c8 1 14-2 17-7-7-2-13 1-17 7Z" stroke="#F5D90A"/>
           </g></svg>'''
 
-MENU = [('/#about', 'Про VIRA'), ('/#formats', 'Формати'), ('/#products', 'Продукція'),
+MENU = [('/#about', 'Про VIRA'), ('/#formats', 'Формати'), ('/portfolio-products/', 'Продукція'),
         ('/#geo', 'Географія'), ('/#faq', 'FAQ'), ('/#contact', 'Контакти')]
 
 _links = ''.join(f'<li><a href="{h}">{t}</a></li>' for h, t in MENU)
@@ -80,7 +80,7 @@ SITE_FOOTER = '''<footer>
     <div class="foot">
       <p class="tag">Смак України —<br>на столі в&nbsp;Європі<small>Офіційне представництво Victor &amp; K у Європі</small></p>
       <ul>
-        <li><a href="/#about">Про VIRA</a></li><li><a href="/#formats">Формати співпраці</a></li><li><a href="/#products">Продукція</a></li><li><a href="/#geo">Географія</a></li><li><a href="/#faq">FAQ</a></li>
+        <li><a href="/#about">Про VIRA</a></li><li><a href="/#formats">Формати співпраці</a></li><li><a href="/portfolio-products/">Продукція</a></li><li><a href="/#geo">Географія</a></li><li><a href="/#faq">FAQ</a></li>
       </ul>
       <ul>
         <li><a href="mailto:virabalkans@gmail.com">virabalkans@gmail.com</a></li><li><a href="tel:+385916001094">+385 91 600 1094</a></li><li><a href="https://virabalkans.com/blog-standard/">Блог</a></li><li><a href="https://virabalkans.com/about-viktork/">Про Victor &amp; K</a></li>
@@ -166,13 +166,13 @@ def page(category=None):
     if category:
         title = f'{category["title"]} — Каталог VIRA'
         description = f'{category["title"]}: {quantity(len(category["products"]))} у каталозі VIRA.'
-        crumbs = f'<span aria-hidden="true">/</span><span aria-current="page">{esc(category["title"])}</span>'
+        catalog_crumb = f'<a href="{BASE}">Каталог</a><span aria-hidden="true">/</span><span aria-current="page">{esc(category["title"])}</span>'
         label = category['title']
         selected = category['slug']
     else:
         title = 'Каталог продукції — VIRA'
         description = 'Каталог продукції VIRA: олія, шрот, лецитин, етикетки, тара та ексклюзивні добірки.'
-        crumbs = ''
+        catalog_crumb = '<span aria-current="page">Каталог</span>'
         label = 'Категорії каталогу'
         selected = None
     return f'''<!doctype html>
@@ -188,7 +188,7 @@ def page(category=None):
     {SITE_NAV}
     <div class="hero-copy container"><p class="eyebrow light">Продукція VIKTOR &amp; K</p><h1>Каталог продукції</h1><p>Асортимент VIRA для міжнародних ринків</p></div></div></div>
   <main id="main" class="catalog-surface"><div class="container">
-    <nav class="breadcrumbs" aria-label="Навігація"><a href="{BASE}">Каталог</a>{crumbs}</nav>
+    <nav class="breadcrumbs" aria-label="Навігація"><a href="/">Головна</a><span aria-hidden="true">/</span>{catalog_crumb}</nav>
     <div class="catalog-layout">{navigation(selected)}<section class="catalog-content" aria-label="{esc(label)}">{content(category)}</section></div>
   </div></main>
   {SITE_FOOTER}
