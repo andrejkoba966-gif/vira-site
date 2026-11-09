@@ -95,7 +95,7 @@ SITE_FOOTER = '''<footer>
         <li><a href="/#about">Про VIRA</a></li><li><a href="/#formats">Формати співпраці</a></li><li><a href="/portfolio-products/">Продукція</a></li><li><a href="/#geo">Географія</a></li><li><a href="/#faq">FAQ</a></li>
       </ul>
       <ul>
-        <li><a href="mailto:virabalkans@gmail.com">virabalkans@gmail.com</a></li><li><a href="tel:+385916001094">+385 91 600 1094</a></li><li><a href="https://virabalkans.com/blog-standard/">Блог</a></li><li><a href="https://virabalkans.com/about-viktork/">Про Victor &amp; K</a></li>
+        <li><a href="mailto:virabalkans@gmail.com">virabalkans@gmail.com</a></li><li><a href="tel:+385916001094">+385 91 600 1094</a></li><li><a href="/blog/">Блог</a></li><li><a href="https://virabalkans.com/about-viktork/">Про Victor &amp; K</a></li>
       </ul>
       <a class="up" href="#top" aria-label="Нагору"><span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 13V3M4 7l4-4 4 4"/></svg></span></a>
     </div>
@@ -116,7 +116,7 @@ EN = {
     # каталог
     'Перейти до каталогу': 'Skip to the catalogue', 'Продукція VIKTOR & K': 'VIKTOR & K products',
     'Каталог продукції': 'Product catalogue', 'Асортимент VIRA для міжнародних ринків': 'VIRA range for international markets',
-    'Каталог': 'Catalogue', 'Головна': 'Home', 'Навігація': 'Navigation', 'Усі категорії': 'All categories',
+    'Каталог': 'Catalogue', 'Каталог VIRA': 'VIRA catalogue', 'Головна': 'Home', 'Навігація': 'Navigation', 'Усі категорії': 'All categories',
     'Категорії': 'Categories', 'Спеціальні добірки': 'Special selections', 'Категорії каталогу': 'Catalogue categories',
     'Портфоліо VIRA': 'VIRA portfolio', 'Оберіть категорію': 'Choose a category',
     'Увесь асортимент зібрано за напрямами. У кожної категорії є власна сторінка.': 'The whole range is grouped by category. Each category has its own page.',
@@ -173,8 +173,7 @@ MENU_SCRIPT = r'''<script>
   var pills = [].slice.call(document.querySelectorAll('.mm-lang button, .nav-lang-m button'));
   function setLang(l, save) {
     LANG = l === 'en' ? 'en' : 'uk'; root.lang = LANG; walk(document.body);
-    var m = UK_TITLE.match(/^(.*) — Каталог VIRA$/);
-    document.title = LANG === 'uk' ? UK_TITLE : m ? (tr(m[1]) || m[1]) + ' — VIRA catalogue' : 'Product catalogue — VIRA';
+    document.title = LANG === 'uk' ? UK_TITLE : UK_TITLE.split(' — ').map(function (x) { return tr(x) || x; }).join(' — ');
     langBtn.firstElementChild.textContent = LANG === 'en' ? 'UA' : 'EN';
     pills.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.lang === LANG); });
     if (save !== false) { try { localStorage.setItem('vira-lang', LANG); } catch (e) {} }
@@ -317,4 +316,5 @@ def main():
     print(f'Built {len(CATEGORIES) + 1} catalog pages and {len(ids)} product cards.')
 
 
-main()
+if __name__ == '__main__':
+    main()
