@@ -55,7 +55,7 @@ LOGO = '''<svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke-widt
           </g></svg>'''
 
 MENU = [('/#about', 'Про VIRA'), ('/#formats', 'Формати'), ('/portfolio-products/', 'Продукція'),
-        ('/#geo', 'Географія'), ('/#faq', 'FAQ'), ('/#contact', 'Контакти')]
+        ('/#faq', 'FAQ'), ('/blog/', 'Блог'), ('/#contact', 'Контакти')]
 
 _links = ''.join(f'<li><a href="{h}">{t}</a></li>' for h, t in MENU)
 
