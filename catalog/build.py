@@ -59,7 +59,7 @@ MENU = [('/#about', 'Про VIRA'), ('/#formats', 'Формати'), ('/portfoli
 
 _links = ''.join(f'<li><a href="{h}">{t}</a></li>' for h, t in MENU)
 
-SITE_NAV = f'''<nav id="hero-nav">
+SITE_NAV = f'''<nav id="hero-nav" translate="no">
       <div class="container">
         <a href="/" class="nav-logo" aria-label="VIRA">{LOGO}VIRA</a>
         <ul class="nav-links">{_links}</ul>
@@ -75,7 +75,7 @@ SITE_NAV = f'''<nav id="hero-nav">
       </div>
     </nav>'''
 
-MOBILE_MENU = f'''<div id="mobile-menu" role="dialog" aria-modal="true" aria-label="Меню" aria-hidden="true">
+MOBILE_MENU = f'''<div id="mobile-menu" translate="no" role="dialog" aria-modal="true" aria-label="Меню" aria-hidden="true">
   <div class="mm-top"><a href="/" class="nav-logo" aria-label="VIRA">{LOGO}VIRA</a><button type="button" class="mm-close" id="mm-close" aria-label="Закрити меню"></button></div>
   <ul class="mm-links">{_links}</ul>
   <div class="mm-bottom">
@@ -87,7 +87,7 @@ MOBILE_MENU = f'''<div id="mobile-menu" role="dialog" aria-modal="true" aria-lab
   </div>
 </div>'''
 
-SITE_FOOTER = '''<footer>
+SITE_FOOTER = '''<footer translate="no">
   <div class="container">
     <div class="foot">
       <p class="tag">Смак України —<br>на столі в&nbsp;Європі<small>Офіційне представництво Victor &amp; K у Європі</small></p>
@@ -169,6 +169,27 @@ MENU_SCRIPT = r'''<script>
     if (n.nodeType !== 1 || SKIP[n.tagName]) return;
     attrs(n); n.childNodes.forEach(walk);
   }
+  // Автопереклад тексту статей (Google Website Translator, як на старому сайті) — лише на сторінках блогу (VIRA_GT)
+  var gtLoaded = false;
+  function gtCookie(on) {
+    document.cookie = on ? 'googtrans=/uk/en; path=/' : 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+  }
+  function gt(lang) {
+    if (!window.VIRA_GT) return;
+    if (lang === 'en') {
+      if (gtLoaded) return;
+      gtLoaded = true; gtCookie(true);
+      window.googleTranslateElementInit = function () {
+        new google.translate.TranslateElement({ pageLanguage: 'uk', includedLanguages: 'en', autoDisplay: false }, 'google_translate_element');
+      };
+      var sc = document.createElement('script');
+      sc.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+      document.head.appendChild(sc);
+    } else {
+      var had = gtLoaded; gtCookie(false);
+      if (had) location.reload();   // повертаємо оригінальний український текст
+    }
+  }
   var langBtn = document.getElementById('lang-toggle');
   var pills = [].slice.call(document.querySelectorAll('.mm-lang button, .nav-lang-m button'));
   function setLang(l, save) {
@@ -177,6 +198,7 @@ MENU_SCRIPT = r'''<script>
     langBtn.firstElementChild.textContent = LANG === 'en' ? 'UA' : 'EN';
     pills.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.lang === LANG); });
     if (save !== false) { try { localStorage.setItem('vira-lang', LANG); } catch (e) {} }
+    gt(LANG);
   }
   langBtn.addEventListener('click', function () { setLang(LANG === 'en' ? 'uk' : 'en'); });
   pills.forEach(function (b) { b.addEventListener('click', function () { setLang(b.dataset.lang); }); });
@@ -185,7 +207,7 @@ MENU_SCRIPT = r'''<script>
     try { saved = localStorage.getItem('vira-lang'); } catch (e) {}
     var br = String((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
     var want = (q === 'en' || q === 'uk') ? q : (saved === 'en' || saved === 'uk') ? saved : (br.indexOf('uk') === 0 || !br ? 'uk' : 'en');
-    if (want === 'en') setLang('en', false);
+    if (want === 'en') setLang('en', false); else gt('uk');
   })();
 
   var m = document.getElementById('mobile-menu'), b = document.getElementById('burger'), c = document.getElementById('mm-close');

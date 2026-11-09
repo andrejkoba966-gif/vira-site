@@ -34,3 +34,11 @@
 
 @media (max-width: 1100px) { .post-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 640px) { .post-grid { grid-template-columns: 1fr; gap: 13px; } }
+
+/* Автопереклад Google: ховаємо його власний інтерфейс */
+.gt-hidden { position: absolute; width: 0; height: 0; overflow: hidden; }
+.goog-te-banner-frame, .goog-te-balloon-frame, #goog-gt-tt, .goog-tooltip, .skiptranslate > iframe { display: none !important; }
+body { top: 0 !important; }
+.goog-text-highlight { background: none !important; box-shadow: none !important; }
+.mt-note { display: none; margin-top: 28px; font-size: 12px; color: #8e8e95; }
+html[lang="en"] .mt-note { display: block; }

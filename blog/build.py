@@ -40,7 +40,6 @@ EXTRA_EN = {
     'Читати': 'Read', 'Усі новини': 'All news', 'Експорт': 'Export', 'Контракти': 'Contracts',
     'Сільськогосподарські технології': 'Agricultural technologies', 'Блог VIRA': 'VIRA blog',
     'Новини та події': 'News and events', 'Перейти до статті': 'Skip to the article',
-    'Текст статті доступний українською.': 'The article text is available in Ukrainian.',
 }
 for p in POSTS:
     p['label'] = CAT_OVERRIDE.get(p['slug']) or CAT_LABEL.get(p['cat'], 'Новини')
@@ -89,6 +88,8 @@ def tail():
     script = cat.MENU_SCRIPT.replace('__DICT__', json.dumps(cat.EN, ensure_ascii=False))
     return f'''  {cat.SITE_FOOTER}
   {cat.MOBILE_MENU}
+  <div id="google_translate_element" class="gt-hidden" translate="no"></div>
+  <script>window.VIRA_GT = true;</script>
   {script}
 </body></html>
 '''
@@ -136,6 +137,7 @@ def article_page(p):
       <div class="article-body">
 {p['body']}
       </div>
+      <p class="mt-note" translate="no">The article text is translated automatically by Google Translate.</p>
       <a class="back-link" href="/blog/"><span aria-hidden="true">←</span> Усі новини</a>
     </article>
     {cta()}

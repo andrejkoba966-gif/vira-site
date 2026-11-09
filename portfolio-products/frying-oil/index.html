@@ -8,7 +8,7 @@
 </head><body id="top">
   <a class="skip-link" href="#main">Перейти до каталогу</a>
   <div class="hero"><div class="hero-shade">
-    <nav id="hero-nav">
+    <nav id="hero-nav" translate="no">
       <div class="container">
         <a href="/" class="nav-logo" aria-label="VIRA"><svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke-width="2.2" stroke-linejoin="round">
             <path d="M20 26C16 18 16 10 20 4c4 6 4 14 0 22Z" stroke="#F5D90A"/>
@@ -53,7 +53,7 @@
       <p>Від готового продукту до власного бренду. Напишіть нам, і ми підберемо рішення під ваші задачі.</p></div>
       <a class="cta-btn" href="/#contact">Форма зв'язку<span class="circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 5v7H5"/></svg></span></a></aside></section></div>
   </div></main>
-  <footer>
+  <footer translate="no">
   <div class="container">
     <div class="foot">
       <p class="tag">Смак України —<br>на столі в&nbsp;Європі<small>Офіційне представництво Victor &amp; K у Європі</small></p>
@@ -68,7 +68,7 @@
     <div class="legal"><span>VIRA © 2026. Усі права захищені.</span><a href="https://virabalkans.com/privacy-policy/">Політика конфіденційності</a></div>
   </div>
 </footer>
-  <div id="mobile-menu" role="dialog" aria-modal="true" aria-label="Меню" aria-hidden="true">
+  <div id="mobile-menu" translate="no" role="dialog" aria-modal="true" aria-label="Меню" aria-hidden="true">
   <div class="mm-top"><a href="/" class="nav-logo" aria-label="VIRA"><svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke-width="2.2" stroke-linejoin="round">
             <path d="M20 26C16 18 16 10 20 4c4 6 4 14 0 22Z" stroke="#F5D90A"/>
             <path d="M20 26C13 22 9 16 9 9c6 1 11 7 11 17Z" stroke="#C9DC2B"/>
@@ -118,6 +118,27 @@
     if (n.nodeType !== 1 || SKIP[n.tagName]) return;
     attrs(n); n.childNodes.forEach(walk);
   }
+  // Автопереклад тексту статей (Google Website Translator, як на старому сайті) — лише на сторінках блогу (VIRA_GT)
+  var gtLoaded = false;
+  function gtCookie(on) {
+    document.cookie = on ? 'googtrans=/uk/en; path=/' : 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+  }
+  function gt(lang) {
+    if (!window.VIRA_GT) return;
+    if (lang === 'en') {
+      if (gtLoaded) return;
+      gtLoaded = true; gtCookie(true);
+      window.googleTranslateElementInit = function () {
+        new google.translate.TranslateElement({ pageLanguage: 'uk', includedLanguages: 'en', autoDisplay: false }, 'google_translate_element');
+      };
+      var sc = document.createElement('script');
+      sc.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+      document.head.appendChild(sc);
+    } else {
+      var had = gtLoaded; gtCookie(false);
+      if (had) location.reload();   // повертаємо оригінальний український текст
+    }
+  }
   var langBtn = document.getElementById('lang-toggle');
   var pills = [].slice.call(document.querySelectorAll('.mm-lang button, .nav-lang-m button'));
   function setLang(l, save) {
@@ -126,6 +147,7 @@
     langBtn.firstElementChild.textContent = LANG === 'en' ? 'UA' : 'EN';
     pills.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.lang === LANG); });
     if (save !== false) { try { localStorage.setItem('vira-lang', LANG); } catch (e) {} }
+    gt(LANG);
   }
   langBtn.addEventListener('click', function () { setLang(LANG === 'en' ? 'uk' : 'en'); });
   pills.forEach(function (b) { b.addEventListener('click', function () { setLang(b.dataset.lang); }); });
@@ -134,7 +156,7 @@
     try { saved = localStorage.getItem('vira-lang'); } catch (e) {}
     var br = String((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
     var want = (q === 'en' || q === 'uk') ? q : (saved === 'en' || saved === 'uk') ? saved : (br.indexOf('uk') === 0 || !br ? 'uk' : 'en');
-    if (want === 'en') setLang('en', false);
+    if (want === 'en') setLang('en', false); else gt('uk');
   })();
 
   var m = document.getElementById('mobile-menu'), b = document.getElementById('burger'), c = document.getElementById('mm-close');
