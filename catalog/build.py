@@ -252,7 +252,7 @@ def product_card(item, index):
     title = item[1]
     description = item[3] if len(item) > 3 else None
     note = item[4] if len(item) > 4 else None
-    loading = 'loading="lazy"' if index > 2 else 'fetchpriority="high"'
+    loading = 'loading="lazy"' if index > 5 else ('fetchpriority="high"' if index < 3 else '')
     desc = f'<p class="product-description">{esc(description)}</p>' if description else ''
     pack = f'<p class="package-note">{esc(note)}</p>' if note else ''
     return f'''<article class="product-card">
@@ -261,10 +261,11 @@ def product_card(item, index):
   </article>'''
 
 
-def category_tile(category):
+def category_tile(category, index=0):
+    loading = 'loading="lazy"' if index > 5 else ''
     cover = next((i for i in category['products'] if i[0] == category.get('cover')), category['products'][0])
     return f'''<a class="category-tile" href="{category_path(category)}">
-    <span class="category-image"><img src="{item_path(cover)}" alt="" loading="lazy" decoding="async"></span>
+    <span class="category-image"><img src="{item_path(cover)}" alt="" {loading} decoding="async"></span>
     <span class="category-info"><span><strong>{esc(category['title'])}</strong><small>{quantity(len(category['products']))}</small></span><span class="tile-arrow" aria-hidden="true">↗</span></span>
   </a>'''
 
@@ -278,7 +279,7 @@ def cta(category):
 
 def content(category):
     if not category:
-        tiles = ''.join(category_tile(c) for c in CATEGORIES)
+        tiles = ''.join(category_tile(c, i) for i, c in enumerate(CATEGORIES))
         return (f'<div class="section-heading"><div><p class="eyebrow dark">Портфоліо VIRA</p><h2>Оберіть категорію</h2>'
                 f'<p class="section-intro">Увесь асортимент зібрано за напрямами. У кожної категорії є власна сторінка.</p></div>'
                 f'<span class="result-count">{len(CATEGORIES)} категорій</span></div>\n      <div class="category-grid">{tiles}</div>\n      {cta(None)}')

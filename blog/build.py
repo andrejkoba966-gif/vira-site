@@ -100,9 +100,10 @@ def cta():
     return cat.cta(None)
 
 
-def card(p):
+def card(p, index=0):
+    loading = 'loading="lazy"' if index > 5 else ''
     return f'''<a class="post-card" href="/blog/{p['slug']}/">
-    <span class="post-card-img"><img src="{p['thumb']}" alt="" loading="lazy" decoding="async"></span>
+    <span class="post-card-img"><img src="{p['thumb']}" alt="" {loading} decoding="async"></span>
     <span class="post-card-body">
       <span class="post-meta"><span class="post-cat">{esc(p['label'])}</span><span>{p['date']}</span></span>
       <strong>{esc(p['title'])}</strong>
@@ -113,7 +114,7 @@ def card(p):
 
 
 def index_page():
-    cards = ''.join(card(p) for p in POSTS)
+    cards = ''.join(card(p, i) for i, p in enumerate(POSTS))
     return head('Блог — VIRA', 'Новини VIRA: виставки, контракти та новинки.') + f'''
   <div class="hero"><div class="hero-shade">
     {cat.SITE_NAV}
