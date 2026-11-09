@@ -1903,6 +1903,23 @@ html.is-touch.hero-lock, html.is-touch.hero-lock body { overflow: hidden; oversc
     }
   });
 
+  // ---------- перехід у каталог / блог ----------
+  // Великі відео ще докачуються у фоні й займають канал — запит нової сторінки стоїть у черзі.
+  // Тому перед переходом зупиняємо завантаження відео та інших запитів, і сторінка відкривається одразу.
+  document.addEventListener('click', e => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const a = e.target.closest('a[href]');
+    if (!a || a.target === '_blank' || a.hasAttribute('download')) return;
+    let u; try { u = new URL(a.href, location.href); } catch (err) { return; }
+    if (u.origin !== location.origin || !/^\/(portfolio-products|blog)\//.test(u.pathname)) return;
+    e.preventDefault();
+    document.querySelectorAll('video').forEach(v => {
+      try { v.pause(); v.removeAttribute('src'); v.querySelectorAll('source').forEach(x => x.remove()); v.load(); } catch (err) {}
+    });
+    try { window.stop(); } catch (err) {}
+    location.href = u.href;
+  });
+
   // ---------- форма (Netlify Forms) ----------
   const form = document.getElementById('lead-form');
   form.addEventListener('submit', e => {
