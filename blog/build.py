@@ -79,7 +79,7 @@ def head(title, description, extra_class=''):
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/portfolio-products/assets/site.css"><link rel="stylesheet" href="/blog/blog.css">
-  <link rel="preload" as="image" href="/portfolio-products/assets/hero-sunflowers.png">
+  <link rel="preload" as="image" href="/portfolio-products/assets/hero-sunflowers.jpg">
 </head><body id="top" class="{extra_class}">
   <a class="skip-link" href="#main">Перейти до статті</a>'''
 

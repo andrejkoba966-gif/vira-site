@@ -66,7 +66,7 @@ html.menu-open, html.menu-open body { overflow: hidden; }
 .mm-cta { display: inline-flex; align-items: center; height: 46px; padding: 0 24px; border-radius: 100px; background: var(--sun); color: var(--ink); font-size: 13px; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; }
 
 /* ---------- Верхній блок ---------- */
-.hero { background: var(--dark) url("./hero-sunflowers.png") center bottom / cover no-repeat; color: #fff; }
+.hero { background: var(--dark) url("./hero-sunflowers.jpg") center bottom / cover no-repeat; color: #fff; }
 .hero-shade { min-height: clamp(380px, 28vw, 520px); padding-bottom: clamp(48px, 4.5vw, 90px); background: linear-gradient(90deg, rgba(10,10,11,.55), rgba(10,10,11,.15) 65%, rgba(10,10,11,.25)); }
 .hero-copy { padding-top: clamp(56px, 5.5vw, 110px); }
 .eyebrow { margin: 0 0 13px; font-size: 11px; letter-spacing: .17em; font-weight: 600; text-transform: uppercase; }

@@ -305,7 +305,7 @@ def page(category=None):
   <link rel="icon" type="image/svg+xml" href="{BASE}assets/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{BASE}assets/site.css"><link rel="preload" as="image" href="{BASE}assets/hero-sunflowers.png">
+  <link rel="stylesheet" href="{BASE}assets/site.css"><link rel="preload" as="image" href="{BASE}assets/hero-sunflowers.jpg">
 </head><body id="top">
   <a class="skip-link" href="#main">Перейти до каталогу</a>
   <div class="hero"><div class="hero-shade">
